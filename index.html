@@ -57,8 +57,10 @@ body {
     justify-content: center;
     align-items: center;
     color: white;
-    background: linear-gradient(rgba(10,0,10,.85), rgba(0,0,0,.95)),
-    radial-gradient(circle at center, #4c1d95 0%, #020617 70%);, url('question_background_image.png');
+    background:
+        linear-gradient(rgba(10,0,10,.85), rgba(0,0,0,.95)),
+        radial-gradient(circle at center, #4c1d95 0%, #020617 70%),
+        url('question_background_image.png');
     background-size: cover;
     background-position: center;
     background-attachment: scroll;
@@ -127,21 +129,20 @@ You can restyle it completely—just keep structure intact.
     flex:1;
     min-width:0;
     width:100%;
-    min-height: auto;
     margin: 0;
     padding: 18px 20px;
     text-align: center;
     background: radial-gradient(circle at center,
-    rgba(76,29,149,0.35) 0%,
-    rgba(20,0,20,0.85) 60%,
-    rgba(0,0,0,0.98) 100%);
-    backdrop-filter: blur(4px);
+        rgba(76,29,149,0.4) 0%,
+        rgba(20,0,30,0.9) 55%,
+        rgba(0,0,0,0.98) 100%);
+    backdrop-filter: blur(6px);
     border-radius: 14px;
     box-sizing: border-box;
     box-shadow:
-    0 0 20px rgba(109,40,217,0.25),
-    0 0 60px rgba(127,29,29,0.25);
-    border: 1px solid rgba(109,40,217,0.25);
+        0 0 25px rgba(109,40,217,0.3),
+        0 0 80px rgba(127,29,29,0.25);
+    border: 1px solid rgba(109,40,217,0.3);
     animation: torchFlicker 6s infinite;
     transition: box-shadow .3s ease;
     position: relative;
@@ -149,15 +150,17 @@ You can restyle it completely—just keep structure intact.
 
 /* Boss state styling — triggered during boss fights (DO NOT REMOVE) */
 #gameBox.boss-mode {
-    border: 2px solid #f97316;
-    box-shadow: 0 0 25px rgba(249,115,22,0.6), 0 0 50px rgba(251,191,36,0.4);
+    border: 2px solid #7c3aed;
+    box-shadow:
+        0 0 30px rgba(124,58,237,0.6),
+        0 0 60px rgba(109,40,217,0.4);
 }
 
 /* Damage effect when boss/player is hit (visual feedback) */
-.hit { box-shadow: 0 0 60px #ef4444, inset 0 0 40px #7f1d1d !important; animation: hitshake 0.4s ease; }
+.hit {box-shadow:0 0 60px rgba(153,27,27,0.9),inset 0 0 40px rgba(127,29,29,0.8) !important;animation: hitshake 0.4s ease;}
 
 /* Autosave indicator — positioned relative to gameBox */
-#autosave { position: absolute; top: 15px; right: 15px; font-size: 11px; opacity: 0.5; font-style: italic; }
+#autosave {position: absolute;top: 15px;right: 15px;font-size: 11px;opacity: 0.4;font-style: italic;color: #a78bfa;text-shadow: 0 0 6px rgba(167,139,250,0.4);}
 
 /* =========================================
    3. TEXT & TYPOGRAPHY SYSTEM — SAFE TO CUSTOMIZE
@@ -191,13 +194,13 @@ TIP:
 Prioritize readability over style.
 If students can’t read it quickly, the system fails.
 ========================================= */
-h2 { text-shadow: 0 0 10px rgba(255,255,255,0.3), 0 0 20px rgba(251,191,36,0.2); margin-bottom: 5px; }
+h2 { text-shadow: 0 0 10px rgba(255,255,255,0.25),  0 0 20px rgba(167,139,250,0.35); margin-bottom: 5px; }
 
 /* Main question text — keep readable and centered */
 #question { font-size: clamp(20px, 4vw, 22px); line-height: 1.4; font-weight: 600; margin: 14px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
 /* Boss/summary title — high emphasis text */
-.boss-title { font-size: 28px; font-weight: bold; margin-bottom: 15px; display: block;color: #a78bfa;text-shadow:0 0 10px rgba(167,139,250,0.6), 0 0 25px rgba(109,40,217,0.4);}}
+.boss-title { font-size: 28px; font-weight: bold; margin-bottom: 15px; display: block;color: #a78bfa;text-shadow:0 0 10px rgba(167,139,250,0.6), 0 0 25px rgba(109,40,217,0.4);}
 
 /* Area/zone label — subtle contextual info */
 .area-title { color: #9ca3af; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 15px; }
@@ -206,10 +209,10 @@ h2 { text-shadow: 0 0 10px rgba(255,255,255,0.3), 0 0 20px rgba(251,191,36,0.2);
 .boss-q {font-style: normal; line-height: 1.5; font-size: 24px;border-left: 3px solid #7f1d1d; padding-left: 15px;margin: 20px 0;text-align: left; color: #e9d5ff; box-shadow: -4px 0 10px rgba(127,29,29,0.3);}
 
 /* Optional hint display (calculation or guidance) */
-.hint-box { font-size: 13px; color: #fbbf24; margin-top: 15px; opacity: 0.8; height: 18px; }
+.hint-box { font-size: 13px; color: #a78bfa; margin-top: 15px; opacity: 0.8; height: 18px; }
     
 /* Temporary feedback text (auto fades out) */
-.fade-out-text { animation: fadeOut 5s forwards; font-weight: bold; color: #4ade80; }
+.fade-out-text { animation: fadeOut 5s forwards; font-weight: bold; color: #c4b5fd; text-shadow: 0 0 6px rgba(167,139,250,0.5);}
 
 /* Add styling to wizard text */
 #message {margin-top: 10px; font-style: italic; letter-spacing: 0.5px; text-align: center; color: #cbd5f5; opacity: 0.85;}
@@ -325,10 +328,11 @@ If it's unclear, motivation drops.
 ========================================= */
     
 /* Progress bar container — background track */
-#progressBar { width: 100%; height: 22px; background: #2d3748; border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
+#progressBar {width: 100%;height: 22px;background: linear-gradient(180deg,rgba(20,0,30,0.9),rgba(0,0,0,0.95));
+border-radius: 12px;margin-bottom: 20px;overflow: hidden;box-shadow:inset 0 0 10px rgba(109,40,217,0.2);}
     
 /* Progress fill — width controlled by JS */
-#progressFill { height: 100%; width: 0%; background: linear-gradient(90deg, #4c1d95, #6d28d9, #991b1b); transition: width 0.4s ease; }
+#progressFill { height: 100%; width: 0%; background: linear-gradient(90deg, #4c1d95, #6d28d9, #991b1b); box-shadow:0 0 10px rgba(167,139,250,0.4);transition: width 0.4s ease;}
 
 /* Maze grid layout — 10 columns = 30 total rooms */
 #mazeTrack { display: grid; grid-template-columns: repeat(10, 36px); justify-content: center; gap: 10px; margin: 25px auto; }
@@ -339,12 +343,13 @@ If it's unclear, motivation drops.
 /* Current room highlight — animated pulse */
 .maze-box.active { background: rgba(167,139,250,0.3); border: 2px solid #a78bfa; box-shadow: 0 0 10px rgba(167,139,250,0.7), 0 0 20px rgba(109,40,217,0.5);z-index: 10; animation: activePulse 1s infinite alternate;}
 
-.maze-box.completed {background: rgba(249,115,22,0.6); box-shadow: 0 0 8px rgba(249,115,22,0.5);}
+/* Completed tile */
+.maze-box.completed {background: rgba(109,40,217,0.4); box-shadow: 0 0 8px rgba(109,40,217,0.4);}
 
 /* Boss room highlights (10, 20, 30) — visual only */
-.maze-box:nth-child(10) { text-shadow: 0 0 8px #fbbf24, 0 0 18px #f97316; }
-.maze-box:nth-child(20) { text-shadow: 0 0 8px #f97316, 0 0 18px #ea580c; }
-.maze-box:nth-child(30) { text-shadow: 0 0 10px #eab308, 0 0 25px #fbbf24; }
+.maze-box:nth-child(10) {text-shadow: 0 0 8px #a78bfa,0 0 18px #6d28d9;}
+.maze-box:nth-child(20) {text-shadow:0 0 8px #7c3aed, 0 0 18px #4c1d95;}
+.maze-box:nth-child(30) {text-shadow:0 0 10px #991b1b,0 0 25px #7f1d1d;}
    
 /* =========================================
    6. ARTIFACT SYSTEM (REWARDS) — SAFE TO CUSTOMIZE
@@ -381,23 +386,18 @@ If it doesn’t feel rewarding, engagement drops.
 ========================================= */
     
 /* Reward popup — appears after boss victory */
-#artifactDrop {margin-top: 20px; padding: 14px; /* 🔥 heated surface */ background: radial-gradient(
-circle at center, rgba(120,40,10,0.6), rgba(20,8,4,0.95)); border-radius: 10px; border: 1px solid rgba(251,191,36,0.25); box-shadow: 0 0 15px rgba(249,115,22,0.3), inset 0 0 25px rgba(120,40,10,0.4);text-align: center;}
+#artifactDrop {margin-top: 20px;padding: 14px;background: radial-gradient(circle at center,rgba(76,29,149,0.35),
+rgba(10,0,20,0.95));border-radius: 10px;border: 1px solid rgba(167,139,250,0.25);box-shadow:0 0 20px rgba(109,40,217,0.3),inset 0 0 25px rgba(127,29,29,0.2);text-align: center;}
     
 /* Artifact image in popup */
 #artifactImage { width: 96px; margin-bottom: 8px; }
 #artifactDrop img { filter: drop-shadow(0 0 14px rgba(167,139,250,0.9)) drop-shadow(0 0 25px rgba(109,40,217,0.6)); }
 
 /* Persistent artifact collection display (top panel) */
-#artifactVault{margin-top: -6px; width: 220px; padding: 18px; border-radius: 12px;
-    /* 🔥 molten vault look */
-    background: radial-gradient(circle at top, rgba(76,29,149,0.5), rgba(10,0,20,0.95));
-    border: 1px solid rgba(251,191,36,0.25);
-    box-shadow: 0 0 20px rgba(109,40,217,0.3),
-    inset 0 0 30px rgba(127,29,29,0.2);
-    text-align: center;
-}
-#artifactVault h3{ color: #fbbf24; text-shadow: 0 0 10px rgba(251,191,36,0.6);}
+#artifactVault {margin-top: -6px;width: 220px;padding: 18px;border-radius: 12px;background: radial-gradient(circle at top, rgba(76,29,149,0.5), rgba(10,0,20,0.95));
+border: 1px solid rgba(167,139,250,0.25);box-shadow:0 0 20px rgba(109,40,217,0.3),inset 0 0 30px rgba(127,29,29,0.2);text-align: center;}
+
+#artifactVault h3 {color: #c4b5fd;text-shadow: 0 0 10px rgba(167,139,250,0.6);}
 
 /* Layout container for artifact slots */
 .vaultRow { display: flex; justify-content: center; align-items:flex-end; gap: 15px; flex-wrap:wrap;}
@@ -409,12 +409,12 @@ circle at center, rgba(120,40,10,0.6), rgba(20,8,4,0.95)); border-radius: 10px; 
 .artifactSlot img { width: 45px; margin-bottom:4px;filter: brightness(0.3) contrast(0.8);; transition: all .4s ease; }
 
 /* Unlocked artifact — triggered by JS (DO NOT REMOVE) */    
-.artifactSlot span { display: block; font-size: 13px; color: rgba(251,191,36,0.35); margin-top: 8px; line-height: 1.2; }
+.artifactSlot span { display: block; font-size: 13px; color: rgba(167,139,250,0.35); margin-top: 8px; line-height: 1.2; }
 
 /* Glow + animation for unlocked artifacts */
 .artifactSlot.unlocked { opacity: 1; transform: scale(1.05); }
-.artifactSlot.unlocked img {filter: drop-shadow(0 0 14px rgba(251,191,36,0.9))drop-shadow(0 0 25px rgba(249,115,22,0.6)); animation: relicPulse 2.5s ease-in-out infinite; }
-.artifactSlot.unlocked span { color: #fef3c7; font-weight: 600; text-shadow: 0 0 6px rgba(251,191,36,0.4); }
+.artifactSlot.unlocked img {filter: drop-shadow(0 0 14px rgba(167,139,250,0.9)) drop-shadow(0 0 25px rgba(109,40,217,0.6));animation: relicPulse 2.5s ease-in-out infinite;}
+.artifactSlot.unlocked span {color: #ede9fe;font-weight: 600;text-shadow: 0 0 6px rgba(167,139,250,0.4);}
 
 /* =========================================
    7. BOSS EFFECTS & ATMOSPHERE — SAFE TO CUSTOMIZE
@@ -456,9 +456,9 @@ Subtle changes here dramatically affect experience.
 .bossIcon { width: 96px; height: auto; display: block; margin: 0 auto 12px auto; animation: bossFloat 4s ease-in-out infinite; }
 
 /* Boss-specific glow effects (safe to recolor per theme, change name before glow to match your boss name) */
-.architectGlow { filter: drop-shadow(0 0 14px rgba(96,165,250,.8)); }
-.pricemakerGlow { filter: drop-shadow(0 0 14px rgba(242,125,9,.8)); }
-.finalBossGlow { filter: drop-shadow(0 0 18px rgba(239,68,68,.9)); }
+.architectGlow {filter: drop-shadow(0 0 14px rgba(167,139,250,0.85)) drop-shadow(0 0 25px rgba(109,40,217,0.6));}
+.pricemakerGlow {filter: drop-shadow(0 0 14px rgba(124,58,237,0.9)) drop-shadow(0 0 30px rgba(76,29,149,0.7));}
+.finalBossGlow {filter: drop-shadow(0 0 18px rgba(153,27,27,0.95)) drop-shadow(0 0 35px rgba(127,29,29,0.8));}
 
 /* Ambient torch effect — decorative, shown during gameplay */
 .torch { position: absolute; width: 70px; top: 30px; z-index: 10; animation: torchFlicker 3s infinite alternate; pointer-events: none; opacity: .95; filter: drop-shadow(0 0 12px rgba(255,180,80,.7)); display:none; }
