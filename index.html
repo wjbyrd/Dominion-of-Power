@@ -1,0 +1,3247 @@
+<!-- =====================================================
+GAUNTLET ENGINE — MASTER TEMPLATE
+
+READ BEFORE EDITING:
+
+This file is divided into TWO zones:
+
+1. SAFE TO EDIT (Customization)
+   - Question banks
+   - Boss names/images
+   - Text (wizard, areas, artifacts)
+   - Visual themes
+
+2. DO NOT TOUCH (Core Engine)
+   - Adaptive logic
+   - Question selection system
+   - Progression rules
+   - Boss mechanics
+
+If you modify the engine without understanding it,
+you WILL break the game.
+
+If something breaks, check:
+- Question IDs are unique
+- Each question has: q, options, a, tag, type, feedback
+- Tags/types are consistent
+
+===================================================== -->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<!-- Title can be changed to whatever the game needs -->
+<title>The Microeconomics Foundry</title>
+   
+<style>
+/* =========================================
+   1. VISUAL DESIGN — SAFE TO EDIT
+
+You can change:
+- Colors
+- Background images
+- Fonts
+- Glow effects
+
+Do NOT rename IDs (#gameBox, #mazeTrack, etc.)
+or you will break JavaScript connections.
+========================================= */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background: linear-gradient(rgba(2,6,23,.8), rgba(2,6,23,.8)), url('question_background_image.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll;
+}
+   
+#gameShell{
+    display:flex;
+    gap:20px;
+    max-width:900px;
+    width:100%;
+    margin:0 auto;
+}
+   
+.dungeon-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    width: 100%;
+    max-width: 1100px;
+    margin-top: 20px;
+}
+   
+/* =========================================
+   2. CORE GAME CONTAINER (#gameBox) — SAFE TO STYLE
+=========================================
+
+This is the main gameplay panel.
+
+Controls:
+- size and layout of the game area
+- background styling and effects
+- visual feedback (glow, boss mode, hit effects)
+- positioning of UI elements (autosave, etc.)
+
+-----------------------------------------
+SAFE TO EDIT:
+- colors, shadows, glow effects
+- padding, margins
+- background / blur effects
+- border styles
+- animation intensity
+
+-----------------------------------------
+USE CAUTION:
+- width / max-width / flex settings
+- position: relative (needed for overlays like autosave)
+- removing box-sizing may break layout
+
+-----------------------------------------
+DO NOT REMOVE:
+- #gameBox selector (used throughout JS)
+- .boss-mode class (boss visuals tied to logic)
+- .hit class (damage feedback)
+
+-----------------------------------------
+TIP:
+This controls how the game FEELS visually.
+You can restyle it completely—just keep structure intact.
+
+========================================= */
+#gameBox {
+    max-width: 750px;
+    flex:1;
+    min-width:0;
+    width:100%;
+    min-height: auto;
+    margin: 0;
+    padding: 18px 20px;
+    text-align: center;
+    background: radial-gradient(circle at center, rgba(120,40,10,0.85) 0%, rgba(40,15,5,0.95) 60%, rgba(10,5,2,0.98) 100%);
+    backdrop-filter: blur(4px);
+    border-radius: 14px;
+    box-sizing: border-box;
+    box-shadow: 0 0 12px rgba(251,191,36,0.6), 0 0 25px rgba(249,115,22,0.5), 0 0 60px rgba(220,38,38,0.35);
+    border: 1px solid rgba(251,191,36,0.25);
+    animation: torchFlicker 6s infinite;
+    transition: box-shadow .3s ease;
+    position: relative;
+}
+
+/* Boss state styling — triggered during boss fights (DO NOT REMOVE) */
+#gameBox.boss-mode {
+    border: 2px solid #f97316;
+    box-shadow: 0 0 25px rgba(249,115,22,0.6), 0 0 50px rgba(251,191,36,0.4);
+}
+
+/* Damage effect when boss/player is hit (visual feedback) */
+.hit { box-shadow: 0 0 60px #ef4444, inset 0 0 40px #7f1d1d !important; animation: hitshake 0.4s ease; }
+
+/* Autosave indicator — positioned relative to gameBox */
+#autosave { position: absolute; top: 15px; right: 15px; font-size: 11px; opacity: 0.5; font-style: italic; }
+
+/* =========================================
+   3. TEXT & TYPOGRAPHY SYSTEM — SAFE TO CUSTOMIZE
+=========================================
+Controls all text styling in the game:
+- question readability
+- headers and titles
+- boss emphasis text
+- hints and feedback
+- visual hierarchy
+-----------------------------------------
+SAFE TO EDIT:
+- font sizes
+- colors
+- text shadows
+- spacing (margin, line-height)
+- stylistic effects (italic, uppercase, etc.)
+-----------------------------------------
+USE CAUTION:
+- extreme font sizes (may break layout)
+- removing margins (can cause overlap)
+- removing contrast (hurts readability)
+-----------------------------------------
+DO NOT REMOVE:
+- #question (core content display)
+- .boss-title (boss transitions)
+- .boss-q (boss summaries)
+- .fade-out-text (feedback animation)
+-----------------------------------------
+TIP:
+Prioritize readability over style.
+If students can’t read it quickly, the system fails.
+========================================= */
+h2 { text-shadow: 0 0 10px rgba(255,255,255,0.3), 0 0 20px rgba(251,191,36,0.2); margin-bottom: 5px; }
+
+/* Main question text — keep readable and centered */
+#question { font-size: clamp(20px, 4vw, 22px); line-height: 1.4; font-weight: 600; margin: 14px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+
+/* Boss/summary title — high emphasis text */
+.boss-title { font-size: 28px; font-weight: bold; margin-bottom: 15px; display: block;color: #fbbf24;text-shadow:0 0 10px rgba(251,191,36,0.6),0 0 25px rgba(249,115,22,0.4);}}
+
+/* Area/zone label — subtle contextual info */
+.area-title { color: #9ca3af; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 15px; }
+
+/* Boss summary text — left-aligned for readability */
+.boss-q {font-style: normal; line-height: 1.5; font-size: 24px;border-left: 3px solid #f97316;padding-left: 15px;margin: 20px 0;text-align: left; color: #fef3c7; box-shadow: -4px 0 10px rgba(249,115,22,0.25);}
+
+/* Optional hint display (calculation or guidance) */
+.hint-box { font-size: 13px; color: #fbbf24; margin-top: 15px; opacity: 0.8; height: 18px; }
+    
+/* Temporary feedback text (auto fades out) */
+.fade-out-text { animation: fadeOut 5s forwards; font-weight: bold; color: #4ade80; }
+
+/* Add styling to wizard text */
+#message {margin-top: 10px; font-style: italic; letter-spacing: 0.5px; text-align: center; color: #cbd5f5; opacity: 0.85;}
+
+/* Foundry override */
+.foundry #message {color: #fbbf24;font-size: 17px; font-style: italic; margin-top: 12px; margin-bottom: 6px; font-weight: 600; letter-spacing: 1px; text-shadow:
+        0 0 8px rgba(251,191,36,0.8),
+        0 0 18px rgba(249,115,22,0.6),
+        0 0 30px rgba(220,38,38,0.35);}
+   
+/* =========================================
+   4. BUTTONS & INTERACTION — SAFE TO CUSTOMIZE
+=========================================
+Controls all interactive elements:
+- answer buttons
+- hover/active feedback
+- layout of answer choices
+- utility buttons (fullscreen, etc.)
+-----------------------------------------
+SAFE TO EDIT:
+- colors, backgrounds, borders
+- hover/active effects (scale, glow, etc.)
+- padding, spacing, font sizes
+- button shapes (border-radius)
+-----------------------------------------
+USE CAUTION:
+- removing hover/active effects (reduces feedback)
+- extreme sizing (can break layout or overlap)
+- flex settings in .answers (affects layout)
+-----------------------------------------
+DO NOT REMOVE:
+- button selector (used globally)
+- .answers layout (controls answer positioning)
+-----------------------------------------
+TIP:
+Buttons should feel responsive and clickable.
+Visual feedback = better engagement.
+========================================= */
+
+/* Base button styling — applies to all buttons */
+button {padding: 12px 22px; margin: 6px; font-size: 16px; cursor: pointer;
+    /* 🔥 ALWAYS HOT */
+    background: linear-gradient(180deg, #ea580c, #7c2d12);     color: #fef3c7;
+    border: 1px solid rgba(251,191,36,0.4);
+    border-radius: 8px;
+    box-shadow:
+        0 0 10px rgba(249,115,22,0.4),
+        inset 0 0 10px rgba(0,0,0,0.4);
+    transition: all 0.15s ease;
+}
+
+/* Hover feedback — improves interactivity */
+button:hover { background: linear-gradient(180deg, #f97316,#ea580c);
+    box-shadow:
+        0 0 20px rgba(251,191,36,0.7),
+        0 0 35px rgba(249,115,22,0.5);
+    transform: translateY(-2px) scale(1.02);
+}
+
+/* Click feedback — simulates button press */
+button:active {transform: scale(0.96);}
+
+/* Answer container — controls layout of choices */
+.answers { display: flex; flex-direction: column; justify-content: center; gap: 12px; width: 100%}
+
+/* Individual answer buttons — flexible sizing */
+.answers button { flex: 1 1 100%; min-height: 60px; max-width: 100%; padding: 15px; font-size: 18px; margin: 0; }
+
+/* Utility button (fullscreen toggle) — safe to restyle or move */
+.fullscreenBtn {position: absolute;top: 12px;left: 12px;
+    padding: 6px 12px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fef3c7;
+    /* 🔥 forged metal look */
+    background: linear-gradient(180deg,#7c2d12,#3f1a0d);
+    border: 1px solid rgba(251,191,36,0.4); border-radius: 6px; cursor: pointer; box-shadow: 0 0 10px rgba(249,115,22,0.4), inset 0 0 6px rgba(0,0,0,0.6); transition: all 0.15s ease;}
+   .fullscreenBtn:active {transform: scale(0.95); box-shadow: 0 0 8px rgba(249,115,22,0.3),inset 0 0 10px rgba(0,0,0,0.8);}
+
+.continue-btn {background: linear-gradient(180deg, #ea580c, #7c2d12);color: #fef3c7;font-weight: bold;padding: 14px 40px;font-size: 18px;border-radius: 8px;border: 1px solid rgba(251,191,36,0.4);cursor: pointer; box-shadow:
+        0 0 15px rgba(249,115,22,0.5),0 0 30px rgba(251,191,36,0.3);transition: all 0.15s ease;}
+.continue-btn:hover {background: linear-gradient(180deg, #f97316, #ea580c); box-shadow: 0 0 25px rgba(251,191,36,0.7), 0 0 40px rgba(249,115,22,0.5);transform: scale(1.03);}
+
+#continueBtn:active {transform: scale(0.97);box-shadow: 0 0 10px rgba(249,115,22,0.3),inset 0 0 10px rgba(0,0,0,0.6);}
+
+/* =========================================
+   5. PROGRESS & MAZE TRACK — SAFE TO CUSTOMIZE (WITH RULES)
+=========================================
+Controls visual progression feedback:
+- progress bar (top fill indicator)
+- maze track (30-room grid)
+- current position highlight
+- boss room visual cues
+-----------------------------------------
+SAFE TO EDIT:
+- colors, gradients, glow effects
+- sizes (maze-box, spacing, gap)
+- animation styles (pulse, transitions)
+- grid sizing (with care)
+-----------------------------------------
+USE CAUTION:
+- grid-template-columns (affects layout structure)
+- maze-box size vs spacing (can cause overflow)
+- removing animations (reduces feedback clarity)
+-----------------------------------------
+DO NOT MODIFY:
+- #mazeTrack structure (10 columns × 3 rows = 30 rooms)
+- nth-child(10, 20, 30) unless boss rooms are changed globally
+
+Changing boss room visuals here requires matching updates in:
+- game logic (boss triggers)
+- progression system
+-----------------------------------------
+TIP:
+This system gives players a sense of movement and progress.
+If it's unclear, motivation drops.
+========================================= */
+    
+/* Progress bar container — background track */
+#progressBar { width: 100%; height: 22px; background: #2d3748; border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
+    
+/* Progress fill — width controlled by JS */
+#progressFill { height: 100%; width: 0%; background: linear-gradient(90deg, #fbbf24, #f97316, #dc2626); transition: width 0.4s ease; }
+
+/* Maze grid layout — 10 columns = 30 total rooms */
+#mazeTrack { display: grid; grid-template-columns: repeat(10, 36px); justify-content: center; gap: 10px; margin: 25px auto; }
+    
+/* Individual room cell — default state */
+.maze-box { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 20px; border-radius: 6px; background: rgba(60, 20, 10, 0.4); border: 1px solid rgba(2449, 115, 22, 0.2); transition: all 0.3s ease; }
+
+/* Current room highlight — animated pulse */
+.maze-box.active { background: rgba(251,191,36,0.3); border: 2px solid #fbbf24; box-shadow: 0 0 10px rgba(251,191,36,0.7), 0 0 20px rgba(249,115,22,0.5);z-index: 10; animation: activePulse 1s infinite alternate;}
+
+.maze-box.completed {background: rgba(249,115,22,0.6); box-shadow: 0 0 8px rgba(249,115,22,0.5);}
+
+/* Boss room highlights (10, 20, 30) — visual only */
+.maze-box:nth-child(10) { text-shadow: 0 0 8px #fbbf24, 0 0 18px #f97316; }
+.maze-box:nth-child(20) { text-shadow: 0 0 8px #f97316, 0 0 18px #ea580c; }
+.maze-box:nth-child(30) { text-shadow: 0 0 10px #eab308, 0 0 25px #fbbf24; }
+   
+/* =========================================
+   6. ARTIFACT SYSTEM (REWARDS) — SAFE TO CUSTOMIZE
+=========================================
+Controls visual display of rewards:
+- artifact drop popup (after boss wins)
+- artifact vault (persistent collection)
+- locked vs unlocked states
+- reward animations and glow effects
+-----------------------------------------
+SAFE TO EDIT:
+- colors, backgrounds, borders
+- artifact sizes and spacing
+- glow effects and animations
+- text labels and styling
+-----------------------------------------
+USE CAUTION:
+- opacity (controls locked vs unlocked visibility)
+- transform/scale (can affect layout spacing)
+- animation timing (too fast = distracting)
+-----------------------------------------
+DO NOT MODIFY:
+- .artifactSlot.unlocked (linked to JS unlock logic)
+- element IDs (#artifactDrop, #artifactVault, etc.)
+- display behavior (used for showing/hiding rewards)
+
+Changing these may break:
+- artifact unlocking visuals
+- vault persistence feedback
+-----------------------------------------
+TIP:
+This is your reward system.
+If it doesn’t feel rewarding, engagement drops.
+========================================= */
+    
+/* Reward popup — appears after boss victory */
+#artifactDrop {margin-top: 20px; padding: 14px; /* 🔥 heated surface */ background: radial-gradient(
+circle at center, rgba(120,40,10,0.6), rgba(20,8,4,0.95)); border-radius: 10px; border: 1px solid rgba(251,191,36,0.25); box-shadow: 0 0 15px rgba(249,115,22,0.3), inset 0 0 25px rgba(120,40,10,0.4);text-align: center;}
+    
+/* Artifact image in popup */
+#artifactImage { width: 96px; margin-bottom: 8px; }
+#artifactDrop img { filter: drop-shadow(0 0 12px rgba(251,191,36,.9)) drop-shadow(0 0 25px rgba(249,115,22,.6)); }
+
+/* Persistent artifact collection display (top panel) */
+#artifactVault{margin-top: -6px; width: 220px; padding: 18px; border-radius: 12px;
+    /* 🔥 molten vault look */
+    background: radial-gradient(circle at top, rgba(180,60,20,0.6), rgba(40,15,5,0.95));
+    border: 1px solid rgba(251,191,36,0.25);
+    box-shadow: 0 0 15px rgba(249,115,22,0.25), inset 0 10px 30px rgba(251,191,36,0.15),inset 0 -10px 20px rgba(0,0,0,0.6);
+    text-align: center;
+}
+#artifactVault h3{ color: #fbbf24; text-shadow: 0 0 10px rgba(251,191,36,0.6);}
+
+/* Layout container for artifact slots */
+.vaultRow { display: flex; justify-content: center; align-items:flex-end; gap: 15px; flex-wrap:wrap;}
+
+/* Individual artifact slot (default = locked state) */    
+.artifactSlot { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 70px; text-align:center; opacity: .25; transition: all .4s ease;}
+
+/* Locked artifact image (grayscale effect) */    
+.artifactSlot img { width: 45px; margin-bottom:4px;filter: brightness(0.3) contrast(0.8);; transition: all .4s ease; }
+
+/* Unlocked artifact — triggered by JS (DO NOT REMOVE) */    
+.artifactSlot span { display: block; font-size: 13px; color: rgba(251,191,36,0.35); margin-top: 8px; line-height: 1.2; }
+
+/* Glow + animation for unlocked artifacts */
+.artifactSlot.unlocked { opacity: 1; transform: scale(1.05); }
+.artifactSlot.unlocked img {filter: drop-shadow(0 0 14px rgba(251,191,36,0.9))drop-shadow(0 0 25px rgba(249,115,22,0.6)); animation: relicPulse 2.5s ease-in-out infinite; }
+.artifactSlot.unlocked span { color: #fef3c7; font-weight: 600; text-shadow: 0 0 6px rgba(251,191,36,0.4); }
+
+/* =========================================
+   7. BOSS EFFECTS & ATMOSPHERE — SAFE TO CUSTOMIZE
+=========================================
+Controls visual intensity and immersion:
+- boss animations (floating, shaking)
+- boss-specific glow effects
+- environmental effects (torches)
+-----------------------------------------
+SAFE TO EDIT:
+- glow colors (match your theme)
+- animation intensity and timing
+- boss icon size
+- torch placement and styling
+-----------------------------------------
+USE CAUTION:
+- removing animations (reduces feedback and immersion)
+- extreme sizing (can break layout)
+- opacity/filter changes (affects visibility)
+-----------------------------------------
+DO NOT REMOVE:
+- .boss-shake (triggered during boss hits)
+- .bossIcon (used for boss rendering)
+- .torch (environmental effect tied to game start)
+
+Removing these will:
+- eliminate combat feedback
+- reduce visual clarity during bosses
+-----------------------------------------
+TIP:
+This section controls how "intense" the game feels.
+Subtle changes here dramatically affect experience.
+========================================= */
+    
+/* Hit animation — triggered when boss takes damage */
+.boss-shake {animation: bossShake 0.5s cubic-bezier(.36,.07,.19,.97) both;}
+
+/* Boss image display — includes floating animation */
+.bossIcon { width: 96px; height: auto; display: block; margin: 0 auto 12px auto; animation: bossFloat 4s ease-in-out infinite; }
+
+/* Boss-specific glow effects (safe to recolor per theme, change name before glow to match your boss name) */
+.tyrantGlow { filter: drop-shadow(0 0 14px rgba(96,165,250,.8)); }
+.underwriterGlow { filter: drop-shadow(0 0 14px rgba(242,125,9,.8)); }
+.finalBoss { filter: drop-shadow(0 0 18px rgba(239,68,68,.9)); }
+
+/* Ambient torch effect — decorative, shown during gameplay */
+.torch { position: absolute; width: 70px; top: 30px; z-index: 10; animation: torchFlicker 3s infinite alternate; pointer-events: none; opacity: .95; filter: drop-shadow(0 0 12px rgba(255,180,80,.7)); display:none; }
+
+/* Torch positioning (left/right sides of screen) */
+.left-torch { left: 18px; }
+.right-torch { right: 18px; transform: scaleX(-1); }
+/* =========================================
+   8. FULLSCREEN SCREENS & TRANSITIONS — SAFE TO CUSTOMIZE
+=========================================
+Controls full-screen UI layers:
+- start screen (game entry)
+- hallway transition overlay (between rooms)
+- transition text display
+-----------------------------------------
+SAFE TO EDIT:
+- background images (start screen, hallway scenes)
+- text styling and layout
+- overlay colors and opacity
+- animation timing and effects
+-----------------------------------------
+USE CAUTION:
+- position: fixed (required for full-screen coverage)
+- z-index layering (controls what appears on top)
+- opacity / pointer-events (controls visibility + interaction)
+-----------------------------------------
+DO NOT REMOVE:
+- #startScreen (entry point to game)
+- #hallwayTransition + .active (transition system)
+- #hallwayText (text container)
+
+Removing these will break:
+- game start flow
+- transition animations
+- progression continuity
+-----------------------------------------
+TIP:
+This section controls immersion and pacing between actions.
+Good transitions = smoother experience.
+========================================= */
+
+/* Fullscreen start screen — shown before game begins */    
+#startScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url('start screen image.png'); background-size: cover; background-position: center; background-repeat: no-repeat; z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+/* Transition overlay — appears between rooms (controlled by JS) */
+#hallwayTransition { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7)), url('hallway1.png'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; text-align: center; color: white; font-size: 26px; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 1.2s ease; animation: hallwayZoom 3.2s ease-out forwards; }
+
+/* Activates transition visibility (DO NOT REMOVE) */    
+#hallwayTransition.active { opacity: 1; }
+
+/* Text container for transition messages */
+#hallwayText { max-width: 600px; background: rgba(0,0,0,0.55); padding: 30px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 0 25px rgba(0,0,0,0.6); }
+
+/* =========================================
+   9. ANIMATION SYSTEM — SAFE TO CUSTOMIZE (WITH CARE)
+=========================================
+Defines all animation keyframes used throughout the game:
+- environmental effects (torch flicker)
+- combat feedback (hit shake, boss shake)
+- progression feedback (active pulse, victory glow)
+- character motion (boss float, wizard float)
+- reward effects (relic pulse)
+- UI transitions (fade in/out)
+-----------------------------------------
+SAFE TO EDIT:
+- animation intensity (scale, movement distance)
+- timing (duration in CSS usage, not here)
+- visual effects (glow, brightness, shadows)
+-----------------------------------------
+USE CAUTION:
+- transform values (affects layout positioning)
+- extreme motion (can feel distracting or chaotic)
+- removing animations (reduces feedback clarity)
+-----------------------------------------
+DO NOT REMOVE:
+- keyframe names (used across CSS and JS)
+  e.g. torchFlicker, bossShake, activePulse, etc.
+
+Renaming or deleting these will break:
+- visual feedback
+- boss effects
+- UI transitions
+-----------------------------------------
+TIP:
+Animations should reinforce feedback, not distract.
+Subtle > excessive.
+========================================= */
+
+/* Ambient lighting effect (environmental immersion) */    
+@keyframes torchFlicker { 0%, 100% { filter: brightness(1); } 25% { filter: brightness(1.05); } 50% { filter: brightness(0.97); } 75% { filter: brightness(1.04); } }
+
+/* Damage feedback (quick impact effect) */    
+@keyframes hitshake { 0% { transform: translateX(0); } 25% { transform: translateX(-8px); } 50% { transform: translateX(8px); } 75% { transform: translateX(-6px); } 100% { transform: translateX(0); } }
+
+/* Boss-specific hit feedback (stronger shake) */    
+@keyframes bossShake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+
+/* Current room highlight animation (maze tracker) */   
+@keyframes activePulse { 0% { box-shadow: 0 0 6px rgba(212,175,55,0.7); transform: scale(1.1); } 100% { box-shadow:0 0 10px rgba(212,175,55,0.6), 0 0 20px rgba(212,175,55,0.5),0 0 40px rgba(212,175,55,0.3); ; transform: scale(1.2); } }
+
+/* Victory text animation (end screen emphasis) */    
+@keyframes victoryGlow { 0%, 100% { transform: scale(1); text-shadow: 0 0 10px gold; } 50% { transform: scale(1.1); text-shadow: 0 0 25px gold, 0 0 40px orange; } }
+
+/* Idle boss movement (subtle hovering effect) */    
+@keyframes bossFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+/* Artifact glow animation (reward emphasis) */    
+@keyframes relicPulse { 0%, 100% { filter: drop-shadow(0 0 8px #38bdf8); } 50% { filter: drop-shadow(0 0 18px #60a5fa); } }
+
+/* Temporary feedback text fade-out */   
+@keyframes fadeOut { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
+
+/* Wizard idle animation (subtle movement) */    
+@keyframes wizardFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-5px); }}
+
+/* General UI entrance animation */    
+@keyframes fadeIn {from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* General a pulse animation for relics */   
+@keyframes relicPulse {0%,100% {transform: scale(1.05); filter: drop-shadow(0 0 10px rgba(251,191,36,0.8)) drop-shadow(0 0 20px rgba(249,115,22,0.6));}
+    50% {transform: scale(1.1); filter:drop-shadow(0 0 16px rgba(251,191,36,1)) drop-shadow(0 0 30px rgba(249,115,22,0.9));}}
+   
+/* =========================================
+   10. PANEL LAYOUT SYSTEM — SAFE TO CUSTOMIZE (WITH LIMITS)
+=========================================
+
+Controls the structural layout of the game UI:
+
+- top panel (title, maze tracker, artifact vault)
+- main panel (wizard + game box)
+- spacing, alignment, and sizing
+
+-----------------------------------------
+SAFE TO EDIT:
+- spacing (gap, margin, padding)
+- colors, borders, shadows
+- font sizes and styling
+- max-width values (to adjust scale)
+
+-----------------------------------------
+USE CAUTION:
+- flexbox settings (display, flex, align-items)
+- width / max-width relationships
+
+-----------------------------------------
+DO NOT MODIFY:
+- element IDs (#gameShell, #gameBox, #wizardBox, etc.)
+- core layout structure (flex directions and hierarchy)
+
+Breaking structure may cause:
+- overlapping elements
+- misaligned panels
+- mobile layout issues
+
+-----------------------------------------
+TIP:
+If layout breaks, check:
+- flex direction
+- width vs max-width conflicts
+- container nesting
+
+This controls layout — not game logic.
+========================================= */
+    
+/* Maze Tracker & Artifact Boxes */
+/* Top panel: stacks title, maze tracker, and artifact vault */
+.top-panel{
+    display:flex;
+    flex-direction:column;   /* STACK */
+    align-items:center;      /* CENTER */
+    gap:8px;
+    width:100%;
+    max-width:700px;         /* SMALLER footprint */
+    margin:0 auto 10px auto;
+}
+   
+/* TITLE ABOVE MAZE */
+.top-title{
+    font-size:22px;
+    font-weight:bold;
+    color:#e5e7eb;
+    text-align:center;
+    margin-bottom:6px;
+    text-shadow:0 0 10px rgba(255,255,255,0.15);
+}
+   
+#mazeTrackContainer{
+    width:100%;
+    max-width:600px;
+    padding:8px 12px;
+}
+
+#artifactVault{
+    width:100%;
+    max-width:420px;
+    padding:10px 14px;
+}
+
+/* Main Game Row */
+/* Main horizontal layout: wizard + game area */
+.main-panel{
+    display:flex;
+    gap:20px;
+    justify-content:center;
+    width:100%;
+    align-items: flex-start;
+}
+   
+/* Game Shell Wrapper*/
+/* Core game container — controls overall layout and spacing */
+#gameShell{
+    display:flex;
+    gap:20px;
+    background: linear-gradient(180deg,rgba(30,10,5,0.95), rgba(10,5,2,0.98));
+    padding:20px;
+    border-radius:16px;
+    border:1px solid rgba(251,191,36,0.15);
+    box-shadow: 0 0 25px rgba(0,0,0,0.8), inset 0 0 40px rgba(120,40,10,0.25);
+    max-width:900px;
+    width:100%;
+    margin:0 auto;
+}
+   
+/* Wizard Box */
+/* Wizard display panel — fixed width, do not remove flex settings */
+#wizardBox{
+    width:160px;
+    min-width:160px;
+    min-height:200px;
+    background: linear-gradient(180deg,rgba(40,15,5,0.95),rgba(10,5,2,0.98));
+    border-radius:12px;
+    padding:10px;
+    display:flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items:center;
+    gap:6px;
+    border:1px solid rgba(249,115,22,0.2);
+    box-shadow: inset 0 0 25px rgba(120,40,10,0.3);
+}
+
+/* Wizard Name */
+#wizardName {
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #f97316; 
+    margin-top: 4px;
+    margin-bottom: 6px;
+    opacity: 0.85;
+    text-align: center;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(147, 197, 253, 0.2);
+    padding-bottom: 2px;
+
+    /* subtle glow */
+    text-shadow: 0 0 6px rgba(147, 197, 253, 0.6);
+}
+
+/* Wizard Image */
+/* Wizard visual + floating animation (safe to replace image or effects) */
+#wizardImage{
+    width:115px;
+    filter:
+        drop-shadow(0 0 12px rgba(249,115,22,.6))
+        drop-shadow(0 0 20px rgba(251,191,36,.5));
+    animation: wizardFloat 4s ease-in-out infinite, torchFlicker 5s infinite;
+}
+
+/* Game Box adjustment */
+/* Main gameplay area — expands to fill available space */
+#gameBox{
+    flex:1;
+    min-width:0;
+    max-width:720px;
+    width:100%;
+    padding:18px 20px;   /* slightly tighter */
+} 
+    
+/* =========================================
+   11. BOSS MODE (UI STATE OVERRIDES) — DO NOT MODIFY STRUCTURE
+=========================================
+Applies layout changes during boss encounters.
+Triggered by adding the "boss-mode" class via JavaScript.
+Effects:
+- hides wizard panel
+- centers game content
+- adjusts layout for focused boss interaction
+-----------------------------------------
+SAFE TO EDIT:
+- spacing (margin, alignment)
+- sizing (max-width adjustments)
+- visual styling
+-----------------------------------------
+DO NOT MODIFY:
+- .boss-mode selector
+- element targets (#wizardBox, #gameBox, #gameShell)
+
+Removing or changing these will break:
+- boss screen layout
+- UI transitions into boss mode
+-----------------------------------------
+TIP:
+Boss mode removes distractions and increases focus.
+Keep layout clean and centered.
+========================================= */
+
+/* Center layout when wizard is removed */
+.boss-mode #wizardBox{
+    display:none;
+}
+
+/* Center and slightly constrain game area for boss mode */
+.boss-mode #gameBox{
+    max-width:700px;
+    margin:0 auto;
+}
+
+/* Center layout when wizard is removed */
+.boss-mode #gameShell{
+    justify-content:center;
+}
+
+/* =========================================
+   12. RESPONSIVE DESIGN — MOBILE ADJUSTMENTS
+=========================================
+
+Applies layout changes for smaller screens (≤ 600px).
+
+Ensures:
+- maze tracker stays visible
+- game content fits without overflow
+- answer buttons stack vertically
+
+-----------------------------------------
+SAFE TO EDIT:
+- sizes (maze-box, scaling)
+- button layout (flex behavior)
+- scale amount for gameBox
+
+-----------------------------------------
+USE CAUTION:
+- removing transform scaling may cause overflow
+- changing button flex may break readability
+
+-----------------------------------------
+DO NOT REMOVE:
+This section is required for mobile usability.
+
+Without it:
+- layout will overflow screen
+- buttons may be cut off
+- UI becomes hard to use on phones
+
+-----------------------------------------
+TIP:
+Test changes on both:
+- desktop (full width)
+- mobile (narrow screen)
+
+This controls responsiveness, not game logic.
+========================================= */
+/* Base mobile rules */
+@media (max-width: 900px){
+#gameShell {padding: 8px;gap: 10px;}
+#question {font-size: 1.2rem; line-height: 1.3;}
+.artifactSlot img {width: 35px;}
+}
+   
+/* Portrait (stacked, bigger wizard) */
+@media (max-width: 600px) and (orientation: portrait){
+.main-panel {flex-direction: column; align-items: center;}
+#wizardBox{width: 100%; max-width: 280px;margin-bottom: 12px;}
+#wizardImage {width: 100px; max-width: 100%;}
+}
+   
+/* Landscape (side-by-side, compact wizard) */   
+@media (max-width: 900px) and (orientation: landscape){
+.main-panel{flex-direction: row;}
+#wizardBox{max-width: 180px;}
+#wizardImage{width: 120px; height: 120px}
+}
+  /* Fullscreen button positioning */
+  .fullscreenBtn {top: 5px;left: 5px;padding: 4px 8px;font-size: 10px;}}
+   
+</style>
+</head>
+
+<!-- =========================================
+HTML STRUCTURE — GAME UI FRAMEWORK
+=========================================
+
+This section defines the full layout of the game.
+
+It includes:
+- start screen (player entry)
+- accessibility elements (screen reader announcements)
+- transition overlays (hallway scenes)
+- top panel (progress + artifacts)
+- main panel (wizard + gameplay)
+- dynamic content containers (questions, answers, feedback)
+
+-----------------------------------------
+SAFE TO EDIT (CUSTOMIZATION):
+- text (titles, labels, instructions)
+- images (wizard, artifacts, backgrounds)
+- styling (colors, fonts, layout tweaks)
+- artifact names and visuals
+
+-----------------------------------------
+DO NOT MODIFY (STRUCTURE/IDS):
+The following IDs are REQUIRED by JavaScript:
+
+- usernameInput
+- gameBox
+- question
+- answers
+- message
+- mazeTrack
+- artifactVault / vault items
+- artifactDrop / artifactImage / artifactTitle / artifactText
+- hallwayTransition / hallwayText
+- srAnnouncements
+
+Renaming or removing these will break:
+- question loading
+- answer selection
+- progression tracking
+- artifact system
+- accessibility features
+
+-----------------------------------------
+NOTES:
+- This layout is tightly connected to the game engine
+- Most issues come from changing IDs, not styling
+
+Edit appearance freely.
+Respect structure strictly.
+
+========================================= -->
+<body class="foundry">
+<!-- Screen reader announcements (accessibility — do not remove) -->    
+  <div id="srAnnouncements"
+     aria-live="assertive"
+     aria-atomic="true"
+     style="position:absolute; left:-9999px; height:1px; width:1px; overflow:hidden;">
+</div>
+<!-- Transition overlay between rooms (safe to style, keep IDs) -->    
+<div id="hallwayTransition">
+<div id="hallwayText"></div>
+</div>
+<!-- Start screen / player entry (safe to redesign completely) -->
+<div id="startScreen">
+    <h1 style="color:#fbbf24; text-shadow:0 0 30px #f97316; font-size:60px; margin-bottom:10px;">
+        THE MICROECONOMICS FOUNDRY </h1>
+    <h2 style="color:#f97316; text-shadow:0 0 20px #dc2626; font-size:36px; margin-bottom:40px;">
+        Where Systems Are Forged </h2>
+    <p style="color:#fef3c7; letter-spacing:2px; margin-bottom:30px; font-style:italic;">
+        State your designation </p>
+    <input type="text" id="usernameInput"
+        placeholder="Enter Name..."
+        style="padding:15px; border-radius:8px; border:1px solid rgba(251,191,36,0.3);
+        background:#1a0f0a; color:#fef3c7; font-size:20px; margin-bottom:20px;
+        text-align:center; outline:none; width:300px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.7);">
+    <button onclick="startGame()"
+        style="background:#f97316; color:#000; font-weight:bold; padding:15px 50px;
+        font-size:20px; cursor:pointer; border-radius:8px; border:none;
+        box-shadow:0 0 20px rgba(251,191,36,0.5);">
+        ENTER THE FOUNDRY
+    </button>
+</div>
+<div class="dungeon-container">
+    <button class="fullscreenBtn" onclick="goFullscreen()">FULLSCREEN</button>
+    <!-- TOP PANEL -CHANGE NAME IN TITLE -->
+    <!-- Top panel: progress track + artifact vault -->
+    <div class="top-panel">
+       <div class="top-title">The Foundry</div>
+        <div id="mazeTrackContainer">
+            <div id="mazeTrack"></div>
+        </div>
+        <!-- Artifact slots (IDs must match unlock system in JS - CHANGE NAMES) -->
+        <div id="artifactVault">
+            <h3>Forged Artifacts</h3>
+            <div class="vaultRow">
+                <div id="vaultHeart" class="artifactSlot">
+                    <img src="heart.png">
+                    <span>Core of Margins</span>
+                </div>
+                <div id="vaultCore" class="artifactSlot">
+                    <img src="core.png">
+                    <span>Engine of Output</span>
+                </div>
+                <div id="vaultCrown" class="artifactSlot">
+                    <img src="crown.png">
+                    <span>Crown of Control</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- MAIN PANEL -->
+    <!-- Main game area: wizard + question interface -->
+    <div class="main-panel">
+        <!-- WIZARD - CAN CHANGE WIZARD NAME-->
+      <div id="gameShell">
+       <div id="wizardBox">
+            <div id="wizardName">The Forgemaster</div>
+            <img src="wizard.png" id="wizardImage">
+        </div>
+        <!-- GAME -->
+        <!-- Dynamic question + answer rendering (DO NOT rename IDs) -->
+        <div id="gameBox">
+            <div id="autosave">💾 System Stabilized</div>
+            <p id="areaDisplay" class="area-title"></p>
+            <div id="progressBar">
+                <div id="progressFill"></div>
+            </div>
+            <div id="streakDisplay"></div>
+            <p id="bossMessage"></p>
+            <div id="questionContainer">
+             <p id="question"></p>
+             <p id="message"></p>
+          <div id="formulaHint" class="hint-box"></div>
+           </div>
+            <div id="answers"></div>
+      <!-- Artifact reward popup (triggered after boss victories) -->
+            <div id="artifactDrop" style="display:none;">
+                <img id="artifactImage" width="96">
+                <h3 id="artifactTitle"></h3>
+                <p id="artifactText"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================
+   2. GAME ELEMENTS (CHANGE ELEMENTS WITH NEW GAME)
+========================================= -->
+ <script>
+
+// =============================================
+// AUDIO SYSTEM — OPTIONAL
+// =============================================
+// Replace audio files with your own if desired.
+// Safe to remove entirely if you don't want sound.
+// Does NOT affect game logic.
+     
+const bgMusic = new Audio('chamber.wav'); 
+bgMusic.loop = true; 
+bgMusic.volume = 0.1; 
+
+const bossMusic = new Audio('boss_battle_music.wav');
+bossMusic.loop = true;
+bossMusic.volume = 0.10;
+
+const finalBossMusic = new Audio('final_boss_music.wav');
+finalBossMusic.loop = true;
+finalBossMusic.volume = 0.12; // slightly louder, it's the final fight    
+    
+const sfxMilestone = new Audio('streak.wav');
+const sfxVictory = new Audio('victory.wav');
+const sfxBossHit = new Audio('boss_hit.wav');
+      sfxBossHit.volume = 0.5;
+const sfxCorrect = new Audio('ding.wav');
+      sfxCorrect.volume = 0.25;
+const sfxWrong = new Audio('mistake.wav');
+      sfxWrong.volume = 0.4;
+    
+const hallwayImages = [
+    "hallway1.png",
+    "hallway2.png",
+    "hallway3.png"
+];
+  
+function goFullscreen(){
+let el = document.documentElement;
+
+// Check if we are ALREADY in fullscreen
+let isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+
+if (!isFullscreen) {
+        // ENTER Fullscreen
+        if (el.requestFullscreen) {
+            el.requestFullscreen();
+        } else if (el.webkitRequestFullscreen) {
+            el.webkitRequestFullscreen();
+        } else if (el.msRequestFullscreen) {
+            el.msRequestFullscreen();
+        }
+    } else {
+        // EXIT Fullscreen (Crucial for iOS to reset the state)
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+    }
+}
+    
+// =============================================
+// 1. Initial UI State: Hide game until startGame runs
+// =============================================
+document.getElementById("gameBox").style.display = "none";
+document.querySelectorAll(".torch").forEach(t => t.style.display = "none");
+
+// =============================================
+// 2. Global Variables (Declared only ONCE)
+// CORE GAME STATE — DO NOT MODIFY STRUCTURE
+// =============================================
+// These variables control:
+// - progression
+// - scoring
+// - adaptive difficulty
+//
+// You may RESET values (e.g., starting room),
+// but DO NOT rename or delete variables.
+     
+let totalAttempts = 0;
+let bossHealth = 3; 
+let bossPool = [];
+let correctAnswers = 0; 
+let maxStreak = 0; 
+let username = "";
+let streak = 0; 
+let startTime; // Will be set in startGame()
+let room = localStorage.getItem("gauntletRoom") ? parseInt(localStorage.getItem("gauntletRoom")) : 1;
+let currentQuestion = null;
+let detourActive = false;
+let detourReturnRoom = null;
+let conceptMemory = {};
+let tagHistory = [];
+let lastTypes = [];
+let easyCycle = 0 ;
+let mediumCycle = 0;
+let usedQuestions = {
+    easy: [],
+    medium: [],
+    hard: [],
+    easyBoss: [],
+    mediumBoss: [],
+    finalBoss: [],
+};
+let questionHistory = {
+    easy: [],
+    medium: [],
+    hard: [],
+    calculation: [],
+    easyBoss: [],
+    mediumBoss: [],
+    finalBoss: [],
+};
+
+// =============================================
+// ADAPTIVE ENGINE — DO NOT TOUCH
+// =============================================
+// This system controls:
+//
+// 1. Weakness tracking (conceptMemory)
+// 2. Question weighting (weightedPick)
+// 3. Topic rotation (tagHistory)
+// 4. Anti-repetition logic
+//
+// If you modify this without understanding it,
+// you will break:
+// - difficulty scaling
+// - learning reinforcement
+// - question balance
+//
+// Only advanced users should modify this.
+
+function weightedPick(pool){
+    let totalWeight = 0;
+
+    let weights = pool.map(q => {
+        let w = 1;
+
+        // Weakness boost
+        if(q.tag && conceptMemory[q.tag]){
+            w += Math.min(conceptMemory[q.tag], 2);
+        }
+
+        // Coverage boost
+        let recentCount = tagHistory.filter(t => t === q.tag).length;
+        if(recentCount === 0){
+            w += 1;
+        }
+
+        // Hard cap so one question does not dominate
+        w = Math.min(w, 3);
+
+        totalWeight += w;
+        return { q, w };
+    });
+
+    let r = Math.random() * totalWeight;
+
+    for(let item of weights){
+        r -= item.w;
+        if(r <= 0){
+            return item.q;
+        }
+    }
+
+    // Safety fallback
+    return weights[weights.length - 1].q;
+}
+
+function getAdaptiveQuestion(poolName, targetTag = null){
+    let pool = questionBanks[poolName];
+
+    // --- 🎯 TARGET SPECIFIC TAG IF PROVIDED ---
+    if(targetTag){
+        let filtered = pool.filter(q => q.tag === targetTag);
+
+        if(filtered.length >= Math.max(6, pool.length * 0.25)){
+            pool = filtered;
+        }
+    }
+
+    let recent = questionHistory[poolName].slice(-10);
+
+    // First pass — strict
+    let available = pool.filter(q => !recent.includes(q.id));
+
+    // Second pass — relax slightly
+    if(available.length < 3){
+        available = pool.filter(q => !questionHistory[poolName].slice(-5).includes(q.id));
+    }
+
+    // Final fallback — still avoid immediate repeats
+    if(available.length === 0){
+        available = pool.filter(q => !questionHistory[poolName].slice(-3).includes(q.id));
+    }
+
+    // Absolute fallback
+    if(available.length === 0){
+        available = pool;
+    }
+
+    // =========================
+    // TAG ANTI-REPEAT FILTER
+    // =========================
+    let lastTags = tagHistory.slice(-2);
+
+    let tagFiltered = available.filter(q => {
+        return !(lastTags.length === 2 && lastTags.every(t => t === q.tag));
+    });
+
+    // Only apply if it doesn't collapse the pool
+    if(tagFiltered.length >= 3){
+        available = tagFiltered;
+    }
+
+    console.log("AVAILABLE:", available.map(q => q.id));
+
+    let picked = weightedPick(available);
+
+    console.log("PICKED:", picked.id);
+    console.log("RECENT:", questionHistory[poolName]);
+
+    // Track history
+    questionHistory[poolName].push(picked.id);
+    if(questionHistory[poolName].length > 15){
+        questionHistory[poolName].shift();
+    }
+
+    // Track tag exposure
+    if(picked.tag){
+        tagHistory.push(picked.tag);
+        if(tagHistory.length > 10){
+            tagHistory.shift();
+        }
+    }
+
+    return picked;
+}
+
+// =============================================
+// TIMING CONFIGURATION — SAFE TO TUNE
+// =============================================
+// Controls delay timing (in milliseconds) for game events.
+//
+// - normal  → standard transitions between questions
+// - boss    → faster pacing during boss encounters
+// - detour  → slightly longer for concept recovery moments
+//
+// SAFE TO EDIT:
+// - values (increase for slower pacing, decrease for faster)
+//
+// DO NOT REMOVE:
+// - keys (normal, boss, detour) — used elsewhere in game
+//
+// Changing timing affects:
+// - game speed
+// - perceived difficulty
+// - player experience (pressure vs. reflection)
+//
+// This is pacing control, not logic.
+// =============================================
+const TIMING = {
+    normal: 1200,
+    boss: 1000,
+    detour: 1400
+};
+
+// =============================================
+// BOSSES & REWARDS — SAFE TO CUSTOMIZE
+// =============================================
+// You can change:
+// - boss names
+// - images
+// - artifact rewards
+// - lore text
+//
+// Do NOT remove bossHealth logic.
+     
+const artifacts = {
+heart:{
+    img:"heart.png",
+    title:"The Core of Margins",
+    text:"The structure holds when marginal cost meets its limit. Push beyond it, and the system fractures."
+    },
+
+core:{
+    img:"core.png",
+    title:"The Engine of Output",
+    text:"Production responds to pressure. When conditions shift, output follows—whether you anticipate it or not."
+    },
+
+crown:{
+    img:"crown.png",
+    title:"The Crown of Control",
+    text:"Power lies in control over response. Price moves first. Quantity answers."
+    }
+};
+  
+// =============================================
+// USERNAME RESTORE — SAFE TO MODIFY
+// =============================================
+// Loads previously saved username from localStorage
+// and pre-fills the input field.
+//
+// SAFE TO EDIT:
+// - key name ("gauntletUser")
+// - behavior (e.g., remove if you want fresh input every time)
+//
+// WARNING:
+// Requires input element with id="usernameInput"
+//
+// Removing this will NOT break the game,
+// but will remove convenience for returning users.
+// =============================================
+const savedUser = localStorage.getItem("gauntletUser");
+if(savedUser){
+    document.getElementById("usernameInput").value = savedUser;
+}
+
+// =============================================
+// GAME INITIALIZATION — PARTIAL CUSTOMIZATION
+// =============================================
+// Runs when player starts a new game.
+//
+// Handles:
+// - username setup
+// - full game state reset
+// - UI reveal (game, vault, torches)
+// - restoring unlocked artifacts
+// - starting music and timer
+//
+// ---------------------------------------------
+// SAFE TO EDIT:
+// - alert message text
+// - vault item IDs (Heart, Core, Crown)
+// - visual elements shown/hidden
+//
+// DO NOT MODIFY:
+// - state reset variables (room, streak, etc.)
+// - questionHistory structure
+// - loadQuestion() call
+//
+// Breaking this WILL cause:
+// - corrupted runs
+// - incorrect scoring
+// - progression bugs
+// =============================================
+function startGame() {
+    let inputName = document.getElementById("usernameInput").value.trim();
+    if (!inputName) {
+        alert("A name is required to bind your soul to the archives.");
+        return;
+    }
+    
+    username = inputName;
+    localStorage.setItem("gauntletUser", username);
+
+// =============================================
+// RESET CORE GAME STATE — DO NOT MODIFY STRUCTURE
+// =============================================
+// Resets all progression, scoring, and adaptive tracking
+    room = 1;
+    bossHealth = 3;
+    streak = 0;
+    maxStreak = 0;
+    totalAttempts = 0;
+    correctAnswers = 0;
+    bossPool = [];
+    calcBag = [];
+    localStorage.removeItem("gauntletRoom");
+    localStorage.removeItem("vaultHeart");
+    localStorage.removeItem("vaultCore");
+    localStorage.removeItem("vaultCrown");
+
+    questionHistory = {
+    easy: [], medium: [], hard: [], calculation: [],
+    easyBoss: [], mediumBoss: [], finalBoss: []
+    };
+    
+// =============================================
+// UI INITIALIZATION — SAFE TO CUSTOMIZE
+// =============================================
+// Shows main game elements and restores vault visuals
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("gameBox").style.display = "block";
+    document.getElementById("artifactVault").style.display = "block";
+    document.querySelectorAll(".torch").forEach(t => t.style.display = "block");
+
+   // =============================================
+   // VAULT RESTORE SYSTEM — SAFE WITH MATCHING IDS
+   // =============================================
+   // Restores previously unlocked artifacts from storage.
+   //
+   // IMPORTANT:
+   // IDs must match exactly:
+   // - localStorage key ("vaultCore")
+   // - HTML element id ("vaultCore")
+   //
+   // Mismatches = artifacts won't display
+   // =============================================    
+        if(localStorage.getItem("vaultHeart")){
+        document.getElementById("vaultHeart").classList.add("unlocked");
+        }
+
+        if(localStorage.getItem("vaultCore")){
+        document.getElementById("vaultCore").classList.add("unlocked");
+        }    
+
+        if(localStorage.getItem("vaultCrown")){
+        document.getElementById("vaultCrown").classList.add("unlocked");
+        }
+  
+// Start game loop: music + timer + first question
+    bgMusic.play().catch(e => console.log("Audio started"));
+    startTime = Date.now(); 
+    loadQuestion();
+}
+
+// =============================================
+// INPUT SHORTCUT — SAFE TO KEEP OR REMOVE
+// =============================================
+// Allows pressing Enter to start the game
+// Improves usability, does not affect logic
+// =============================================
+document.getElementById("usernameInput").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        startGame();
+    }
+});
+
+// =============================================
+// AREA NAMING SYSTEM — SAFE TO CUSTOMIZE (WITH RULES)
+// =============================================
+// Maps room numbers → area names (display only)
+//
+// SAFE TO EDIT:
+// - area names (theme, tone, subject)
+// - text flavor
+//
+// DO NOT MODIFY:
+// - room number structure (<=9, ===10, etc.)
+// unless you also update:
+//   - boss rooms (10, 20, 30)
+//   - progression logic elsewhere
+//
+// This affects UI only, not game logic.
+// =============================================
+function getAreaName(r) {
+    if (r <= 9) return "The Smelting Passage";
+    if (r === 10) return "The Crucible of Cost";
+    if (r <= 19) return "The Furnace of Output";
+    if (r === 20) return "The Engine Core";
+    if (r <= 25) return "The Pressure Chamber";
+    if (r <= 29) return "The Final Tempering";
+    return "The Throne of Control";
+};
+
+// =============================================
+// WIZARD DIALOGUE SYSTEM — SAFE TO CUSTOMIZE
+// =============================================
+// Controls all in-game messaging tone:
+//
+// - wizardFeedback → correct/incorrect responses
+// - wizardLines → prompts based on question type
+//
+// SAFE TO EDIT:
+// - all text (tone, theme, personality)
+// - add/remove lines for variety
+//
+// DO NOT MODIFY:
+// - object structure (correct, wrong, definition, etc.)
+// - function calls that reference these keys
+//
+// Missing keys will cause undefined messages.
+//
+// This system controls immersion and feedback tone.
+// =============================================
+const wizardFeedback = {
+    correct: [
+        "The structure holds.",
+        "Pressure contained.",
+        "You stabilized it.",
+        "That will endure.",
+        "Acceptable. Continue."
+    ],
+    wrong: [
+        "It fractures.",
+        "You lost control.",
+        "Pressure misjudged.",
+        "The system rejects that.",
+        "Weak reasoning. Again."
+    ]
+};
+
+const wizardLines = {
+    definition: [
+        "Define the structure.",
+        "What holds this together?",
+        "State it precisely.",
+        "No ambiguity."
+    ],
+    interpretation: [
+        "What is the system doing?",
+        "Read the pressure.",
+        "What changes here?",
+        "Follow the response."
+    ],
+    trap: [
+        "This is where it breaks.",
+        "Pressure is deceptive here.",
+        "Most fail at this point.",
+        "Look again.",
+        "Do not assume.",
+        "One error collapses it."
+    ],
+    calculation: [
+        "Quantify it.",
+        "Show the numbers.",
+        "No guessing. Resolve it.",
+        "Precision determines outcome."
+    ],
+    default: [
+        "Decide.",
+        "Commit.",
+        "Proceed.",
+        "Answer."
+    ]
+};
+     
+// Returns a random prompt based on question type
+// Falls back to "default" if type not found
+function getWizardLine(type){
+    const pool = wizardLines[type] || wizardLines.default;
+    return pool[Math.floor(Math.random() * pool.length)];
+}
+
+// Returns random feedback (correct or wrong)
+// Used during answer responses and transitions     
+function getWizardFeedback(type){
+    const pool = wizardFeedback[type];
+    return pool[Math.floor(Math.random() * pool.length)];
+}
+
+// Updates on-screen message text
+// Requires element with id="message"     
+function wizardSpeak(text){
+    const msg = document.getElementById("message");
+    msg.innerText = text;
+}     
+    
+// =============================================
+// QUESTION BANKS — PRIMARY EDIT AREA
+// =============================================
+//
+// REQUIRED FORMAT:
+//
+// {
+//   id: UNIQUE NUMBER (DO NOT REUSE)
+//   q: "Question text",
+//   options: ["A","B","C","D"],
+//   a: INDEX OF CORRECT ANSWER (0–3),
+//   tag: "concept category",
+//   type: "definition | interpretation | calculation | trap",
+//   feedback: "Explanation shown after answer"
+// }
+//
+// RULES:
+// - IDs must be unique
+// - Always include 4 options
+// - Keep tags consistent (drives adaptive engine)
+// - Do NOT remove 'tag' or 'type'
+//
+// This is where instructors customize content.
+  
+const questionBanks = {
+easyBoss:[
+{ id:2000, q:"The Cost Forger speaks: 'To shape output efficiently, a firm must balance its inputs.' Which condition defines cost minimization for a given level of output?",options:["The firm uses equal amounts of each input","The marginal product per dollar is equal across inputs","Total cost must be zero","Input prices must be identical"],a:1,tag:"production",type:"definition",feedback:"Cost minimization occurs when the marginal product per dollar is equal across inputs (MP_L / w = MP_K / r)."},
+{ id:2001, q:"The Forger strikes the anvil. 'Test your balance.' A firm has MP_L = 24 and MP_K = 12. The wage is $6 and the rental rate of capital is $3. Is the firm minimizing cost?",options:["Yes, marginal product per dollar is equal","No, the firm should use more labor","No, the firm should use more capital","Not enough information"],a:0,tag:"production",type:"calculation",feedback:"MP_L / w = 24/6 = 4 and MP_K / r = 12/3 = 4. The ratios are equal, so cost is minimized."},
+{ id:2002, q:"The forge destabilizes. 'The balance is broken.' Now MP_L / w = 8 and MP_K / r = 4. What must the firm do to restore efficiency?",options:["Use less labor and more capital","Use more labor and less capital","Use equal amounts of both inputs","Reduce output"],a:1,tag:"production",type:"interpretation",feedback:"The firm should use more of the input with the higher marginal product per dollar (labor) until the ratios equalize."}
+],
+mediumBoss:[
+{ id:3000, q:"The Supply Engine hums: 'Output must be chosen precisely.' In a perfectly competitive market, what rule determines the profit-maximizing level of output?",options:["Produce where average total cost is minimized across output","Produce where marginal revenue equals marginal cost across output","Produce where price equals average total cost at equilibrium","Produce where total revenue is maximized across all units"],a:1,tag:"profit",type:"definition",feedback:"Profit maximization occurs where MR = MC. In perfect competition, MR = P."},
+{ id:3001, q:"The Engine flashes data. 'Evaluate the system.' A firm faces a market price of $10. At its current output, MC = $8 and AVC = $6. What should the firm do?",options:["Shut down because price does not exceed total cost","Continue operating and increase output toward equilibrium","Continue operating and reduce output below current level","Exit the market because profit is not guaranteed"],a:1,tag:"profit",type:"calculation",feedback:"MR > MC → increase output. P > AVC → continue operating."},
+{ id:3002, q:"The Engine overloads: 'Multiple conditions detected.' A firm now faces P = $7, MC = $9, AVC = $6, and ATC = $10. What is the best decision?",options:["Shut down because price is below average total cost","Continue operating while reducing output toward equilibrium","Increase output to reach marginal revenue equal to cost","Exit the market because losses are currently observed"],a:1,tag:"profit",type:"multi-step",feedback:"P > AVC → continue. MC > MR → reduce output. Losses do not imply shutdown."}
+],
+finalBoss:[
+{ id:4000, q:"The Market Tyrant rises: 'You think in parts. I demand the whole.' In a perfectly competitive market, what condition defines long-run equilibrium?",options:["Firms produce where marginal revenue equals marginal cost at all output levels","Price equals marginal cost ensuring efficient allocation of resources","Price equals average total cost with firms earning zero economic profit","Demand equals supply across all markets in the short run"],a:2,tag:"market",type:"definition",feedback:"Long-run equilibrium requires P = ATC (zero profit), not just MR = MC."},
+{ id:4001, q:"The Tyrant tightens his grip: 'Now follow the chain.' A market begins in long-run equilibrium. Demand increases. What is the correct sequence of events?",options:["Price rises as firms incur losses and exit reduces supply further","Price rises as firms earn profit and entry expands supply over time","Price falls as firms earn profit and entry reduces market demand","Price remains constant as firms adjust output without entry"],a:1,tag:"market",type:"multi-step",feedback:"Demand ↑ → price ↑ → profit → entry → supply ↑ → price falls."},
+{ id:4002, q:"The Tyrant delivers judgment: 'One final test.' In the new long-run equilibrium after demand increased, which statement is TRUE?",options:["Firms earn positive profit because demand remains elevated","Price equals marginal and average cost with higher total output","Price remains above cost as firms restrict entry into the market","Firms exit because increased competition lowers market price"],a:1,tag:"efficiency",type:"multi-step",feedback:"P = MC and P = ATC, with higher output due to more firms."}
+],
+easy:[
+{ id:1, q:"A production function shows the relationship between...",options:["Costs and profits","Inputs and output","Prices and demand","Revenue and cost"],a:1,tag:"production",type:"definition",feedback:"A production function maps inputs like labor and capital into output."},
+{ id:2, q:"Marginal product of labor measures...",options:["Total output produced","Output per worker","Additional output from one more worker","Cost per worker"],a:2,tag:"production",type:"definition",feedback:"Marginal product captures the additional output from adding one more unit of labor."},
+{ id:3, q:"Diminishing marginal product occurs when...",options:["Total output falls","Additional workers produce less additional output","Costs increase","Prices fall"],a:1,tag:"production",type:"interpretation",feedback:"Each additional worker contributes less to output than the previous one."},
+{ id:4, q:"An isoquant represents...",options:["Equal cost combinations","Equal output combinations of inputs","Equal profit levels","Equal revenue levels"],a:1,tag:"production",type:"definition",feedback:"Isoquants show all input combinations that produce the same level of output."},
+{ id:5, q:"If a firm doubles all inputs and output also doubles, this is...",options:["Increasing returns to scale","Decreasing returns to scale","Constant returns to scale","Diminishing returns"],a:2,tag:"production",type:"definition",feedback:"Constant returns to scale means output increases proportionally with inputs."},
+{ id:6, q:"Economic cost differs from accounting cost because it includes...",options:["Fixed costs only","Variable costs only","Opportunity costs","Sunk costs"],a:2,tag:"costs",type:"definition",feedback:"Economic costs include both explicit and implicit (opportunity) costs."},
+{ id:7, q:"Fixed costs are costs that...",options:["Change with output","Do not change with output","Only occur in the long run","Always increase"],a:1,tag:"costs",type:"definition",feedback:"Fixed costs remain constant regardless of output level."},
+{ id:8, q:"Variable costs are costs that...",options:["Never change","Change with output","Are always fixed","Only occur in the long run"],a:1,tag:"costs",type:"definition",feedback:"Variable costs increase as output increases."},
+{ id:9, q:"Marginal cost measures...",options:["Total cost","Cost per unit","Additional cost of producing one more unit","Average cost"],a:2,tag:"costs",type:"definition",feedback:"Marginal cost is the cost of producing one additional unit."},
+{ id:10, q:"A firm maximizes profit when...",options:["Total revenue is highest","Marginal revenue equals marginal cost","Costs are minimized","Output is maximized"],a:1,tag:"profit",type:"definition",feedback:"Profit is maximized where MR = MC."},
+{ id:11, q:"For a price-taking firm, marginal revenue equals...",options:["Total revenue","Price","Average cost","Marginal cost"],a:1,tag:"competition",type:"definition",feedback:"In perfect competition, firms take price as given, so MR = P."},
+{ id:12, q:"A price-taking firm's supply curve is its...",options:["Demand curve","Marginal cost curve above AVC","Average cost curve","Total cost curve"],a:1,tag:"competition",type:"definition",feedback:"The MC curve above AVC represents the firm's supply decision."},
+{ id:13, q:"Firms exist primarily because they...",options:["Eliminate all costs","Reduce transaction costs","Control prices","Increase wages"],a:1,tag:"profit",type:"definition",feedback:"Firms reduce transaction costs compared to market exchanges."},
+{ id:14, q:"If price is below average variable cost, a firm should...",options:["Increase output","Shut down in the short run","Raise prices","Enter the market"],a:1,tag:"profit",type:"interpretation",feedback:"If P < AVC, the firm cannot cover variable costs and should shut down."},
+{ id:15, q:"In a perfectly competitive market, price is determined by...",options:["Individual firms","Government regulation","Market supply and demand","Marginal cost"],a:2,tag:"market",type:"definition",feedback:"Market price is set where supply equals demand."},
+{ id:16, q:"If total product is increasing at a decreasing rate, marginal product is...",options:["Increasing","Constant","Diminishing but positive","Negative"],a:2,tag:"production",type:"interpretation",feedback:"Total product rising at a decreasing rate means marginal product is falling but still positive."},
+{ id:17, q:"When marginal product becomes negative, total product will...",options:["Increase faster","Remain constant","Begin to fall","Reach maximum profit"],a:2,tag:"production",type:"interpretation",feedback:"Negative marginal product means additional input reduces total output."},
+{ id:18, q:"An isoquant that is bowed inward reflects...",options:["Constant returns","Perfect substitutes","Diminishing marginal rate of technical substitution","Fixed proportions"],a:2,tag:"production",type:"definition",feedback:"Convex isoquants reflect diminishing MRTS between inputs."},
+{ id:19, q:"Input substitution occurs when a firm...",options:["Uses fewer inputs overall","Switches between inputs based on relative prices","Increases output","Changes technology"],a:1,tag:"production",type:"definition",feedback:"Firms substitute toward relatively cheaper inputs."},
+{ id:20, q:"Technological progress means...",options:["Higher costs","Less output","More output from the same inputs","Fewer workers"],a:2,tag:"production",type:"definition",feedback:"Technology improves productivity."},
+{ id:21, q:"Average total cost equals...",options:["TC/Q","MC/Q","FC/Q","VC/Q"],a:0,tag:"costs",type:"definition",feedback:"ATC is total cost divided by output."},
+{ id:22, q:"Average fixed cost will...",options:["Increase with output","Stay constant","Decrease as output increases","Become negative"],a:2,tag:"costs",type:"interpretation",feedback:"AFC falls as output rises."},
+{ id:23, q:"When marginal cost is below average total cost, ATC will...",options:["Increase","Decrease","Stay constant","Become zero"],a:1,tag:"costs",type:"interpretation",feedback:"MC pulls ATC down."},
+{ id:24, q:"When marginal cost equals average total cost, ATC is...",options:["Maximized","Minimized","Zero","Constant"],a:1,tag:"costs",type:"definition",feedback:"MC intersects ATC at its minimum."},
+{ id:25, q:"A firm’s profit equals...",options:["Revenue minus cost","Price times quantity","Cost minus revenue","Marginal cost minus marginal revenue"],a:0,tag:"profit",type:"definition",feedback:"Profit is TR - TC."},
+{ id:26, q:"If total revenue exceeds total cost, the firm earns...",options:["A loss","Zero profit","Positive economic profit","Negative revenue"],a:2,tag:"profit",type:"interpretation",feedback:"TR > TC implies profit."},
+{ id:27, q:"If total revenue equals total cost, the firm earns...",options:["Loss","Accounting profit only","Zero economic profit","Maximum profit"],a:2,tag:"profit",type:"definition",feedback:"All costs are covered."},
+{ id:28, q:"In perfect competition, firms are called price takers because...",options:["They set prices","They accept market price","They ignore demand","They control supply"],a:1,tag:"competition",type:"definition",feedback:"Firms cannot influence price."},
+{ id:29, q:"The demand curve faced by a perfectly competitive firm is...",options:["Downward sloping","Vertical","Perfectly elastic","Upward sloping"],a:2,tag:"competition",type:"definition",feedback:"Firm demand is perfectly elastic."},
+{ id:30, q:"If price rises for a price-taking firm, marginal revenue will...",options:["Fall","Stay the same","Rise","Become zero"],a:2,tag:"competition",type:"interpretation",feedback:"MR = P."},
+{ id:31, q:"Entry of new firms into a competitive market will...",options:["Raise prices","Reduce supply","Increase supply and lower price","Have no effect"],a:2,tag:"market",type:"definition",feedback:"Entry increases supply."},
+{ id:32, q:"Exit of firms from a competitive market will...",options:["Increase supply","Lower prices","Decrease supply and raise price","Eliminate demand"],a:2,tag:"market",type:"definition",feedback:"Exit reduces supply."},
+{ id:33, q:"In the long run, firms in perfect competition earn...",options:["Positive profit","Negative profit","Zero economic profit","Unlimited profit"],a:2,tag:"market",type:"definition",feedback:"Entry and exit eliminate profits."},
+{ id:34, q:"Allocative efficiency occurs when...",options:["MC = MR","MC = Price","Profit is maximized","ATC is minimized"],a:1,tag:"efficiency",type:"definition",feedback:"Efficiency occurs when P = MC."},
+{ id:35, q:"Productive efficiency occurs when...",options:["MC = P","Output is produced at lowest ATC","Profit is zero","Demand equals supply"],a:1,tag:"efficiency",type:"definition",feedback:"Minimum ATC defines productive efficiency."},
+{ id:36, q:"If marginal cost is rising, this is typically due to...",options:["Increasing returns","Diminishing marginal product","Falling prices","Lower wages"],a:1,tag:"production",type:"interpretation",feedback:"Diminishing marginal product raises marginal cost."},
+{ id:37, q:"Which cost exists even when output is zero?",options:["Marginal cost","Variable cost","Fixed cost","Average cost"],a:2,tag:"costs",type:"definition",feedback:"Fixed costs must be paid regardless of output."},
+{ id:38, q:"If price equals marginal cost, the firm is...",options:["Profit maximizing","Allocatively efficient","Shutting down","Losing money"],a:1,tag:"efficiency",type:"interpretation",feedback:"P = MC ensures allocative efficiency."},
+{ id:39, q:"A perfectly competitive firm increases output when...",options:["MC > MR","MR > MC","ATC rises","Demand falls"],a:1,tag:"profit",type:"interpretation",feedback:"Firms expand output when MR exceeds MC."},
+{ id:40, q:"If many firms exit a market, remaining firms will...",options:["Face lower prices","Produce less at higher prices","Shut down","Lose all profit"],a:1,tag:"market",type:"interpretation",feedback:"Reduced supply raises prices."},
+{ id:41, q:"Technological improvement will shift the production function...",options:["Downward","Leftward","Upward","Backward"],a:2,tag:"production",type:"interpretation",feedback:"Technology increases output for any input level."},
+{ id:42, q:"If marginal cost is above average total cost, ATC will...",options:["Fall","Rise","Stay constant","Become zero"],a:1,tag:"costs",type:"interpretation",feedback:"MC pulls ATC upward when above it."}
+],   
+medium: [
+{ id:50, q:"A firm hires additional workers and notices output increases at a decreasing rate. What happens to marginal product and marginal cost?",options:["Marginal product rises while marginal cost falls","Marginal product falls while marginal cost rises","Marginal product stays constant while marginal cost stays constant","Marginal product rises while marginal cost rises"],a:1,tag:"production",type:"interpretation",feedback:"Diminishing marginal product causes marginal cost to rise."},
+{ id:51, q:"A firm experiences a decrease in wages while holding everything else constant. What happens to its cost curves?",options:["Marginal cost and average cost both shift upward","Marginal cost and average cost both shift downward","Marginal cost shifts downward while average cost stays constant","Average cost shifts downward while marginal cost stays constant"],a:1,tag:"costs",type:"interpretation",feedback:"Lower input costs reduce both marginal and average costs."},
+{ id:52, q:"A firm is producing where marginal revenue exceeds marginal cost. What should the firm do to maximize profit?",options:["Decrease output because cost is too high","Increase output because revenue exceeds cost","Shut down because profit is uncertain","Maintain output because profit is already maximized"],a:1,tag:"profit",type:"interpretation",feedback:"If MR exceeds MC, producing more increases profit."},
+{ id:53, q:"A perfectly competitive firm faces a market price of $10 and has marginal cost of $8. What is the best action?",options:["Reduce output because marginal cost is below price","Increase output because marginal revenue exceeds marginal cost","Shut down because profit is not guaranteed","Exit market because price may change"],a:1,tag:"competition",type:"interpretation",feedback:"Profit increases when MR exceeds MC."},
+{ id:54, q:"If new firms enter a competitive market, what happens in the long run to price and profit?",options:["Price rises while profit increases across firms","Price falls while profit is driven toward zero","Price stays constant while profit increases over time","Price rises while profit declines below zero"],a:1,tag:"market",type:"interpretation",feedback:"Entry increases supply, lowering price and eliminating profit."},
+{ id:55, q:"A firm is producing where marginal cost is below average total cost. What happens to ATC as output increases?",options:["Average total cost rises as output expands","Average total cost falls as output expands","Average total cost remains constant as output changes","Average total cost becomes zero as output increases"],a:1,tag:"costs",type:"interpretation",feedback:"MC below ATC pulls average cost downward."},
+{ id:56, q:"If a firm’s marginal product of labor is falling, what happens to marginal cost?",options:["Marginal cost falls as productivity declines","Marginal cost rises as productivity declines","Marginal cost stays constant with fixed wages","Marginal cost becomes zero as output changes"],a:1,tag:"production",type:"interpretation",feedback:"Falling marginal product increases marginal cost."},
+{ id:57, q:"A firm earns positive economic profit. What must be true about price relative to ATC?",options:["Price is below average total cost at equilibrium","Price equals average total cost at equilibrium","Price exceeds average total cost at equilibrium","Price equals marginal cost at equilibrium"],a:2,tag:"profit",type:"interpretation",feedback:"Profit exists when price exceeds average total cost."},
+{ id:58, q:"If price equals marginal cost in a competitive market, what does this imply?",options:["Profit is maximized for all firms in the market","Resources are allocated efficiently across the market","The firm is at the shutdown point condition","Output must be reduced to restore balance"],a:1,tag:"efficiency",type:"interpretation",feedback:"P = MC ensures allocative efficiency."},
+{ id:59, q:"A firm continues operating while earning zero economic profit. Why does it remain in the market?",options:["The firm is losing money but cannot exit immediately","The firm covers all opportunity costs of production","The firm is forced to operate by market conditions","The firm expects demand to decline over time"],a:1,tag:"profit",type:"interpretation",feedback:"Zero economic profit means all costs are covered."},
+{ id:60, q:"If the price of output falls below average variable cost, what is the firm’s best short-run decision?",options:["Increase output to cover fixed costs","Reduce output to minimize total loss","Shut down production until price recovers","Enter the market at a lower cost level"],a:2,tag:"profit",type:"interpretation",feedback:"Firms shut down when price cannot cover variable costs."},
+{ id:61, q:"A technological improvement occurs in production. What is the most direct effect on costs?",options:["Costs rise due to increased complexity of production","Costs fall due to improved productivity of inputs","Costs stay constant because output is unchanged","Costs become fixed due to technological change"],a:1,tag:"production",type:"interpretation",feedback:"Improved technology lowers costs."},
+{ id:62, q:"A firm’s marginal cost curve is rising. What is the most likely explanation?",options:["The firm is experiencing increasing returns to scale","The firm is experiencing diminishing marginal product","The firm is facing falling wages in production","The firm is benefiting from improved technology"],a:1,tag:"production",type:"interpretation",feedback:"Diminishing marginal product raises marginal cost."},
+{ id:63, q:"If a firm’s average total cost is falling, what must be true about marginal cost?",options:["Marginal cost is above average total cost","Marginal cost is below average total cost","Marginal cost equals average total cost","Marginal cost equals zero at that output"],a:1,tag:"costs",type:"interpretation",feedback:"MC below ATC pulls it downward."},
+{ id:64, q:"A firm produces where MC equals MR but price is below ATC. What is true about its situation?",options:["The firm is maximizing profit while earning a loss","The firm should shut down immediately due to losses","The firm is operating inefficiently at that output","The firm is earning positive economic profit"],a:0,tag:"profit",type:"interpretation",feedback:"Profit is maximized even if negative."},
+{ id:65, q:"If a competitive firm increases output, what happens to the market price it receives?",options:["Price rises as output increases for the firm","Price falls as output increases for the firm","Price remains constant for the individual firm","Price becomes zero at higher output levels"],a:2,tag:"competition",type:"interpretation",feedback:"Price is given in perfect competition."},
+{ id:66, q:"A firm shuts down in the short run when which condition is met?",options:["Price is below average total cost at current output","Price is below average variable cost at current output","Price equals marginal cost at current output","Price exceeds average total cost at current output"],a:1,tag:"profit",type:"definition",feedback:"Shutdown occurs when price is below AVC."},
+{ id:67, q:"If marginal cost intersects average total cost from below, what happens to ATC after the intersection?",options:["Average total cost continues to fall with output","Average total cost begins to rise with output","Average total cost remains constant at that level","Average total cost becomes zero at equilibrium"],a:1,tag:"costs",type:"interpretation",feedback:"MC above ATC pushes it upward."},
+{ id:68, q:"If input prices fall, what happens to a firm’s supply curve?",options:["Supply shifts left as production becomes more costly","Supply shifts right as production becomes cheaper","Supply does not change because output is fixed","Supply becomes vertical due to cost changes"],a:1,tag:"competition",type:"interpretation",feedback:"Lower costs increase supply."},
+{ id:69, q:"A firm is operating where price equals marginal cost and exceeds ATC. What does this imply?",options:["The firm is earning losses at current output","The firm is breaking even at current output","The firm is earning positive economic profit","The firm is operating at the shutdown point"],a:2,tag:"profit",type:"interpretation",feedback:"Price above ATC implies profit."},
+{ id:70, q:"In long-run equilibrium for a competitive market, which condition must hold?",options:["Price exceeds average total cost for all firms","Price equals average total cost for all firms","Price is below marginal cost for all firms","Marginal cost exceeds average total cost"],a:1,tag:"market",type:"definition",feedback:"Entry and exit drive P = ATC."},
+{ id:71, q:"If firms are earning losses in a competitive market, what happens in the long run?",options:["New firms enter and increase total supply","Existing firms exit and reduce total supply","Prices fall further as output expands","Output rises due to competitive pressure"],a:1,tag:"market",type:"interpretation",feedback:"Losses drive exit."},
+{ id:72, q:"A firm’s marginal cost decreases while everything else remains constant. What happens to its optimal output?",options:["Optimal output decreases as cost falls","Optimal output increases as cost falls","Optimal output remains constant at equilibrium","Optimal output becomes zero in the short run"],a:1,tag:"profit",type:"interpretation",feedback:"Lower MC increases output."},
+{ id:73, q:"If marginal revenue is constant and marginal cost is rising, where does profit-maximizing output occur?",options:["Where marginal cost is below marginal revenue","Where marginal cost equals marginal revenue","Where marginal cost exceeds marginal revenue","Where average total cost is minimized"],a:1,tag:"profit",type:"definition",feedback:"Profit maximization requires MC = MR."},
+{ id:74, q:"A firm produces where marginal cost exceeds marginal revenue. What should it do to improve profit?",options:["Increase output to capture more revenue","Decrease output to reduce excess cost","Maintain output because profit is maximized","Shut down production immediately"],a:1,tag:"profit",type:"interpretation",feedback:"Producing too much reduces profit."},
+{ id:75, q:"If technological progress occurs in production, what happens to isoquants?",options:["Isoquants shift inward as more input is required","Isoquants shift outward as less input is required","Isoquants remain unchanged with new technology","Isoquants disappear due to efficiency gains"],a:1,tag:"production",type:"interpretation",feedback:"Less input is needed for the same output."},
+{ id:76, q:"If average total cost is minimized at a certain output level, what must be true?",options:["Marginal cost equals average total cost at that output","Marginal cost exceeds average total cost at that output","Marginal cost is below average total cost at that output","Profit must be zero at that output level"],a:0,tag:"costs",type:"definition",feedback:"MC intersects ATC at its minimum."},
+{ id:77, q:"A firm has rising ATC but falling MC at its current output. What does this indicate?",options:["The firm is operating at efficient scale already","The firm is approaching the minimum of ATC","The firm is experiencing increasing returns to scale","The firm is at the shutdown point"],a:1,tag:"costs",type:"interpretation",feedback:"MC is still pulling ATC downward."},
+{ id:78, q:"If price increases in a competitive market, what happens to firm output?",options:["Output falls as costs increase with price","Output rises as marginal revenue increases","Output remains constant because price is fixed","Output becomes zero due to higher prices"],a:1,tag:"competition",type:"interpretation",feedback:"Higher price raises MR and output."},
+{ id:79, q:"If a firm earns zero economic profit, what is true about its cost coverage?",options:["The firm should exit because profit is zero","The firm covers all costs including opportunity cost","The firm is inefficient at its current output","The firm is losing money at equilibrium"],a:1,tag:"profit",type:"interpretation",feedback:"All opportunity costs are covered."},
+{ id:80, q:"If input substitution occurs within a firm, what drives that decision?",options:["Changes in output level across production processes","Changes in relative input prices faced by the firm","Changes in the market demand curve for output","Changes in marginal cost across output levels"],a:1,tag:"production",type:"definition",feedback:"Firms substitute based on relative prices."},
+{ id:81, q:"If marginal cost rises sharply for a firm, what happens to its supply behavior?",options:["Supply increases as firms expand output","Supply decreases as production becomes more costly","Supply remains constant despite higher costs","Supply becomes vertical at higher output levels"],a:1,tag:"competition",type:"interpretation",feedback:"Higher costs reduce supply."},
+{ id:82, q:"A firm operates where price equals average variable cost but is below ATC. What is true?",options:["The firm is earning positive economic profit","The firm is earning a loss but continues operating","The firm should shut down immediately","The firm is at zero cost of production"],a:1,tag:"profit",type:"interpretation",feedback:"Firm covers variable costs but not total costs."},
+{ id:83, q:"If demand increases in a competitive market, what happens in the short run?",options:["Price falls as supply adjusts downward","Price rises as demand exceeds current supply","Supply falls as firms reduce output","Firms exit due to higher input costs"],a:1,tag:"market",type:"interpretation",feedback:"Higher demand raises price."},
+{ id:84, q:"If demand increases in a competitive market, what happens in the long run?",options:["Price remains permanently higher than before","Price returns toward equilibrium as entry occurs","Firms exit as demand stabilizes","Output falls as competition increases"],a:1,tag:"market",type:"interpretation",feedback:"Entry restores equilibrium."},
+{ id:85, q:"If marginal product increases for a firm, what happens to marginal cost?",options:["Marginal cost rises as productivity increases","Marginal cost falls as productivity increases","Marginal cost remains constant with output","Marginal cost becomes zero at higher output"],a:1,tag:"production",type:"interpretation",feedback:"Higher productivity lowers marginal cost."},
+{ id:86, q:"A firm faces rising wages for labor. What happens to marginal cost?",options:["Marginal cost falls due to substitution effects","Marginal cost rises due to higher input costs","Marginal cost remains constant with output","Marginal cost becomes fixed across output levels"],a:1,tag:"costs",type:"interpretation",feedback:"Higher wages increase MC."},
+{ id:87, q:"If marginal cost equals marginal revenue and MC is rising, what does this indicate?",options:["The firm is producing at profit-maximizing output","The firm is producing at minimum cost output","The firm is at the shutdown point condition","The firm is operating inefficiently"],a:0,tag:"profit",type:"interpretation",feedback:"Rising MC ensures profit is maximized."},
+{ id:88, q:"If firms enter a competitive market, what happens to existing firms’ profits?",options:["Profits increase as market expands","Profits decrease as competition increases","Profits remain constant across firms","Profits become negative immediately"],a:1,tag:"market",type:"interpretation",feedback:"Entry reduces profits."},
+{ id:89, q:"If marginal cost is constant across output, what shape is the supply curve?",options:["Supply curve is upward sloping with output","Supply curve is downward sloping with output","Supply curve is horizontal at marginal cost","Supply curve is vertical at equilibrium"],a:2,tag:"competition",type:"interpretation",feedback:"Constant MC implies flat supply."},
+{ id:90, q:"If average total cost is rising and marginal cost is above it, what happens next?",options:["Average total cost begins to fall with output","Average total cost continues to rise with output","Average total cost remains constant at that level","Average total cost becomes zero at equilibrium"],a:1,tag:"costs",type:"interpretation",feedback:"MC pulls ATC upward."},
+{ id:91, q:"If a firm exits a competitive market, what happens to total industry supply?",options:["Supply increases as remaining firms expand output","Supply decreases as firms leave the market","Supply remains constant across all firms","Supply becomes zero across the industry"],a:1,tag:"market",type:"definition",feedback:"Exit reduces supply."},
+{ id:92, q:"If productivity improves for all firms, what happens to cost curves?",options:["Cost curves shift upward due to higher output","Cost curves shift downward due to efficiency gains","Cost curves remain constant across production","Cost curves disappear due to optimization"],a:1,tag:"production",type:"interpretation",feedback:"Higher productivity lowers costs."},
+{ id:93, q:"If marginal revenue exceeds marginal cost and the firm does nothing, what happens to profit?",options:["Profit falls because output is too high","Profit rises because output remains constant","Profit stays constant at current level","Profit becomes zero at equilibrium"],a:0,tag:"profit",type:"trap",feedback:"Failure to expand output leaves profit unrealized."},
+{ id:94, q:"If firms earn economic profit in a market, what happens to supply over time?",options:["Supply decreases as firms restrict output","Supply increases as new firms enter","Supply remains constant at equilibrium","Supply becomes zero due to competition"],a:1,tag:"market",type:"interpretation",feedback:"Profit attracts entry."},
+{ id:95, q:"If marginal cost is below average variable cost, what must be true about AVC?",options:["Average variable cost is rising at that output","Average variable cost is falling at that output","Average variable cost is constant across output","Average variable cost is equal to zero"],a:1,tag:"costs",type:"interpretation",feedback:"MC below AVC pulls it downward."}
+], 
+hard:[
+{ id:150, q:"A firm in a perfectly competitive market finds that at its current output, price is above marginal cost but below average total cost. Which conclusion is best?",options:["The firm should shut down because price is below average total cost","The firm should increase output because marginal revenue exceeds marginal cost","The firm should reduce output because profit is currently negative","The firm is maximizing profit because losses cannot be improved"],a:1,tag:"profit",type:"trap",feedback:"If P = MR > MC, the firm should expand output even if profit is still negative."},
+{ id:151, q:"A wheat farmer faces a drop in market price after many new farms enter the industry. In the short run the farmer continues operating, but in the long run some farms leave. Which explanation best fits this sequence?",options:["Entry lowers price and firms shut down when price falls below total cost","Entry lowers price and firms continue if price covers variable cost","Price changes do not affect output decisions for price-taking firms","Long-run exit occurs because marginal revenue becomes upward sloping"],a:1,tag:"market",type:"interpretation",feedback:"Short-run depends on AVC; long-run exit depends on total cost."},
+{ id:152, q:"A firm introduces a new machine that allows the same number of workers to produce more output per hour. Which chain of effects is most accurate?",options:["Marginal product rises and marginal cost falls as production becomes more efficient","Marginal product rises and marginal cost rises as output expands further","Marginal product falls and marginal cost falls as inputs become cheaper","Marginal product stays constant and marginal cost falls only in the long run"],a:0,tag:"production",type:"interpretation",feedback:"Higher productivity lowers marginal cost and shifts cost curves downward."},
+{ id:153, q:"A manager says, 'We are producing where marginal cost equals marginal revenue, so we must be earning positive profit.' What is wrong with that statement?",options:["Marginal revenue equals marginal cost guarantees positive profit at all times","Marginal revenue equals marginal cost identifies output but not profit level","Positive profit depends only on whether price exceeds marginal cost","Marginal revenue equals marginal cost implies allocative efficiency only"],a:1,tag:"profit",type:"trap",feedback:"MR = MC determines output, not whether profit is positive."},
+{ id:154, q:"A competitive firm is producing where marginal cost equals price. Then wages increase. What happens first to the firm's profit-maximizing output?",options:["Output rises because higher costs require more units to spread costs","Output falls because the marginal cost curve shifts upward","Output stays the same because price has not changed","Output falls only if average total cost also declines"],a:1,tag:"costs",type:"interpretation",feedback:"Higher wages shift MC up, reducing optimal output."},
+{ id:155, q:"Suppose a competitive market begins in long-run equilibrium. Demand then increases. Which outcome is most accurate?",options:["Price rises in the short run and remains permanently higher","Price rises in the short run and falls as entry increases supply","Output remains fixed because firms are price takers","Entry occurs immediately so price does not change"],a:1,tag:"market",type:"trap",feedback:"Demand increases raise price in the short run, but entry drives price back down."},
+{ id:156, q:"A firm observes that average total cost is falling while marginal cost is rising. Which conclusion is best?",options:["Marginal cost and average total cost must always move together","Average total cost can fall while marginal cost remains below it","Marginal cost must be above average total cost as it rises","Technological progress must be lowering total cost"],a:1,tag:"costs",type:"trap",feedback:"ATC falls as long as MC is below it, even if MC is rising."},
+{ id:157, q:"A perfectly competitive firm earns zero economic profit in long-run equilibrium. Which statement is best?",options:["The firm should exit because profit is zero","The firm covers explicit cost but not opportunity cost","The firm covers all costs and remains in equilibrium","The firm is operating at the shutdown point"],a:2,tag:"market",type:"trap",feedback:"Zero economic profit means all opportunity costs are covered."},
+{ id:158, q:"A factory can replace some labor with machinery when wages rise. Which concept is most directly involved in that adjustment?",options:["Shutdown decision based on short-run cost conditions","Input substitution based on relative input prices","Allocative efficiency based on price and marginal cost","Long-run exit based on persistent economic losses"],a:1,tag:"production",type:"definition",feedback:"Firms substitute toward relatively cheaper inputs when prices change."},
+{ id:159, q:"An advisor claims that because a firm’s demand curve is perfectly elastic, the market demand curve must also be perfectly elastic. What is the flaw?",options:["The firm faces market price but market demand is downward sloping","The market demand curve is vertical in competitive equilibrium","The firm's demand curve is upward sloping at higher output","Perfect elasticity applies only under monopoly conditions"],a:0,tag:"competition",type:"trap",feedback:"Firm demand is perfectly elastic, but market demand is not."},
+{ id:160, q:"A firm is producing at the output where average total cost is minimized. Which additional condition must hold there?",options:["Marginal cost equals average total cost at that output","Price equals average variable cost at that output","Marginal revenue equals average total cost at that output","Profit is maximized at that output level"],a:0,tag:"costs",type:"definition",feedback:"ATC is minimized where MC equals ATC."},
+{ id:161, q:"A corn producer says, 'Because I cannot influence market price, my output decision does not matter for profit.' Which response is best?",options:["Price-taking means firms cannot affect profit through output","Output decisions still depend on marginal revenue and marginal cost","Only the market determines output for all competitive firms","Profit depends only on fixed costs and not output decisions"],a:1,tag:"competition",type:"trap",feedback:"Even price-takers choose output where MR = MC."},
+{ id:162, q:"If a firm's marginal product of labor falls while the wage rate remains constant, what happens to marginal cost?",options:["Marginal cost falls because labor becomes cheaper per unit","Marginal cost rises because more input is needed per unit","Marginal cost stays constant because wages are unchanged","Marginal cost becomes fixed due to constant input prices"],a:1,tag:"production",type:"interpretation",feedback:"Lower marginal product increases marginal cost."},
+{ id:163, q:"A firm is earning losses, but price still exceeds average variable cost. Which statement is most accurate?",options:["The firm should shut down because losses are being incurred","The firm should continue because it covers variable costs","The firm should exit immediately because price is below ATC","The firm is operating in long-run equilibrium conditions"],a:1,tag:"profit",type:"trap",feedback:"As long as P > AVC, the firm continues in the short run."},
+{ id:164, q:"A competitive industry is allocatively efficient. Which condition describes that outcome?",options:["Price equals average total cost across all firms","Price equals marginal cost for the last unit produced","Marginal revenue equals average variable cost in equilibrium","Average fixed cost is minimized at the firm level"],a:1,tag:"efficiency",type:"definition",feedback:"Allocative efficiency occurs when P = MC."},
+{ id:165, q:"A bakery in perfect competition sees a temporary increase in demand for its product's market. In the short run, which outcome is most likely?",options:["The firm's demand curve shifts and becomes downward sloping","The firm produces more output at the new higher price","Marginal revenue falls as more firms enter the market","Average total cost falls immediately due to higher demand"],a:1,tag:"competition",type:"trap",feedback:"The firm moves along its perfectly elastic demand curve at the new price."},
+{ id:166, q:"Which scenario best illustrates the difference between shutdown and exit?",options:["Shutdown occurs at zero profit while exit occurs at positive profit","Shutdown occurs when price is below AVC while exit occurs in the long run","Exit occurs whenever marginal cost rises above marginal revenue","Shutdown occurs only when fixed costs are eliminated"],a:1,tag:"profit",type:"definition",feedback:"Shutdown is short run (AVC); exit is long run (total cost)."},
+{ id:167, q:"A firm can produce 100 units using different combinations of labor and capital. If wages rise while capital costs remain constant, what is the best prediction?",options:["The firm reduces output because labor becomes more expensive","The firm substitutes toward capital if production allows substitution","The firm ignores input prices because output is unchanged","The firm shuts down due to higher production costs"],a:1,tag:"production",type:"interpretation",feedback:"Firms substitute toward relatively cheaper inputs."},
+{ id:168, q:"A student says, 'If firms in a competitive market are making profits, consumers must be worse off because prices stay high.' Which response is best?",options:["Profits remain permanent in competitive equilibrium conditions","Entry increases supply and reduces price over time","Firms restrict output to maintain higher prices","Consumer welfare does not depend on market prices"],a:1,tag:"market",type:"trap",feedback:"Entry reduces price and eliminates profit in the long run."},
+{ id:169, q:"A firm’s average fixed cost is falling, but its average total cost is rising. Which explanation best fits?",options:["Marginal cost is rising enough to increase total cost overall","Average fixed cost and total cost must always move together","The firm is operating at productive efficiency conditions","Marginal revenue must be decreasing across all output levels"],a:0,tag:"costs",type:"interpretation",feedback:"Rising variable costs can outweigh falling fixed costs."},
+{ id:170, q:"A market is in long-run equilibrium. A technological improvement lowers costs for all firms. What is the best prediction?",options:["Market price rises as firms become more profitable","Market price falls as supply expands across firms","Output decreases because production becomes more efficient","Firms earn permanent profit due to lower costs"],a:1,tag:"market",type:"trap",feedback:"Lower costs increase supply and reduce price in equilibrium."},
+{ id:171, q:"Why can a firm be producing at the efficient scale yet still earn zero economic profit?",options:["Productive efficiency ensures output is at minimum cost only","Productive efficiency guarantees positive profit in equilibrium","Zero profit implies the firm is not minimizing costs","Efficient scale occurs only in short-run production"],a:0,tag:"efficiency",type:"trap",feedback:"Minimum ATC does not imply positive profit."},
+{ id:172, q:"A competitive firm notices that price is below average total cost but above marginal cost. Which conclusion is best?",options:["The firm should increase output because marginal revenue exceeds marginal cost","The firm should shut down because price is below total cost","The firm should reduce output because profit is negative","The firm must be operating below average variable cost"],a:0,tag:"profit",type:"trap",feedback:"Output decisions depend on MR vs MC, not profit level."},
+{ id:173, q:"Which statement best connects diminishing marginal product and marginal cost?",options:["Falling marginal product increases marginal cost of production","Falling marginal product decreases marginal cost of production","Marginal product affects only fixed cost components","No relationship exists between marginal product and cost"],a:0,tag:"production",type:"definition",feedback:"Lower productivity raises marginal cost."},
+{ id:174, q:"A firm in perfect competition produces where P = MC and P = ATC. Which statement is most accurate?",options:["The firm is in long-run equilibrium with zero economic profit","The firm is operating at the shutdown point condition","The firm is earning positive monopoly profit","The firm should reduce output below current level"],a:0,tag:"market",type:"interpretation",feedback:"P = MC and P = ATC defines long-run equilibrium."},
+{ id:175, q:"A consultant argues that a firm should produce as long as total revenue exceeds total variable cost, regardless of marginal conditions. What is the flaw?",options:["Shutdown decisions differ from profit-maximizing output decisions","Total revenue always determines optimal output levels","Marginal revenue is irrelevant for competitive firms","The shutdown rule applies only in monopoly markets"],a:0,tag:"profit",type:"trap",feedback:"Shutdown and output decisions are separate conditions."},
+{ id:176, q:"If a market's price exceeds firms' average total cost, which long-run adjustment is most likely?",options:["Firms reduce output and price rises further","New firms enter and supply increases in the market","Demand decreases because price is above cost","Firms shut down due to increased competition"],a:1,tag:"market",type:"interpretation",feedback:"Positive profit attracts entry and increases supply."},
+{ id:177, q:"A firm uses labor and capital. The rental rate of capital falls while wages remain constant. What is the best prediction?",options:["The firm substitutes toward capital in its input mix","The firm maintains the same input combination as before","The firm reduces capital because it becomes less productive","The firm increases output regardless of cost conditions"],a:0,tag:"production",type:"interpretation",feedback:"Lower relative cost increases use of capital."},
+{ id:178, q:"Why is the firm's supply curve only the marginal cost curve above AVC?",options:["Firms shut down when price falls below variable cost","Marginal revenue becomes negative below that level","Fixed costs disappear at lower output levels","Market demand becomes vertical below that level"],a:0,tag:"competition",type:"definition",feedback:"Supply exists only where production is better than shutdown."},
+{ id:179, q:"A firm produces where marginal cost is below marginal revenue, but the next unit would reverse that. What should it do?",options:["Increase output until marginal cost equals marginal revenue","Reduce output because marginal cost is rising","Shut down because costs are increasing","Keep output unchanged at the current level"],a:0,tag:"profit",type:"interpretation",feedback:"Expand output until MC = MR."},
+{ id:180, q:"A market is allocatively efficient, but a firm is not at minimum ATC. Which statement is best?",options:["Allocative and productive efficiency can occur separately","This situation cannot occur in competitive markets","The firm must be earning positive economic profit","The market demand curve must be perfectly elastic"],a:0,tag:"efficiency",type:"trap",feedback:"P = MC differs from minimum ATC."},
+{ id:181, q:"Firms face identical costs in long-run equilibrium. Input prices rise temporarily. What happens in the short run?",options:["Price rises and output falls as supply shifts left","Nothing changes because firms are price takers","All firms exit immediately due to higher costs","Demand increases because production is more expensive"],a:0,tag:"market",type:"interpretation",feedback:"Higher costs shift supply left, raising price."},
+{ id:182, q:"A student says zero economic profit means a firm is indifferent between producing and shutting down. What is wrong?",options:["Zero profit still means price covers total cost in equilibrium","Shutdown decisions depend only on total revenue conditions","Exit and shutdown are identical decisions","Firms earn positive losses in long-run equilibrium"],a:0,tag:"profit",type:"trap",feedback:"Shutdown depends on AVC, not total profit."},
+{ id:183, q:"A firm observes that output increases more from the second worker than the first. What is the best conclusion?",options:["Marginal product increased and marginal cost likely decreased","Marginal product decreased and marginal cost increased","Returns to scale must be decreasing at that level","Average fixed cost increased with additional labor"],a:0,tag:"production",type:"interpretation",feedback:"Higher marginal product lowers marginal cost."}
+]
+};
+
+easyConceptPools = {
+production:[
+{ id:1, q:"Marginal product refers to...",options:["Total output","Output per worker","Additional output from one more unit of input","Total cost"],a:2,tag:"production",type:"definition",feedback:"Marginal product is the additional output from one more unit of input."},
+{ id:2, q:"Diminishing marginal product means...",options:["Output decreases","Each additional input adds less output","Costs fall","Technology improves"],a:1,tag:"production",type:"interpretation",feedback:"Each added input contributes less than the previous one."},
+{ id:3, q:"An isoquant shows...",options:["Equal cost combinations","Equal output combinations","Equal revenue","Equal profit"],a:1,tag:"production",type:"definition",feedback:"Isoquants show combinations that produce the same output."},
+{ id:4, q:"If inputs double and output more than doubles, this is...",options:["Constant returns","Decreasing returns","Increasing returns","Diminishing product"],a:2,tag:"production",type:"definition",feedback:"Output increasing more than inputs means increasing returns to scale."},
+{ id:5, q:"Technological progress will...",options:["Reduce output","Increase output for same inputs","Raise costs","Eliminate labor"],a:1,tag:"production",type:"interpretation",feedback:"Technology improves productivity."},
+{ id:6, q:"Input substitution occurs because...",options:["Costs are fixed","Relative input prices change","Output falls","Demand increases"],a:1,tag:"production",type:"interpretation",feedback:"Firms substitute toward cheaper inputs."}
+],
+
+costs:[
+{ id:7, q:"Fixed costs are...",options:["Costs that change with output","Costs that do not change with output","Marginal costs","Average costs"],a:1,tag:"costs",type:"definition",feedback:"Fixed costs remain constant regardless of output."},
+{ id:8, q:"Variable costs...",options:["Never change","Increase with output","Are always zero","Are fixed"],a:1,tag:"costs",type:"definition",feedback:"Variable costs rise as output increases."},
+{ id:9, q:"Marginal cost is...",options:["Total cost","Average cost","Cost of one more unit","Fixed cost"],a:2,tag:"costs",type:"definition",feedback:"Marginal cost is the cost of producing one more unit."},
+{ id:10, q:"Average total cost equals...",options:["TC/Q","MC/Q","FC/Q","VC/Q"],a:0,tag:"costs",type:"definition",feedback:"ATC is total cost divided by output."},
+{ id:11, q:"If MC is below ATC, ATC will...",options:["Rise","Fall","Stay constant","Disappear"],a:1,tag:"costs",type:"interpretation",feedback:"MC pulls ATC downward."},
+{ id:12, q:"If MC is above ATC, ATC will...",options:["Fall","Rise","Stay constant","Become zero"],a:1,tag:"costs",type:"interpretation",feedback:"MC pulls ATC upward."}
+],
+
+profit:[
+{ id:13, q:"Profit equals...",options:["Revenue minus cost","Cost minus revenue","Price times cost","MC minus MR"],a:0,tag:"profit",type:"definition",feedback:"Profit is total revenue minus total cost."},
+{ id:14, q:"A firm maximizes profit when...",options:["TR is highest","MR = MC","Costs are lowest","Output is zero"],a:1,tag:"profit",type:"definition",feedback:"Profit maximization occurs where MR equals MC."},
+{ id:15, q:"If TR > TC, the firm has...",options:["Loss","Zero profit","Positive profit","Shutdown"],a:2,tag:"profit",type:"interpretation",feedback:"Revenue exceeding cost means profit."},
+{ id:16, q:"If TR = TC, the firm has...",options:["Loss","Positive profit","Zero economic profit","Shutdown"],a:2,tag:"profit",type:"definition",feedback:"All costs are covered."},
+{ id:17, q:"A firm should increase output when...",options:["MC > MR","MR > MC","ATC rises","Demand falls"],a:1,tag:"profit",type:"interpretation",feedback:"Firms expand when MR exceeds MC."},
+{ id:18, q:"A firm should reduce output when...",options:["MR > MC","MC > MR","ATC falls","Price rises"],a:1,tag:"profit",type:"interpretation",feedback:"Firms cut output when MC exceeds MR."}
+],
+
+competition:[
+{ id:19, q:"In perfect competition, firms are...",options:["Price makers","Price takers","Monopolists","Regulated"],a:1,tag:"competition",type:"definition",feedback:"Firms accept market price."},
+{ id:20, q:"Marginal revenue for a competitive firm equals...",options:["Cost","Price","Profit","Output"],a:1,tag:"competition",type:"definition",feedback:"MR = P in perfect competition."},
+{ id:21, q:"The firm's demand curve is...",options:["Downward sloping","Upward sloping","Perfectly elastic","Vertical"],a:2,tag:"competition",type:"definition",feedback:"Demand is perfectly elastic at market price."},
+{ id:22, q:"A firm's supply curve is...",options:["Demand curve","MC above AVC","ATC curve","Total cost"],a:1,tag:"competition",type:"definition",feedback:"MC above AVC defines supply."},
+{ id:23, q:"If price rises, MR will...",options:["Fall","Stay constant","Rise","Disappear"],a:2,tag:"competition",type:"interpretation",feedback:"MR moves with price."},
+{ id:24, q:"Price-taking firms cannot...",options:["Produce output","Change output","Influence market price","Earn profit"],a:2,tag:"competition",type:"definition",feedback:"They have no price control."}
+],
+
+market:[
+{ id:25, q:"Market price is determined by...",options:["Firms","Government","Supply and demand","Costs"],a:2,tag:"market",type:"definition",feedback:"Equilibrium sets price."},
+{ id:26, q:"Entry into a market will...",options:["Reduce supply","Increase supply","Raise price","Reduce demand"],a:1,tag:"market",type:"definition",feedback:"Entry increases supply."},
+{ id:27, q:"Exit from a market will...",options:["Increase supply","Decrease supply","Lower price","Eliminate demand"],a:1,tag:"market",type:"definition",feedback:"Exit reduces supply."},
+{ id:28, q:"In the long run, profits tend toward...",options:["Positive","Negative","Zero","Infinite"],a:2,tag:"market",type:"definition",feedback:"Entry and exit eliminate profits."},
+{ id:29, q:"If firms are earning profits, new firms will...",options:["Exit","Enter","Shut down","Ignore market"],a:1,tag:"market",type:"interpretation",feedback:"Profit attracts entry."},
+{ id:30, q:"If firms are losing money, firms will...",options:["Enter","Exit","Raise price","Increase output"],a:1,tag:"market",type:"interpretation",feedback:"Loss drives exit."}
+],
+
+efficiency:[
+{ id:31, q:"Allocative efficiency occurs when...",options:["MC = MR","MC = Price","ATC is minimized","Profit is zero"],a:1,tag:"efficiency",type:"definition",feedback:"P = MC ensures efficient allocation."},
+{ id:32, q:"Productive efficiency occurs when...",options:["MC = P","ATC is minimized","Profit is maximized","Demand equals supply"],a:1,tag:"efficiency",type:"definition",feedback:"Minimum ATC defines productive efficiency."},
+{ id:33, q:"If P > MC, output is...",options:["Too high","Too low","Efficient","Zero"],a:1,tag:"efficiency",type:"interpretation",feedback:"Society values more output than it costs to produce."},
+{ id:34, q:"If P < MC, output is...",options:["Too high","Too low","Efficient","Optimal"],a:0,tag:"efficiency",type:"interpretation",feedback:"Production exceeds efficient level."},
+{ id:35, q:"Efficiency ensures...",options:["Maximum profit","Fair prices","Resources are allocated optimally","Costs are zero"],a:2,tag:"efficiency",type:"definition",feedback:"Efficiency maximizes total surplus."},
+{ id:36, q:"Productive efficiency focuses on...",options:["Price","Cost minimization","Demand","Profit"],a:1,tag:"efficiency",type:"definition",feedback:"Producing at lowest possible cost."}
+]
+};
+
+const mediumConceptPools = {
+production:[
+{ id:100, q:"If marginal product is falling, what happens to marginal cost?",options:["Falls","Rises","Stays constant","Becomes zero"],a:1,tag:"production",type:"interpretation",feedback:"Falling marginal product increases marginal cost."},
+{ id:101, q:"A firm produces more output but each additional worker adds less than before. This is...",options:["Increasing returns","Diminishing marginal product","Technological progress","Input substitution"],a:1,tag:"production",type:"interpretation",feedback:"Each additional unit contributes less output."},
+{ id:102, q:"If productivity improves, what happens to marginal cost?",options:["Rises","Falls","Stays the same","Becomes fixed"],a:1,tag:"production",type:"interpretation",feedback:"Higher productivity lowers marginal cost."},
+{ id:103, q:"Isoquants that are bowed inward indicate...",options:["Constant output","Perfect substitutes","Diminishing MRTS","Rising costs"],a:2,tag:"production",type:"definition",feedback:"Convex isoquants reflect diminishing substitution between inputs."},
+{ id:104, q:"If a firm can produce the same output with fewer inputs, what has occurred?",options:["Higher costs","Technological progress","Diminishing returns","Shutdown"],a:1,tag:"production",type:"interpretation",feedback:"Technology allows more efficient production."},
+{ id:105, q:"If marginal product increases, what happens to marginal cost?",options:["Rises","Falls","Stays constant","Becomes zero"],a:1,tag:"production",type:"interpretation",feedback:"Higher productivity lowers cost per unit."}
+],
+
+costs:[
+{ id:106, q:"If MC is below ATC, what happens to ATC?",options:["Rises","Falls","Stays constant","Becomes zero"],a:1,tag:"costs",type:"interpretation",feedback:"MC pulls ATC downward."},
+{ id:107, q:"If MC is above ATC, what happens to ATC?",options:["Falls","Rises","Stays constant","Becomes zero"],a:1,tag:"costs",type:"interpretation",feedback:"MC pulls ATC upward."},
+{ id:108, q:"If ATC is at its minimum, what must be true?",options:["MC = ATC","MC > ATC","MC < ATC","MC = 0"],a:0,tag:"costs",type:"definition",feedback:"MC intersects ATC at its minimum."},
+{ id:109, q:"Which cost exists even if output is zero?",options:["Marginal cost","Variable cost","Fixed cost","Average cost"],a:2,tag:"costs",type:"definition",feedback:"Fixed costs must always be paid."},
+{ id:110, q:"If input prices rise, what happens to cost curves?",options:["Shift down","Shift up","Stay the same","Disappear"],a:1,tag:"costs",type:"interpretation",feedback:"Higher input prices increase costs."},
+{ id:111, q:"If MC falls, what happens to profit-maximizing output?",options:["Falls","Rises","Stays the same","Becomes zero"],a:1,tag:"costs",type:"interpretation",feedback:"Lower MC increases optimal output."}
+],
+
+profit:[
+{ id:112, q:"If MR > MC, what should the firm do?",options:["Decrease output","Increase output","Shut down","Do nothing"],a:1,tag:"profit",type:"interpretation",feedback:"Producing more increases profit."},
+{ id:113, q:"If MR < MC, what should the firm do?",options:["Increase output","Decrease output","Shut down","Raise price"],a:1,tag:"profit",type:"interpretation",feedback:"Producing less increases profit."},
+{ id:114, q:"If P > ATC, the firm is earning...",options:["Loss","Zero profit","Positive profit","Shutdown"],a:2,tag:"profit",type:"interpretation",feedback:"Price above ATC means profit."},
+{ id:115, q:"If P < ATC but P > AVC, the firm should...",options:["Shut down","Continue operating","Exit immediately","Raise price"],a:1,tag:"profit",type:"interpretation",feedback:"Firm covers variable costs but not total costs."},
+{ id:116, q:"If P < AVC, the firm should...",options:["Increase output","Continue operating","Shut down","Raise price"],a:2,tag:"profit",type:"definition",feedback:"Firm cannot cover variable costs."},
+{ id:117, q:"If a firm earns zero economic profit, what is true?",options:["It should exit","It covers all costs","It is inefficient","It is losing money"],a:1,tag:"profit",type:"interpretation",feedback:"All opportunity costs are covered."}
+],
+
+competition:[
+{ id:118, q:"For a competitive firm, marginal revenue equals...",options:["Cost","Price","Profit","Output"],a:1,tag:"competition",type:"definition",feedback:"MR = P in perfect competition."},
+{ id:119, q:"If a firm increases output, what happens to price?",options:["Rises","Falls","Stays the same","Becomes zero"],a:2,tag:"competition",type:"interpretation",feedback:"Firms are price takers."},
+{ id:120, q:"A competitive firm's demand curve is...",options:["Downward sloping","Upward sloping","Perfectly elastic","Vertical"],a:2,tag:"competition",type:"definition",feedback:"Demand is perfectly elastic."},
+{ id:121, q:"A firm's supply curve is its...",options:["Demand curve","MC above AVC","ATC curve","Revenue curve"],a:1,tag:"competition",type:"definition",feedback:"MC above AVC defines supply."},
+{ id:122, q:"If price rises, what happens to firm output?",options:["Falls","Rises","Stays constant","Becomes zero"],a:1,tag:"competition",type:"interpretation",feedback:"Higher price increases output."},
+{ id:123, q:"Competitive firms cannot...",options:["Produce output","Change output","Influence price","Earn profit"],a:2,tag:"competition",type:"definition",feedback:"They take price as given."}
+],
+
+market:[
+{ id:124, q:"If firms are earning profit, what happens?",options:["Exit","Entry","Shutdown","No change"],a:1,tag:"market",type:"interpretation",feedback:"Profit attracts new firms."},
+{ id:125, q:"If firms are losing money, what happens?",options:["Entry","Exit","Price rises immediately","Demand falls"],a:1,tag:"market",type:"interpretation",feedback:"Losses drive firms out."},
+{ id:126, q:"Entry into a market causes price to...",options:["Rise","Fall","Stay constant","Become zero"],a:1,tag:"market",type:"interpretation",feedback:"Supply increases, lowering price."},
+{ id:127, q:"Exit from a market causes price to...",options:["Rise","Fall","Stay constant","Disappear"],a:0,tag:"market",type:"interpretation",feedback:"Supply decreases, raising price."},
+{ id:128, q:"In the long run, profits tend to...",options:["Increase","Decrease to zero","Stay constant","Become negative"],a:1,tag:"market",type:"definition",feedback:"Entry and exit eliminate profit."},
+{ id:129, q:"If demand rises, what happens in the short run?",options:["Price falls","Price rises","Firms exit","Supply falls"],a:1,tag:"market",type:"interpretation",feedback:"Higher demand increases price."}
+],
+
+efficiency:[
+{ id:130, q:"Allocative efficiency occurs when...",options:["MC = MR","MC = Price","ATC minimized","Profit maximized"],a:1,tag:"efficiency",type:"definition",feedback:"P = MC ensures efficient allocation."},
+{ id:131, q:"Productive efficiency occurs when...",options:["MC = P","ATC minimized","Profit maximized","Demand equals supply"],a:1,tag:"efficiency",type:"definition",feedback:"Lowest ATC defines productive efficiency."},
+{ id:132, q:"If P > MC, output is...",options:["Too high","Too low","Efficient","Zero"],a:1,tag:"efficiency",type:"interpretation",feedback:"More output would increase total surplus."},
+{ id:133, q:"If P < MC, output is...",options:["Too high","Too low","Efficient","Optimal"],a:0,tag:"efficiency",type:"interpretation",feedback:"Production exceeds efficient level."},
+{ id:134, q:"Efficiency ensures...",options:["Maximum profit","Optimal allocation of resources","Zero cost","Equal income"],a:1,tag:"efficiency",type:"definition",feedback:"Efficiency maximizes total surplus."},
+{ id:135, q:"If output is produced at minimum ATC, this is...",options:["Allocative efficiency","Productive efficiency","Profit maximization","Market equilibrium"],a:1,tag:"efficiency",type:"definition",feedback:"Minimum cost production defines productive efficiency."}
+]
+};
+
+// =============================================
+// ANSWER SHUFFLING — DO NOT MODIFY CORE LOGIC
+// =============================================
+// Randomizes answer choices while preserving
+// the correct answer index.
+//
+// Steps:
+// 1. Copy original question (prevents mutation)
+// 2. Store correct answer value
+// 3. Shuffle options
+// 4. Recalculate correct index (q.a)
+//
+// ---------------------------------------------
+// DO NOT MODIFY:
+// - correct answer tracking logic
+// - q.a reassignment
+// - structure of returned object
+//
+// Breaking this WILL cause:
+// - incorrect answers being marked correct
+// - correct answers being marked wrong
+//
+// ---------------------------------------------
+// SAFE TO EDIT:
+// - adding extra fields (if needed)
+// - minor formatting changes
+//
+// This function ensures fairness in answer order.
+// =============================================   
+function shuffleOptions(question){
+    let q = {
+        q: question.q,
+        options: [...question.options],
+        a: question.a,
+        feedback: question.feedback,
+        hint: question.hint,
+        tag: question.tag,
+        type: question.type
+    };
+
+    let correct = q.options[q.a];
+
+    for(let i = q.options.length - 1; i > 0; i--){
+        let j = Math.floor(Math.random() * (i + 1));
+        [q.options[i], q.options[j]] = [q.options[j], q.options[i]];
+    }
+
+    q.a = q.options.indexOf(correct);
+
+    return q;
+}
+
+// =============================================
+// DYNAMIC CALCULATION QUESTIONS — SAFE TO EDIT
+// =============================================
+// These generate random numeric problems.
+//
+// You can:
+// - modify formulas
+// - add new generators
+//
+// Keep structure consistent (q, options, a, feedback)
+       
+function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+function getProfitShutdownCombo(){
+    let price = [6,8,10][Math.floor(Math.random()*3)];
+    let mc = price - [2,1,-1][Math.floor(Math.random()*3)];
+    let avc = price + [-2,1][Math.floor(Math.random()*2)];
+    let atc = avc + 2;
+
+    return {
+        q:`A firm has P = $${price}, MC = $${mc}, AVC = $${avc}, and ATC = $${atc}.
+What is the BEST decision?`,
+        options:[
+            "Shut down because it is making a loss",
+            "Continue operating and increase output",
+            "Continue operating but decrease output",
+            "Exit immediately because ATC exceeds price"
+        ],
+        a: (price < avc) ? 0 : (mc < price ? 1 : 2),
+        tag:"profit",
+        type:"multi-step",
+        feedback:"Step 1: Shutdown depends on AVC. Step 2: Output depends on MR vs MC. Most people miss one of these."
+    };
+}
+
+function getCostOutputCombo(){
+    let direction = Math.random() < 0.5 ? "increase" : "decrease";
+
+    return {
+        q:`A firm experiences a ${direction} in marginal product of labor.
+What happens to cost and output?`,
+        options:[
+            "MC rises and output rises",
+            "MC falls and output falls",
+            direction === "increase"
+                ? "MC falls and output increases"
+                : "MC rises and output decreases",
+            "ATC determines output directly"
+        ],
+        a:2,
+        tag:"production",
+        type:"multi-step",
+        feedback:"Productivity affects MC → MC determines output via MR = MC."
+    };
+}
+    
+function getMarketChainCombo(){
+    let scenario = Math.random() < 0.5 ? "profit" : "loss";
+
+    return {
+        q:`Firms are earning economic ${scenario} in a competitive market.
+What happens next AND in the long run?`,
+        options:[
+            "Short run: nothing → Long run: nothing",
+            scenario === "profit"
+                ? "Short run: profit continues → Long run: entry drives price down"
+                : "Short run: losses continue → Long run: exit drives price up",
+            "Demand shifts permanently",
+            "Firms shut down immediately"
+        ],
+        a:1,
+        tag:"market",
+        type:"multi-step",
+        feedback:"You must separate short run vs long run. Most students collapse them."
+    };
+}
+  
+function getEfficiencyProfitCombo(){
+    let price = [8,10,12][Math.floor(Math.random()*3)];
+    let mc = price;
+    let atc = price + [1,2][Math.floor(Math.random()*2)];
+
+    return {
+        q:`A firm produces where P = $${price} and MC = $${mc}, but ATC = $${atc}.
+Which statement is TRUE?`,
+        options:[
+            "The firm is inefficient because it is earning a loss",
+            "The firm is allocatively efficient but earning a loss",
+            "The firm should shut down immediately",
+            "The firm is earning profit because P = MC"
+        ],
+        a:1,
+        tag:"efficiency",
+        type:"trap",
+        feedback:"P = MC → allocative efficiency. Profit depends on P vs ATC. These are NOT the same."
+    };
+}
+    
+const calculationGenerators = [
+   getProfitShutdownCombo,
+   getCostOutputCombo,
+   getMarketChainCombo,
+   getEfficiencyProfitCombo
+];
+    
+// =============================================
+// QUESTION SELECTION ENGINE — DO NOT MODIFY
+// =============================================
+// Handles:
+// - non-repetition
+// - difficulty filtering
+// - type balancing
+//
+// Breaking this = repeated questions or bad difficulty scaling
+     
+function randomQuestion(poolName) {
+    // --- SPECIAL CALCULATED ROOMS (26-29) ---
+    // These ensure the student practices specific math skills before the boss
+if (room === 26) return getProfitShutdownCombo();
+if (room === 27) return getCostOutputCombo();
+if (room === 28) return getMarketChainCombo();
+if (room === 29) return getEfficiencyProfitCombo();
+
+    let pool = questionBanks[poolName]
+
+    // Safety check in case poolName is invalid
+    if (!pool) return null;
+    
+    let used = [
+        ...usedQuestions.easy,
+        ...usedQuestions.medium,
+        ...usedQuestions.hard,
+        ...usedQuestions.easyBoss,
+        ...usedQuestions.mediumBoss,
+        ...usedQuestions.finalBoss,
+    ];
+
+    let available = pool.filter(q => !used.includes(q.id));
+
+    if(available.length === 0){
+        usedQuestions[poolName] = []
+        available = pool
+    }
+
+    // Avoid three identical question types in a row
+    let filtered = available;
+    if (lastTypes.length >= 2) {
+        let last1 = lastTypes[lastTypes.length - 1];
+        let last2 = lastTypes[lastTypes.length - 2];
+
+        if (last1 === last2) {
+            filtered = available.filter(q => q.type !== last1);
+            if (filtered.length === 0) filtered = available;
+        }
+    }
+
+    let question = filtered[Math.floor(Math.random() * filtered.length)];
+
+usedQuestions[poolName].push(question.id)
+
+// Track types
+lastTypes.push(question.type)
+if(lastTypes.length > 3){
+lastTypes.shift()
+}
+
+    return question;
+}
+
+function pickConceptQuestion(pool){
+    if(!pool._remaining || pool._remaining.length === 0){
+        pool._remaining = shuffle([...pool]);
+    }
+    return pool._remaining.pop();
+}
+    
+// =============================================
+// MAZE TRACK VISUAL SYSTEM — SAFE TO EDIT (WITH RULES)
+// =============================================
+// This function renders the 30-room progression map.
+//
+// What you CAN change:
+// - Icons (🟩 🟦 ⬛ 🎲 🛡️ 👑)
+// - Colors / styles (opacity, glow, etc.)
+// - Visual themes (make it sci-fi, medieval, etc.)
+//
+// What you MUST NOT change:
+// - Loop range (1 → 30) → controls total rooms
+// - "room" variable usage → tracks player position
+// - Boss room numbers (10, 20, 30) unless you update ALL logic elsewhere
+//
+// If you change boss room numbers here but NOT in:
+// - loadQuestion()
+// - answer()
+// - boss logic
+// → the game WILL break.
+//
+// This is VISUAL ONLY.
+// It does NOT control game progression.
+// =============================================
+     
+function updateMazeTrack() {
+    const track = document.getElementById("mazeTrack");
+    track.innerHTML = ""; // Clear the old grid
+    
+    for (let i = 1; i <= 30; i++) {
+        const box = document.createElement("div");
+        box.setAttribute("role","img");
+        box.setAttribute("aria-label",`Room ${i} of 30`);
+        box.className = "maze-box";
+        
+        // Determine the icon and state
+        if (i < room) {
+            box.innerText = "🟧";
+            box.style.opacity = "0.6";
+        } else if (i === room) {
+            box.classList.add("active"); // Trigger the gold pulse
+            box.setAttribute("aria-label",`Current room ${i} of 30`);
+            box.innerText = "🟥";
+        } else {
+            // Boss icons for future rooms
+            if (i === 10){box.innerText = "🔨";box.classList.add("boss10");}
+            else if (i === 20){box.innerText = "💀";box.classList.add("boss20");}
+            else if (i === 30){box.innerText = "👑";box.classList.add("boss30");}
+            else box.innerText = "⬛";
+        }
+        
+        track.appendChild(box);
+    }
+}
+
+// =============================================
+// RANDOMIZATION SYSTEM — DO NOT MODIFY CORE LOGIC
+// =============================================
+// Controls fair, non-repeating selection of:
+// - calculation generators
+// - question pools
+//
+// Uses "shuffle + bag" system to ensure:
+// - no immediate repeats
+// - full coverage before reuse
+//
+// ---------------------------------------------
+// SAFE TO EDIT:
+// - adding new generators (calculationGenerators)
+// - modifying pool content
+//
+// DO NOT MODIFY:
+// - shuffle logic
+// - bag system (calcBag, _remaining)
+// - pop() usage
+//
+// Breaking this WILL cause:
+// - repeated questions
+// - uneven distribution
+// - predictable patterns
+//
+// This ensures randomness WITHOUT repetition.
+// =============================================     
+
+// Fisher-Yates shuffle (uniform random order)
+// Do not modify — ensures unbiased randomness     
+function shuffle(arr){
+    for(let i = arr.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+// Bag system for calculation generators
+// Ensures all generators are used before repeating
+let calcBag = [];
+
+// Pulls one calculation generator from the bag
+// Refills bag when empty (reshuffled)
+function pickCalcGenerator(){
+    if(calcBag.length === 0){
+        calcBag = shuffle([...calculationGenerators]);
+    }
+    return calcBag.pop();
+}
+
+// Generic bag-based random picker for any pool
+// Prevents repeats until pool is exhausted
+function pickRandom(pool){
+    if(!pool._remaining || pool._remaining.length === 0){
+        pool._remaining = shuffle([...pool]);
+    }
+    return pool._remaining.pop();
+}
+
+// =============================================
+// MUSIC CONTROL SYSTEM — SAFE TO CUSTOMIZE (WITH RULES)
+// =============================================
+// Controls background music states:
+//
+// - exploration (normal gameplay)
+// - boss (mid bosses)
+// - finalBoss (final encounter)
+//
+// Ensures ONLY ONE track plays at a time.
+//
+// ---------------------------------------------
+// SAFE TO EDIT:
+// - audio files (bgMusic, bossMusic, finalBossMusic)
+// - volumes
+// - adding new music states (advanced)
+//
+// ---------------------------------------------
+// DO NOT MODIFY:
+// - currentMusic tracking
+// - stopAllMusic() behavior
+// - conditional checks (prevents overlap)
+//
+// Breaking this WILL cause:
+// - multiple tracks playing at once
+// - music not switching correctly
+//
+// This system manages audio state transitions.
+// =============================================     
+let currentMusic = null;
+
+// Stops all music tracks (called before switching states)
+// Do not remove — prevents audio overlap     
+function stopAllMusic(){
+    if(bgMusic) bgMusic.pause();
+    if(bossMusic) bossMusic.pause();
+    if(finalBossMusic) finalBossMusic.pause();
+}
+
+// Plays exploration (default) music
+// Skips if already playing to prevent restart spam     
+function playExplorationMusic(){
+    if(currentMusic === "exploration") return;
+    stopAllMusic();
+    bgMusic.play();
+    currentMusic = "exploration";
+}
+
+// Plays boss encounter music
+// Automatically stops other tracks first     
+function playBossMusic(){
+    if(currentMusic === "boss") return;
+    stopAllMusic();
+    bossMusic.play();
+    currentMusic = "boss";
+}
+
+// Plays final boss music (highest priority state)
+// Overrides all other music     
+function playFinalBossMusic(){
+    if(currentMusic === "finalBoss") return;
+    stopAllMusic();
+    finalBossMusic.play();
+    currentMusic = "finalBoss";
+}
+
+// =============================================
+// MAIN GAME LOOP — DO NOT MODIFY
+// =============================================
+// Controls:
+// - what question appears
+// - boss encounters
+// - difficulty scaling
+// - UI updates
+//
+// This is the heart of the game.
+// Changing logic here will break progression.
+     
+function loadQuestion() {
+    updateMazeTrack();
+    const questionElement = document.getElementById("question");
+    const msgElement = document.getElementById("message");
+    const gameBox = document.getElementById("gameBox");
+    const bossMsg = document.getElementById("bossMessage");
+
+    document.getElementById("artifactDrop").style.display = "none";
+
+    // 1. Determine Difficulty and Boss Status
+    let diff = (room <= 9) ? "easy" : (room === 10) ? "easyBoss" : (room <= 19) ? "medium" : (room === 20) ? "mediumBoss" : (room <= 25) ? "hard" : (room <= 29) ? "calculation" : "finalBoss";
+    
+    // --- MUSIC CONTROL ---
+    if(diff === "finalBoss"){
+        playFinalBossMusic();
+        }
+    else if(diff.includes("Boss")){
+        playBossMusic();
+        }
+    else{
+        playExplorationMusic();
+        }
+
+    const isBoss = diff.includes("Boss");
+    const shell = document.getElementById("gameShell");
+
+    // SINGLE SOURCE OF TRUTH
+    shell.classList.toggle("boss-mode", isBoss);
+    gameBox.classList.toggle("boss-mode", isBoss);
+   
+    // 2. UI & Progress Updates
+    gameBox.classList.toggle("boss-mode", isBoss);
+    document.getElementById("progressFill").style.width = (room / 30 * 100) + "%";
+    document.getElementById("areaDisplay").innerText = `${getAreaName(room)} (${room}/30)`;
+    document.getElementById("srAnnouncements").innerText = `Entering ${getAreaName(room)}. Room ${room} of 30.`;
+
+    // 3. Select the Question (CHANGE BOSS NAMES AND PNG)
+
+       // 3. Select the Question (CHANGE BOSS NAMES AND PNG)
+    if (isBoss) {
+        if (bossHealth === 3) {
+        bossPool = [...questionBanks[diff]]; // ← NO SHUFFLE
+        }
+
+        currentQuestion = shuffleOptions(bossPool[3 - bossHealth]);
+        
+        let bTitle = room === 10 ? "THE COST FORGER" : room === 20 ? "THE SUPPLY ENGINE" : "THE MARKET TYRANT";
+        let bColor = room === 10 ? "#fbbf24" : room === 20 ? "#f97316" : "#ef4444";
+        document.getElementById("srAnnouncements").innerText =`Boss encounter. ${bTitle}. Prepare yourself`;
+        bossMsg.innerText = "⚠ BOSS ENCOUNTER ⚠";
+        bossMsg.style.color = bColor;
+        gameBox.style.setProperty('--bossColor', bColor);
+        let bossImage = "";
+        let bossClass = "";
+
+// =============================================
+// BOSS VISUAL CONFIGURATION — SAFE TO EDIT
+// =============================================
+// Change:
+// - boss images
+// - boss class
+//
+// Keep room numbers (10, 20, 30) intact.
+// =============================================
+        
+    if(room === 10){
+    bossImage = "cost_forger.png";
+    bossClass = "forgerGlow";
+    }
+    else if(room === 20){
+    bossImage = "supply_engine.png";
+    bossClass = "enginerGlow";
+    }
+    else{
+    bossImage = "market_tyrant.png";
+    bossClass = "finalBoss";
+    }
+
+    questionElement.innerHTML =
+    `<img src="${bossImage}" class="bossIcon ${bossClass}">
+    <span class="boss-title" style="color:${bColor}">${bTitle}</span>
+    <div class="boss-q" style="--bossColor:${bColor}">
+    ${currentQuestion.q}
+    </div>`;
+   } else {
+
+    // --- STREAK ADAPTIVE LOGIC ---
+    let adjustedDiff = diff;
+
+    // --- FIND STRONGEST AREA (lowest weakness) ---
+    let strongestTag = null;
+    let lowestValue = Infinity;
+
+    for(let tag in conceptMemory){
+        if(conceptMemory[tag] < lowestValue){
+            lowestValue = conceptMemory[tag];
+            strongestTag = tag;
+            }
+        }
+
+    // --- ADAPTIVE ESCALATION ---
+    if(streak >= 8 && lowestValue < 1.5 && room < 25){
+        adjustedDiff = "hard";
+        }
+    else if(streak >= 5 && lowestValue < 2.5 && room < 20){
+        adjustedDiff = "medium";
+        }
+
+// =============================
+// QUESTION SELECTION
+// =============================
+
+if(adjustedDiff === "calculation"){
+    const generator = pickCalcGenerator();
+    currentQuestion = shuffleOptions(generator());
+}
+else if(adjustedDiff === "hard" && strongestTag){
+    // 🔥 TARGET STRONGEST AREA FOR HARD QUESTIONS
+    currentQuestion = shuffleOptions(
+        getAdaptiveQuestion(adjustedDiff, strongestTag)
+    );
+}
+else{
+    // normal behavior
+    currentQuestion = shuffleOptions(
+        getAdaptiveQuestion(adjustedDiff)
+    );
+}
+
+// =============================
+// --- WIZARD LOGIC ---
+// =============================
+    if(!currentQuestion.type){
+        currentQuestion.type = "interpretation";
+    }
+
+    const wizardText = getWizardLine(currentQuestion.type);
+    wizardSpeak(wizardText);
+
+    // --- UI ---
+    bossMsg.innerText = (room === 9 || room === 19 || room === 29)
+        ? "⚠️ DANGER: BOSS DETECTED IN NEXT ROOM ⚠️"
+        : "";
+    bossMsg.style.color = "#ef4444";
+
+    questionElement.innerHTML = `
+        <div>${currentQuestion.q}</div>
+    `;
+}
+    
+    // 4. Update Hints and Draw Buttons
+    document.getElementById("formulaHint").innerText = currentQuestion.hint ? "💡 Hint: " + currentQuestion.hint : "";
+    displayQuestion();
+    
+  // --- Final Boss Entrance Shake ---
+    if(diff === "finalBoss"){
+        setTimeout(()=>{
+        triggerBossShake();
+        setTimeout(triggerBossShake,450);
+        },200);
+    }
+}
+
+// =============================================
+// ANSWER RENDERING — DO NOT MODIFY CORE LOGIC
+// =============================================
+// This function displays answer choices as buttons.
+//
+// It connects each button to the answer() function,
+// which handles ALL game logic (correct/incorrect,
+// streaks, progression, etc.)
+//
+// ---------------------------------------------
+// SAFE TO EDIT:
+// - button styling (CSS)
+// - text formatting
+// - layout of answers
+//
+// DO NOT MODIFY:
+// - btn.onclick = () => answer(index)
+// - use of currentQuestion.options
+//
+// Changing these will break answer selection
+// and disconnect the game logic.
+//
+// This is the bridge between UI and engine.
+// =============================================     
+function displayQuestion() {
+    const optionsElement = document.getElementById("answers");
+    optionsElement.innerHTML = "";
+
+    currentQuestion.options.forEach((option, index) => { 
+        const btn = document.createElement("button");
+        btn.innerText = option;
+        btn.setAttribute("aria-label",`Answer option: ${option}`);
+        btn.onclick = () => answer(index);
+        optionsElement.appendChild(btn);
+    });
+}
+
+// =============================================
+// ANSWER HANDLER — CRITICAL SYSTEM
+// =============================================
+// Controls:
+// - correct/incorrect logic
+// - streaks
+// - setbacks
+// - boss damage
+// - adaptive memory updates
+//
+// DO NOT MODIFY unless you understand:
+// - conceptMemory
+// - detour system
+// - progression penalties
+//
+// Check for artifact names and CHANGE
+     
+function answer(choice) {
+    // --- GLOBAL MEMORY DECAY ---
+    for(let tag in conceptMemory){
+    conceptMemory[tag] *= 0.95;
+    }
+    totalAttempts++;
+    const isBossRoom = (room === 10 || room === 20 || room === 30);
+    const msgElement = document.getElementById("message");
+    const wizard = document.getElementById("wizardImage");
+    if (choice === currentQuestion.a) {
+        if(isBossRoom){
+        sfxCorrect.pause();
+        sfxCorrect.currentTime = 0;
+
+        sfxBossHit.pause();
+        sfxBossHit.currentTime = 0;
+        sfxBossHit.play().catch(()=>{});
+    } else {
+        sfxBossHit.pause();
+        sfxBossHit.currentTime = 0;
+
+        sfxCorrect.pause();
+        sfxCorrect.currentTime = 0;
+        sfxCorrect.play().catch(()=>{});
+    }
+        wizardSpeak(getWizardFeedback("correct"));
+        wizard.style.transform = "scale(1.1)";
+        setTimeout(()=>{
+        wizard.style.transform = "";
+        },200);
+        // If this was a concept detour question, return player to main path
+        if(detourActive){
+        detourActive = false;
+        msgElement.innerHTML = `<span class='fade-out-text'>Correct! Concept restored. Moving deeper...</span>`;
+        room = detourReturnRoom + 1;
+        localStorage.setItem("gauntletRoom", room);
+        setTimeout(loadQuestion, TIMING.normal);
+        return;
+    }
+        correctAnswers++;
+        streak++;
+        if (streak > maxStreak) maxStreak = streak;
+        handleStreakVisuals();
+
+        // --- LEARNING: reduce weakness ---
+        if(currentQuestion.tag){
+            conceptMemory[currentQuestion.tag] =
+            (conceptMemory[currentQuestion.tag] || 0) * 0.7;
+        }
+
+      // 🔍 DEBUG: Check tag + memory
+      console.log("TAG:", currentQuestion.tag);
+      console.log("MEMORY:", conceptMemory[currentQuestion.tag]);
+       
+       // --- BOSS HIT LOGIC ---
+        if(isBossRoom){
+        bossHealth--;
+
+        msgElement.innerHTML = `<span style='color:#f87171;font-weight:bold;'>⚔ HIT! Boss Health: ${bossHealth}/3</span>`;
+
+        triggerBossShake();
+
+        if (bossHealth > 0) {
+        setTimeout(loadQuestion, TIMING.boss);
+        return;
+        }
+
+        // Boss defeated (CHANGE ARTIFACT NAMES)
+        if(room === 10){
+        document.getElementById("vaultHeart").classList.add("unlocked");
+        localStorage.setItem("vaultHeart", "true");
+        showArtifact(artifacts.heart.img, artifacts.heart.title, artifacts.heart.text);
+        }
+
+        if(room === 20){
+        document.getElementById("vaultCore").classList.add("unlocked");
+        localStorage.setItem("vaultCore", "true");
+        showArtifact(artifacts.core.img, artifacts.core.title, artifacts.core.text);
+        }
+
+        if(room === 30){
+        document.getElementById("vaultCrown").classList.add("unlocked");
+        localStorage.setItem("vaultCrown", "true");
+        showArtifact(artifacts.crown.img, artifacts.crown.title, artifacts.crown.text);
+        }
+
+   showKnowledgeRoom(room);
+    bossHealth = 3;
+    return;
+            }
+        
+msgElement.innerHTML = "";
+room++;
+localStorage.setItem("gauntletRoom", room);
+showHallwayTransition(currentQuestion.feedback);
+return;
+       
+// =============================================
+// ❌ WRONG ANSWER BLOCK — ALL FAILURE LOGIC
+// =============================================
+       
+    } else {
+        if(isBossRoom){
+        sfxWrong.volume = 0.7;
+        } else {
+        sfxWrong.volume = 0.5;
+        }    
+        sfxWrong.currentTime = 0;
+        sfxWrong.play().catch(()=>{});
+        wizardSpeak(getWizardFeedback("wrong"));
+        wizard.style.transform = "translateX(-6px)";
+        setTimeout(()=>{
+            wizard.style.transform = "translateX(6px)";
+            setTimeout(()=>{
+                wizard.style.transform = "";
+            },100);
+        },100);
+        streak = 0;
+
+// --- LEARNING: increase weakness (THIS DRIVES DETOURS) ---
+if(currentQuestion.tag){
+    conceptMemory[currentQuestion.tag] =
+    (conceptMemory[currentQuestion.tag] || 0) + 1;
+}
+
+// 🔍 DEBUG: verify detour trigger conditions
+console.log("WRONG TAG:", currentQuestion.tag);
+console.log("UPDATED MEMORY:", conceptMemory[currentQuestion.tag]);
+
+// =============================================
+// CONCEPT DETOUR SYSTEM — ADVANCED
+// =============================================
+// When a student repeatedly misses a concept,
+// they are forced into a focused "mini quiz"
+//
+// This is key to reinforcement learning.
+//
+// You can ADD questions to pools,
+// but do NOT change trigger logic unless advanced.
+
+console.log("DETOUR CHECK VALUE:", conceptMemory[currentQuestion.tag]);
+       
+   if(!detourActive &&currentQuestion.tag &&(conceptMemory[currentQuestion.tag] || 0) >= 1){
+
+    let conceptPool = null;
+
+    // Determine difficulty based on room
+    if(room <= 9 && easyConceptPools[currentQuestion.tag]){
+        conceptPool = easyConceptPools[currentQuestion.tag];
+    }
+
+    if(room >= 11 && room <= 19 && mediumConceptPools[currentQuestion.tag]){
+        conceptPool = mediumConceptPools[currentQuestion.tag];
+    }
+
+       if(conceptPool){
+
+        detourActive = true;
+        detourReturnRoom = room;
+
+        currentQuestion = shuffleOptions(pickConceptQuestion(conceptPool));
+
+        document.getElementById("question").innerText = "Concept Check: " + currentQuestion.q;
+        document.getElementById("formulaHint").innerText = currentQuestion.hint ? "💡 Hint: " + currentQuestion.hint : "";
+
+        msgElement.innerHTML = `<span class='fade-out-text'>You falter… The foundry demands a concept check.</span>`;
+
+        displayQuestion();
+        return;
+        }
+       }
+
+    // Normal failure handling
+    document.getElementById("streakDisplay").innerText = "";
+    bossHealth = 3;
+
+    // =============================================
+    // SAFE FALLBACK LOGIC (NO BOSS REGRESSION)
+    // =============================================
+    const bossRooms = [10, 20, 30];
+
+    // Original fallback amount
+    let fallback = (room % 10 === 0 ? 3 : (room >= 21 ? 2 : 1));
+    let newRoom = room - fallback;
+
+    // Prevent falling into boss rooms
+    while (bossRooms.includes(newRoom)) {
+    newRoom++;
+    }
+
+    // Clamp to minimum
+    room = Math.max(1, newRoom);
+    localStorage.setItem("gauntletRoom", room);
+    alert(`Incorrect! You trip in the darkness and tumble back to Room ${room}.`);
+    loadQuestion();
+    }
+}
+
+// =============================================
+// UI FEEDBACK & REWARD SYSTEM — SAFE TO CUSTOMIZE
+// =============================================
+// These functions control:
+// - visual feedback (streaks, boss shake, transitions)
+// - reward display (artifacts)
+// - immersion elements (hallway transitions)
+//
+// SAFE TO EDIT:
+// - text, colors, messages
+// - images and styling
+// - timing (setTimeout delays)
+//
+// DO NOT MODIFY:
+// - function names (called elsewhere in engine)
+// - core triggers (when these are called)
+//
+// Breaking these won't destroy logic,
+// but WILL break user experience.
+//
+// This is presentation + feedback layer.
+// =============================================
+
+// Unlocks artifact in vault + saves progress
+// Requires matching ID format: "vault" + ArtifactName
+// Safe to customize artifact visuals/text only
+function unlockArtifact(key) {
+    const id = "vault" + key.charAt(0).toUpperCase() + key.slice(1);
+    document.getElementById(id).classList.add("unlocked");
+    localStorage.setItem(id, "true");
+    showArtifact(artifacts[key].img, artifacts[key].title, artifacts[key].text);
+}
+    
+// =============================================
+// STREAK FEEDBACK SYSTEM — SAFE TO CUSTOMIZE
+// =============================================
+// Controls milestone streak messages and colors.
+//
+// You can:
+// - change streak thresholds (5, 10, 20)
+// - change messages/themes
+// - change colors
+//
+// Keep variable "streak" intact.
+// =============================================
+function handleStreakVisuals() {
+    let streakMsg = "";
+    let streakColor = "#fbbf24";
+
+    if (streak === 5) { streakMsg = "🔥 STREAK: Heat Rising!"; streakColor = "#fbbf24"; }
+    else if (streak === 10) { streakMsg = "⚒️ STREAK: Hammer Falling"; streakColor = "#f97316"; }
+    else if (streak === 20) { streakMsg = "👑 STREAK: System Controlled"; streakColor = "#eab308"; }
+
+    if (streakMsg) {
+        sfxMilestone.currentTime = 0;
+        sfxMilestone.play();
+        document.getElementById("streakDisplay").innerText = streakMsg;
+        document.getElementById("streakDisplay").style.color = streakColor;
+    } else if (streak > 0) {
+        document.getElementById("streakDisplay").innerText = `Streak: ${streak}`;
+        document.getElementById("streakDisplay").style.color = "#fbbf24";
+    }
+}
+
+// =============================================
+// TRANSITION SCREEN — SAFE TO CUSTOMIZE
+// =============================================
+// Displays feedback + transition between rooms.
+//
+// You can:
+// - change text, tone, styling
+// - change images (hallwayImages array)
+// - adjust timing (setTimeout)
+//
+// DO NOT remove loadQuestion() call,
+// or the game will stall.
+// =============================================
+function showHallwayTransition(feedback){
+    const overlay = document.getElementById("hallwayTransition");
+    const text = document.getElementById("hallwayText");
+
+// pick a random hallway image
+    const randomHall = hallwayImages[Math.floor(Math.random()*hallwayImages.length)];
+
+    overlay.style.background =
+    `linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7)), url('${randomHall}')`;
+
+    overlay.style.backgroundSize = "cover";
+    overlay.style.backgroundPosition = "center";
+
+    text.innerHTML = `
+    <div style="font-size:22px;margin-bottom:15px;color:#4ade80;">${getWizardFeedback("correct")}</div>
+    <div style="font-size:18px;opacity:.9;">${feedback}</div>
+    <div style="margin-top:25px;font-size:14px;opacity:.7;">You move deeper into the foundry...</div>
+    `;
+
+    overlay.classList.add("active");
+
+    document.getElementById("srAnnouncements").innerText =`Correct. ${feedback}`;
+    
+    setTimeout(()=>{
+    overlay.classList.remove("active");
+    loadQuestion();
+    },3200);
+}
+
+// Displays artifact reward popup
+// Safe to customize layout, text, and images
+// Requires matching HTML element IDs     
+function showArtifact(img,title,text){
+
+    let drop = document.getElementById("artifactDrop");
+    let image = document.getElementById("artifactImage");
+    let t = document.getElementById("artifactTitle");
+    let p = document.getElementById("artifactText");
+
+    image.src = img;
+    t.innerText = title;
+    p.innerText = text;
+
+    drop.style.display = "block";
+}
+
+// =============================================
+// BOSS HIT ANIMATION — SAFE TO CUSTOMIZE
+// =============================================
+// Creates shake effect on boss + game box.
+//
+// You can:
+// - adjust animation timing
+// - change CSS effects
+//
+// Safe to remove if no animation desired.
+// =============================================     
+function triggerBossShake() {
+    const icon = document.querySelector(".bossIcon");
+    const box = document.getElementById("gameBox");
+
+    // Shake the world
+    box.classList.remove("boss-shake");
+    void box.offsetWidth;
+    box.classList.add("boss-shake");
+
+    // Shake the boss (if it exists)
+    if (icon) {
+        icon.classList.remove("boss-shake");
+        void icon.offsetWidth;
+        icon.classList.add("boss-shake");
+    }
+}
+  
+// =============================================
+// BOSS SUMMARY / TRANSITION ROOM — PARTIAL CUSTOMIZATION
+// =============================================
+// This function runs AFTER a boss is defeated.
+//
+// It serves THREE roles:
+// 1. Displays narrative payoff (title + summary)
+// 2. Pauses gameplay for reflection
+// 3. Routes player forward OR to final victory
+//
+// ---------------------------------------------
+// SAFE TO EDIT (CUSTOMIZATION):
+// - Boss titles ("DICE TYRANT DEFEATED", etc.)
+// - Summary text (lore, explanations, tone)
+// - Button text ("CONTINUE...", "FINALIZE...")
+// - Styling (colors, formatting)
+//
+// ---------------------------------------------
+// DO NOT MODIFY (CORE LOGIC):
+// - bossRoom checks (10, 20, 30)
+// - progression logic (room++, loadQuestion())
+// - handleVictory() trigger
+// - bossHealth reset
+//
+// If you change boss room numbers here,
+// you MUST also change them in:
+// - loadQuestion()
+// - answer()
+// - mazeTrack()
+//
+// ---------------------------------------------
+// WARNING:
+// This function controls the transition between levels.
+// Breaking this will cause:
+// - bosses to repeat
+// - game to freeze after boss
+// - victory screen not triggering
+//
+// This is BOTH UI + progression logic.
+// Edit carefully.
+// =============================================
+function showKnowledgeRoom(bossRoom) {
+    playExplorationMusic();  
+  
+    const qContainer = document.getElementById("question");
+    const aContainer = document.getElementById("answers");
+    const msgElement = document.getElementById("message");
+  
+  
+    // Clear the "Correct!" fade-out text so it doesn't stay on the summary screen
+    msgElement.innerText = "";
+    msgElement.className = "";
+    
+    let title = "";
+    let summary = "";
+
+// =============================================
+// BOSS NARRATIVE CONTENT — SAFE TO EDIT
+// =============================================
+// Each block corresponds to a boss room.
+// You can rewrite these freely to match your theme.
+//
+// Keep room numbers aligned with:
+// - actual boss encounters
+// =============================================    
+   if (bossRoom === 10) {
+    title = "THE COST FORGER FALLS";
+    summary = "The structure stabilizes. You have endured the strain of rising costs and learned where systems fail. Marginal pressure reveals the limits of production. The forge burns hotter...";
+   } 
+   else if (bossRoom === 20) {
+    title = "THE SUPPLY ENGINE SILENCED";
+    summary = "The system yields. You now understand how output responds under pressure. When conditions shift, production moves—whether controlled or not. The machinery deepens...";
+   } 
+   else if (bossRoom === 30) {
+    title = "THE MARKET TYRANT DEFEATED";
+    summary = "Control is yours. You have mastered response, pricing, and dominance within the system. Markets no longer move against you—they move because of you.";
+   }
+
+    // Update the UI
+   qContainer.innerHTML = `
+    <span class="boss-title">${title}</span>
+    <div class="boss-q">${summary}</div>
+   `;
+    
+    // logic to ensure Room 30 triggers the end game, while 10 and 20 trigger the next level
+    let nextAction = bossRoom === 30 ? "handleVictory()" : "room++; loadQuestion();";
+    let buttonLabel = bossRoom === 30 ? "FINALIZE THE ARCHIVE CONQUEST →" : `CONTINUE TO ROOM ${bossRoom + 1} →`;
+
+aContainer.innerHTML = `
+<button id="continueBtn" class="continue-btn">
+    ${buttonLabel}
+</button>`;
+
+// =============================================
+// PROGRESSION HANDLER — DO NOT MODIFY
+// =============================================
+// Controls what happens AFTER the summary screen:
+// - resets boss state
+// - advances room
+// - triggers next question or victory
+//
+// Breaking this = progression failure
+// =============================================    
+document.getElementById("continueBtn").onclick = () => {
+    // --- RESET BOSS STATE (THIS IS THE FIX) ---
+    document.getElementById("gameShell").classList.remove("boss-mode");
+    document.getElementById("gameBox").classList.remove("boss-mode");
+    bossHealth = 3;
+
+    if(bossRoom === 30){
+        handleVictory();
+    } else {
+        room++;
+        localStorage.setItem("gauntletRoom", room);
+        loadQuestion();
+    }
+};
+}
+
+// =============================================
+// COMPLETION CODE GENERATOR — DO NOT MODIFY
+// =============================================
+// This function creates a unique verification code
+// based on player performance:
+//
+// Inputs:
+// - name (player)
+// - accuracy (% correct)
+// - streak (max streak)
+// - total (questions answered)
+//
+// It generates a deterministic hash so that:
+// - codes are reproducible
+// - codes cannot be easily faked manually
+//
+// ---------------------------------------------
+// DO NOT CHANGE:
+// - string structure (name|acc|streak|total|ARCHIVE42)
+// - hashing logic
+// - return format ("ARCH-...")
+//
+// Changing this WILL:
+// - invalidate all existing completion codes
+// - break verification consistency
+//
+// ---------------------------------------------
+// SAFE TO EDIT (if absolutely necessary):
+// - "ARCHIVE42" → change only if rebranding ALL codes
+// - "ARCH-" prefix → cosmetic only
+//
+// This is NOT encryption.
+// It is a lightweight integrity check.
+// =============================================
+function generateCode(name, acc, streak, total){
+    let str = `${name}|${acc}|${streak}|${total}|ARCHIVE42`;
+    let hash = 0;
+
+    for(let i = 0; i < str.length; i++){
+        hash = (hash << 5) - hash + str.charCodeAt(i);
+        hash |= 0;
+    }
+
+    return "ARCH-" + Math.abs(hash).toString(36).toUpperCase();
+} 
+
+// =============================================
+// VICTORY SCREEN — PARTIAL CUSTOMIZATION ZONE
+// =============================================
+// This function runs when the player completes the gauntlet.
+//
+// DO NOT MODIFY (CORE LOGIC):
+// - accuracy calculation
+// - time tracking
+// - verification code generation
+// - function structure
+//
+// SAFE TO EDIT (CUSTOMIZATION):
+// - victory title text ("CONQUEST COMPLETE")
+// - narrative/judgment text (archivistLine)
+// - colors and styling
+// - labels (Adventurer → Student, etc.)
+// - button text
+//
+// WARNING:
+// The HTML below is dynamically injected.
+// If you remove IDs like:
+// - vCode
+// - archivistLine
+// - shareBtn
+// you WILL break:
+// - copyResults()
+// - fade-in animation
+//
+// This is a PRESENTATION layer, not a logic layer.
+// =============================================     
+function handleVictory() {
+    bgMusic.pause();
+    bossMusic.pause();
+    if (typeof sfxVictory !== 'undefined') {
+        sfxVictory.currentTime = 0;
+        sfxVictory.play();
+    }
+    
+    const totalTimeMs = Date.now() - startTime;
+    const timeString = formatTime(totalTimeMs);
+    const accuracy = Math.round((correctAnswers / totalAttempts) * 100);
+    const verificationCode = generateCode(username, accuracy, maxStreak, totalAttempts);
+    
+// =============================================
+// PERFORMANCE FEEDBACK TEXT — SAFE TO EDIT
+// =============================================
+// Customize these lines to match your theme.
+// You can:
+// - rename "Archivist"
+// - change tone (serious, funny, brutal, etc.)
+// - adjust thresholds (90, 75)
+//
+// DO NOT remove the structure (if / else blocks)
+// unless you understand accuracy calculation.
+// =============================================
+    let archivistLine = "";
+    if(accuracy >= 90){
+        archivistLine = "You have mastered the Foundry. Few reach this level of clarity.";
+    }
+    else if(accuracy >= 75){
+        archivistLine = "You see much… but not all. The Foundry still holds power over you.";
+    }
+    else{
+        archivistLine = "You survived. Barely. The Foundry is not finished with you.";
+    }
+
+    let lineColor = "#93c5fd";
+
+    if(accuracy >= 90){
+        lineColor = "#4ade80"; // green
+    }
+    else if(accuracy < 75){
+    lineColor = "#f87171"; // red
+    }
+
+    const gameBox = document.getElementById("gameBox");
+
+// =============================================
+// VICTORY SCREEN HTML TEMPLATE
+// =============================================
+// You can fully redesign this layout.
+//
+// Just KEEP:
+// - id="vCode"
+// - id="archivistLine"
+// - onclick="copyResults()"
+//
+// Everything else is fair game.
+// =============================================
+    gameBox.innerHTML = `
+        <div style="text-align:center; padding:30px;">
+            <h1 class="victory" style="color:gold; text-shadow: 0 0 20px gold;">👑 CONQUEST COMPLETE 👑</h1>
+
+            <div style="margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; border: 1px solid #374151;">
+                <p>👤 Adventurer: <strong>${username}</strong></p>
+                <p>🎯 Accuracy: <strong>${accuracy}%</strong> | 🔥 Best Streak: <strong>${maxStreak}</strong></p>
+                <p>⏱️ Time: <strong>${timeString}</strong> | 📝 Total Questions: <strong>${totalAttempts}</strong></p>
+                <p style="font-size: 0.8em; color: #9ca3af;">🔑 Verification Code: <span id="vCode">${verificationCode}</span></p>
+            </div>
+
+            <p id="archivistLine" style="margin-top:20px; font-style:italic; color:#93c5fd; font-size:1.1em; color:${lineColor}; text-shadow: 0 0 6px rgba(147,197,253,0.4); opacity:0;">
+                ${archivistLine}
+            </p>
+
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                <button id="shareBtn" onclick="copyResults()" style="background:#4ade80; color:black; font-weight:bold; padding:12px 24px; border:none; border-radius:6px; cursor:pointer;">
+                    📋 Copy Results
+                </button>
+                <button onclick="location.reload()" style="background:transparent; color:white; border:1px solid white; padding:12px 24px; border-radius:6px; cursor:pointer;">
+                    Try Again
+                </button>
+            </div>
+        </div>
+    `;
+
+    // --- THEN RUN THE FADE-IN ---
+    setTimeout(() => {
+        const line = document.getElementById("archivistLine");
+        if(line){
+            line.style.transition = "opacity 1s ease";
+            line.style.opacity = 1;
+        }
+    }, 600);
+}     
+
+// =============================
+// UTILITIES
+// =============================
+     
+// =============================================
+// ARRAY SHUFFLE UTILITY — SAFE TO USE, DO NOT MODIFY
+// =============================================
+// Fisher-Yates shuffle algorithm.
+//
+// Used to randomize:
+// - question order
+// - calculation generators
+// - any randomized sequences
+//
+// DO NOT MODIFY unless you understand:
+// - uniform randomness
+// - bias in random selection
+//
+// Breaking this = predictable patterns in questions
+// =============================================     
+function shuffleArray(arr){
+    for(let i=arr.length-1;i>0;i--){ let j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+    return arr;
+}     
+
+// =============================================
+// HIGH SCORE TRACKING — OPTIONAL FEATURE
+// =============================================
+// Stores top completion times in browser (localStorage)
+//
+// - Saves name, time, and date
+// - Sorts fastest → slowest
+// - Keeps top 5 results only
+//
+// SAFE TO EDIT:
+// - number of scores kept (slice)
+// - displayed fields (name/date)
+//
+// WARNING:
+// Clearing browser data will erase scores.
+// =============================================
+function updateHighScores(newTimeMs) {
+    let scores = JSON.parse(localStorage.getItem("gauntletHighScores")) || [];
+    scores.push({ name: username, time: newTimeMs, date: new Date().toLocaleDateString() });
+    
+    // Sort by time (lowest/fastest first) and keep top 5
+    scores.sort((a, b) => a.time - b.time);
+    scores = scores.slice(0, 5);
+    
+    localStorage.setItem("gauntletHighScores", JSON.stringify(scores));
+    return scores;
+}
+
+// =============================================
+// TIME FORMATTER — SAFE UTILITY
+// =============================================
+// Converts milliseconds → readable format (Xm Ys)
+//
+// Used for:
+// - victory screen
+// - performance tracking
+//
+// Safe to modify format if desired.
+// =============================================     
+function formatTime(ms) {
+    let mins = Math.floor(ms / 60000);
+    let secs = Math.floor((ms / 1000) % 60);
+    return `${mins}m ${secs}s`;
+}
+
+// =============================================
+// RESULT SHARING — SAFE TO CUSTOMIZE
+// =============================================
+// Copies player performance summary to clipboard.
+//
+// Includes:
+// - name
+// - time
+// - accuracy
+// - streak
+// - verification code
+//
+// SAFE TO EDIT:
+// - text format
+// - labels ("Adventurer", etc.)
+// - button feedback message
+//
+// WARNING:
+// Requires element IDs:
+// - "vCode"
+// - "shareBtn"
+//
+// Removing those will break this function.
+// =============================================     
+function copyResults() {
+    const totalTimeMs = Date.now() - startTime;
+    const timeString = formatTime(totalTimeMs);
+    const code = document.getElementById("vCode").innerText;
+    const accuracy = Math.round((correctAnswers / totalAttempts) * 100);
+
+    const shareText = `Adventurer: ${username}
+        Time: ${timeString}
+        Accuracy: ${accuracy}%
+        Best Streak: ${maxStreak}
+        Total Questions: ${totalAttempts}
+        Code: ${code}
+        Verified by The Archivist`;
+
+    navigator.clipboard.writeText(shareText).then(() => {
+        const btn = document.getElementById("shareBtn");
+        const originalText = btn.innerText;
+        const originalColor = btn.style.background;
+
+        btn.innerText = "✅ Copied!";
+        btn.style.background = "#059669";
+
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.style.background = originalColor;
+        }, 2000);
+    });
+}
+   
+// =====================================================
+// IF SOMETHING BREAKS:
+//
+// 1. Check question IDs are unique
+// 2. Check each question has:
+//    - q, options, a
+// 3. Do NOT edit core engine sections
+// 4. Use browser console (F12) for errors
+//
+// Most issues come from bad question formatting.
+//
+// =====================================================
+
+</script>
+</body>
+</html>
