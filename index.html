@@ -238,7 +238,7 @@ USE CAUTION:
 - flex settings in .answers (affects layout)
 -----------------------------------------
 DO NOT REMOVE:
-- button selector (used globally)
+- button selector (used globally) 
 - .answers layout (controls answer positioning)
 -----------------------------------------
 TIP:
@@ -2100,9 +2100,9 @@ function updateMazeTrack() {
             box.innerText = "🟥";
         } else {
             // Boss icons for future rooms
-            if (i === 10){box.innerText = "🔨";box.classList.add("boss10");}
-            else if (i === 20){box.innerText = "💀";box.classList.add("boss20");}
-            else if (i === 30){box.innerText = "👑";box.classList.add("boss30");}
+            if (i === 10){box.innerText = "⚖️";box.classList.add("boss10");}
+            else if (i === 20){box.innerText = "👑";box.classList.add("boss20");}
+            else if (i === 30){box.innerText = "♟️";box.classList.add("boss30");}
             else box.innerText = "⬛";
         }
         
@@ -2713,9 +2713,9 @@ function handleStreakVisuals() {
     let streakMsg = "";
     let streakColor = "#fbbf24";
 
-if (streak === 5) {streakMsg = "⚖️ STREAK: Stability Established";  streakColor = "#a78bfa";}
-else if (streak === 10) {streakMsg = "🧠 STREAK: Control Emerging"; streakColor = "#6d28d9";}
-else if (streak === 20) {streakMsg = "👑 STREAK: Dominion Achieved"; streakColor = "#991b1b"; 
+if (streak === 5) {streakMsg = "⚓ STREAK: Stability Established";  streakColor = "#a78bfa";}
+else if (streak === 10) {streakMsg = "🎛️ STREAK: Control Emerging"; streakColor = "#6d28d9";}
+else if (streak === 20) {streakMsg = "🔱 STREAK: Dominion Achieved"; streakColor = "#991b1b"; 
 }
     if (streakMsg) {
         sfxMilestone.currentTime = 0;
