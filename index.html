@@ -1572,259 +1572,265 @@ function wizardSpeak(text){
   
 const questionBanks = {
 easyBoss:[
-{ id:2000, q:"The Cost Forger speaks: 'To shape output efficiently, a firm must balance its inputs.' Which condition defines cost minimization for a given level of output?",options:["The firm uses equal amounts of each input","The marginal product per dollar is equal across inputs","Total cost must be zero","Input prices must be identical"],a:1,tag:"production",type:"definition",feedback:"Cost minimization occurs when the marginal product per dollar is equal across inputs (MP_L / w = MP_K / r)."},
-{ id:2001, q:"The Forger strikes the anvil. 'Test your balance.' A firm has MP_L = 24 and MP_K = 12. The wage is $6 and the rental rate of capital is $3. Is the firm minimizing cost?",options:["Yes, marginal product per dollar is equal","No, the firm should use more labor","No, the firm should use more capital","Not enough information"],a:0,tag:"production",type:"calculation",feedback:"MP_L / w = 24/6 = 4 and MP_K / r = 12/3 = 4. The ratios are equal, so cost is minimized."},
-{ id:2002, q:"The forge destabilizes. 'The balance is broken.' Now MP_L / w = 8 and MP_K / r = 4. What must the firm do to restore efficiency?",options:["Use less labor and more capital","Use more labor and less capital","Use equal amounts of both inputs","Reduce output"],a:1,tag:"production",type:"interpretation",feedback:"The firm should use more of the input with the higher marginal product per dollar (labor) until the ratios equalize."}
+{ id:2000, q:"The Architect speaks: 'No market stands alone. Balance them all.' What condition defines allocative efficiency across markets?",options:["P = ATC in all markets","P = MC in all markets","MR = MC for monopolists","Demand equals supply"],a:1,tag:"efficiency",type:"definition",feedback:"Allocative efficiency requires P = MC—value equals cost."},
+{ id:2001, q:"The Architect adjusts the system: 'Trace the connection.' Demand for steel rises, increasing its price. Steel is an input for cars. What happens in the car market?",options:["Car demand rises directly","Car supply shifts left","Car supply shifts right","No effect"],a:1,tag:"interaction",type:"interpretation",feedback:"Higher input prices reduce supply."},
+{ id:2002, q:"The Architect destabilizes the grid: 'Now restore balance.' In a market, P = 18 while MC = 12. What must occur to reach efficiency?",options:["Reduce output","Increase output","Do nothing","Raise fixed costs"],a:1,tag:"efficiency",type:"trap",feedback:"P > MC → underproduction. Increase output."}
 ],
 mediumBoss:[
-{ id:3000, q:"The Supply Engine hums: 'Output must be chosen precisely.' In a perfectly competitive market, what rule determines the profit-maximizing level of output?",options:["Produce where average total cost is minimized across output","Produce where marginal revenue equals marginal cost across output","Produce where price equals average total cost at equilibrium","Produce where total revenue is maximized across all units"],a:1,tag:"profit",type:"definition",feedback:"Profit maximization occurs where MR = MC. In perfect competition, MR = P."},
-{ id:3001, q:"The Engine flashes data. 'Evaluate the system.' A firm faces a market price of $10. At its current output, MC = $8 and AVC = $6. What should the firm do?",options:["Shut down because price does not exceed total cost","Continue operating and increase output toward equilibrium","Continue operating and reduce output below current level","Exit the market because profit is not guaranteed"],a:1,tag:"profit",type:"calculation",feedback:"MR > MC → increase output. P > AVC → continue operating."},
-{ id:3002, q:"The Engine overloads: 'Multiple conditions detected.' A firm now faces P = $7, MC = $9, AVC = $6, and ATC = $10. What is the best decision?",options:["Shut down because price is below average total cost","Continue operating while reducing output toward equilibrium","Increase output to reach marginal revenue equal to cost","Exit the market because losses are currently observed"],a:1,tag:"profit",type:"multi-step",feedback:"P > AVC → continue. MC > MR → reduce output. Losses do not imply shutdown."}
+{ id:3000, q:"The Price Maker smirks: 'I do not take prices—I set them.' What rule determines a monopolist’s output?",options:["P = MC","MR = MC","ATC minimized","Demand maximized"],a:1,tag:"power",type:"definition",feedback:"Same rule, different outcome—MR = MC."},
+{ id:3001, q:"The Price Maker tests you: 'Follow the consequence.' A monopolist produces where MR = MC and finds P > MC. What does this imply?",options:["Efficient outcome","Overproduction","Underproduction and deadweight loss","Zero profit"],a:2,tag:"power",type:"interpretation",feedback:"P > MC means too little output—lost surplus."},
+{ id:3002, q:"The Price Maker tightens control: 'Exploit the weak.' A firm identifies two groups with different elasticities. What is the optimal strategy?",options:["Charge the same price to both","Charge higher prices to more elastic demand","Charge higher prices to less elastic demand","Reduce output equally"],a:2,tag:"power",type:"trap",feedback:"Inelastic demand → higher markup. This is where students flip it."}
 ],
 finalBoss:[
-{ id:4000, q:"The Market Tyrant rises: 'You think in parts. I demand the whole.' In a perfectly competitive market, what condition defines long-run equilibrium?",options:["Firms produce where marginal revenue equals marginal cost at all output levels","Price equals marginal cost ensuring efficient allocation of resources","Price equals average total cost with firms earning zero economic profit","Demand equals supply across all markets in the short run"],a:2,tag:"market",type:"definition",feedback:"Long-run equilibrium requires P = ATC (zero profit), not just MR = MC."},
-{ id:4001, q:"The Tyrant tightens his grip: 'Now follow the chain.' A market begins in long-run equilibrium. Demand increases. What is the correct sequence of events?",options:["Price rises as firms incur losses and exit reduces supply further","Price rises as firms earn profit and entry expands supply over time","Price falls as firms earn profit and entry reduces market demand","Price remains constant as firms adjust output without entry"],a:1,tag:"market",type:"multi-step",feedback:"Demand ↑ → price ↑ → profit → entry → supply ↑ → price falls."},
-{ id:4002, q:"The Tyrant delivers judgment: 'One final test.' In the new long-run equilibrium after demand increased, which statement is TRUE?",options:["Firms earn positive profit because demand remains elevated","Price equals marginal and average cost with higher total output","Price remains above cost as firms restrict entry into the market","Firms exit because increased competition lowers market price"],a:1,tag:"efficiency",type:"multi-step",feedback:"P = MC and P = ATC, with higher output due to more firms."}
+{ id:4000, q:"The Grand Strategist speaks: 'Efficiency is not given—it is achieved.' In an Edgeworth Box, two individuals have different marginal rates of substitution (MRS). What MUST be true?",options:["The allocation is Pareto efficient","No further gains from trade exist","Mutually beneficial trades are possible","Both individuals have equal utility"],a:2,tag:"efficiency",type:"trap",feedback:"Different MRS means unexploited gains from trade still exist."},
+{ id:4001, q:"The Strategist narrows his gaze: 'Power lies in division.' A monopolist sells to two groups. Group A has elasticity of demand of 2, and Group B has elasticity of 6. What is the optimal pricing strategy?",options:["Charge the same price to both groups","Charge a higher price to Group B","Charge a higher price to Group A","Set price equal to marginal cost"],a:2,tag:"power",type:"trap",feedback:"Lower elasticity → less sensitivity → higher markup. Students often reverse this."},
+{ id:4002, q:"The Strategist delivers the final test: 'Competition is never absolute.' Two firms compete in prices but now offer differentiated products. What is the resulting equilibrium?",options:["Price equals marginal cost","Firms earn zero profit always","Prices exceed marginal cost but remain below monopoly levels","One firm captures the entire market"],a:2,tag:"strategy",type:"trap",feedback:"Differentiation softens price competition—firms gain some pricing power."}
 ],
 easy:[
-{ id:1, q:"A production function shows the relationship between...",options:["Costs and profits","Inputs and output","Prices and demand","Revenue and cost"],a:1,tag:"production",type:"definition",feedback:"A production function maps inputs like labor and capital into output."},
-{ id:2, q:"Marginal product of labor measures...",options:["Total output produced","Output per worker","Additional output from one more worker","Cost per worker"],a:2,tag:"production",type:"definition",feedback:"Marginal product captures the additional output from adding one more unit of labor."},
-{ id:3, q:"Diminishing marginal product occurs when...",options:["Total output falls","Additional workers produce less additional output","Costs increase","Prices fall"],a:1,tag:"production",type:"interpretation",feedback:"Each additional worker contributes less to output than the previous one."},
-{ id:4, q:"An isoquant represents...",options:["Equal cost combinations","Equal output combinations of inputs","Equal profit levels","Equal revenue levels"],a:1,tag:"production",type:"definition",feedback:"Isoquants show all input combinations that produce the same level of output."},
-{ id:5, q:"If a firm doubles all inputs and output also doubles, this is...",options:["Increasing returns to scale","Decreasing returns to scale","Constant returns to scale","Diminishing returns"],a:2,tag:"production",type:"definition",feedback:"Constant returns to scale means output increases proportionally with inputs."},
-{ id:6, q:"Economic cost differs from accounting cost because it includes...",options:["Fixed costs only","Variable costs only","Opportunity costs","Sunk costs"],a:2,tag:"costs",type:"definition",feedback:"Economic costs include both explicit and implicit (opportunity) costs."},
-{ id:7, q:"Fixed costs are costs that...",options:["Change with output","Do not change with output","Only occur in the long run","Always increase"],a:1,tag:"costs",type:"definition",feedback:"Fixed costs remain constant regardless of output level."},
-{ id:8, q:"Variable costs are costs that...",options:["Never change","Change with output","Are always fixed","Only occur in the long run"],a:1,tag:"costs",type:"definition",feedback:"Variable costs increase as output increases."},
-{ id:9, q:"Marginal cost measures...",options:["Total cost","Cost per unit","Additional cost of producing one more unit","Average cost"],a:2,tag:"costs",type:"definition",feedback:"Marginal cost is the cost of producing one additional unit."},
-{ id:10, q:"A firm maximizes profit when...",options:["Total revenue is highest","Marginal revenue equals marginal cost","Costs are minimized","Output is maximized"],a:1,tag:"profit",type:"definition",feedback:"Profit is maximized where MR = MC."},
-{ id:11, q:"For a price-taking firm, marginal revenue equals...",options:["Total revenue","Price","Average cost","Marginal cost"],a:1,tag:"competition",type:"definition",feedback:"In perfect competition, firms take price as given, so MR = P."},
-{ id:12, q:"A price-taking firm's supply curve is its...",options:["Demand curve","Marginal cost curve above AVC","Average cost curve","Total cost curve"],a:1,tag:"competition",type:"definition",feedback:"The MC curve above AVC represents the firm's supply decision."},
-{ id:13, q:"Firms exist primarily because they...",options:["Eliminate all costs","Reduce transaction costs","Control prices","Increase wages"],a:1,tag:"profit",type:"definition",feedback:"Firms reduce transaction costs compared to market exchanges."},
-{ id:14, q:"If price is below average variable cost, a firm should...",options:["Increase output","Shut down in the short run","Raise prices","Enter the market"],a:1,tag:"profit",type:"interpretation",feedback:"If P < AVC, the firm cannot cover variable costs and should shut down."},
-{ id:15, q:"In a perfectly competitive market, price is determined by...",options:["Individual firms","Government regulation","Market supply and demand","Marginal cost"],a:2,tag:"market",type:"definition",feedback:"Market price is set where supply equals demand."},
-{ id:16, q:"If total product is increasing at a decreasing rate, marginal product is...",options:["Increasing","Constant","Diminishing but positive","Negative"],a:2,tag:"production",type:"interpretation",feedback:"Total product rising at a decreasing rate means marginal product is falling but still positive."},
-{ id:17, q:"When marginal product becomes negative, total product will...",options:["Increase faster","Remain constant","Begin to fall","Reach maximum profit"],a:2,tag:"production",type:"interpretation",feedback:"Negative marginal product means additional input reduces total output."},
-{ id:18, q:"An isoquant that is bowed inward reflects...",options:["Constant returns","Perfect substitutes","Diminishing marginal rate of technical substitution","Fixed proportions"],a:2,tag:"production",type:"definition",feedback:"Convex isoquants reflect diminishing MRTS between inputs."},
-{ id:19, q:"Input substitution occurs when a firm...",options:["Uses fewer inputs overall","Switches between inputs based on relative prices","Increases output","Changes technology"],a:1,tag:"production",type:"definition",feedback:"Firms substitute toward relatively cheaper inputs."},
-{ id:20, q:"Technological progress means...",options:["Higher costs","Less output","More output from the same inputs","Fewer workers"],a:2,tag:"production",type:"definition",feedback:"Technology improves productivity."},
-{ id:21, q:"Average total cost equals...",options:["TC/Q","MC/Q","FC/Q","VC/Q"],a:0,tag:"costs",type:"definition",feedback:"ATC is total cost divided by output."},
-{ id:22, q:"Average fixed cost will...",options:["Increase with output","Stay constant","Decrease as output increases","Become negative"],a:2,tag:"costs",type:"interpretation",feedback:"AFC falls as output rises."},
-{ id:23, q:"When marginal cost is below average total cost, ATC will...",options:["Increase","Decrease","Stay constant","Become zero"],a:1,tag:"costs",type:"interpretation",feedback:"MC pulls ATC down."},
-{ id:24, q:"When marginal cost equals average total cost, ATC is...",options:["Maximized","Minimized","Zero","Constant"],a:1,tag:"costs",type:"definition",feedback:"MC intersects ATC at its minimum."},
-{ id:25, q:"A firm’s profit equals...",options:["Revenue minus cost","Price times quantity","Cost minus revenue","Marginal cost minus marginal revenue"],a:0,tag:"profit",type:"definition",feedback:"Profit is TR - TC."},
-{ id:26, q:"If total revenue exceeds total cost, the firm earns...",options:["A loss","Zero profit","Positive economic profit","Negative revenue"],a:2,tag:"profit",type:"interpretation",feedback:"TR > TC implies profit."},
-{ id:27, q:"If total revenue equals total cost, the firm earns...",options:["Loss","Accounting profit only","Zero economic profit","Maximum profit"],a:2,tag:"profit",type:"definition",feedback:"All costs are covered."},
-{ id:28, q:"In perfect competition, firms are called price takers because...",options:["They set prices","They accept market price","They ignore demand","They control supply"],a:1,tag:"competition",type:"definition",feedback:"Firms cannot influence price."},
-{ id:29, q:"The demand curve faced by a perfectly competitive firm is...",options:["Downward sloping","Vertical","Perfectly elastic","Upward sloping"],a:2,tag:"competition",type:"definition",feedback:"Firm demand is perfectly elastic."},
-{ id:30, q:"If price rises for a price-taking firm, marginal revenue will...",options:["Fall","Stay the same","Rise","Become zero"],a:2,tag:"competition",type:"interpretation",feedback:"MR = P."},
-{ id:31, q:"Entry of new firms into a competitive market will...",options:["Raise prices","Reduce supply","Increase supply and lower price","Have no effect"],a:2,tag:"market",type:"definition",feedback:"Entry increases supply."},
-{ id:32, q:"Exit of firms from a competitive market will...",options:["Increase supply","Lower prices","Decrease supply and raise price","Eliminate demand"],a:2,tag:"market",type:"definition",feedback:"Exit reduces supply."},
-{ id:33, q:"In the long run, firms in perfect competition earn...",options:["Positive profit","Negative profit","Zero economic profit","Unlimited profit"],a:2,tag:"market",type:"definition",feedback:"Entry and exit eliminate profits."},
-{ id:34, q:"Allocative efficiency occurs when...",options:["MC = MR","MC = Price","Profit is maximized","ATC is minimized"],a:1,tag:"efficiency",type:"definition",feedback:"Efficiency occurs when P = MC."},
-{ id:35, q:"Productive efficiency occurs when...",options:["MC = P","Output is produced at lowest ATC","Profit is zero","Demand equals supply"],a:1,tag:"efficiency",type:"definition",feedback:"Minimum ATC defines productive efficiency."},
-{ id:36, q:"If marginal cost is rising, this is typically due to...",options:["Increasing returns","Diminishing marginal product","Falling prices","Lower wages"],a:1,tag:"production",type:"interpretation",feedback:"Diminishing marginal product raises marginal cost."},
-{ id:37, q:"Which cost exists even when output is zero?",options:["Marginal cost","Variable cost","Fixed cost","Average cost"],a:2,tag:"costs",type:"definition",feedback:"Fixed costs must be paid regardless of output."},
-{ id:38, q:"If price equals marginal cost, the firm is...",options:["Profit maximizing","Allocatively efficient","Shutting down","Losing money"],a:1,tag:"efficiency",type:"interpretation",feedback:"P = MC ensures allocative efficiency."},
-{ id:39, q:"A perfectly competitive firm increases output when...",options:["MC > MR","MR > MC","ATC rises","Demand falls"],a:1,tag:"profit",type:"interpretation",feedback:"Firms expand output when MR exceeds MC."},
-{ id:40, q:"If many firms exit a market, remaining firms will...",options:["Face lower prices","Produce less at higher prices","Shut down","Lose all profit"],a:1,tag:"market",type:"interpretation",feedback:"Reduced supply raises prices."},
-{ id:41, q:"Technological improvement will shift the production function...",options:["Downward","Leftward","Upward","Backward"],a:2,tag:"production",type:"interpretation",feedback:"Technology increases output for any input level."},
-{ id:42, q:"If marginal cost is above average total cost, ATC will...",options:["Fall","Rise","Stay constant","Become zero"],a:1,tag:"costs",type:"interpretation",feedback:"MC pulls ATC upward when above it."}
-],   
-medium: [
-{ id:50, q:"A firm hires additional workers and notices output increases at a decreasing rate. What happens to marginal product and marginal cost?",options:["Marginal product rises while marginal cost falls","Marginal product falls while marginal cost rises","Marginal product stays constant while marginal cost stays constant","Marginal product rises while marginal cost rises"],a:1,tag:"production",type:"interpretation",feedback:"Diminishing marginal product causes marginal cost to rise."},
-{ id:51, q:"A firm experiences a decrease in wages while holding everything else constant. What happens to its cost curves?",options:["Marginal cost and average cost both shift upward","Marginal cost and average cost both shift downward","Marginal cost shifts downward while average cost stays constant","Average cost shifts downward while marginal cost stays constant"],a:1,tag:"costs",type:"interpretation",feedback:"Lower input costs reduce both marginal and average costs."},
-{ id:52, q:"A firm is producing where marginal revenue exceeds marginal cost. What should the firm do to maximize profit?",options:["Decrease output because cost is too high","Increase output because revenue exceeds cost","Shut down because profit is uncertain","Maintain output because profit is already maximized"],a:1,tag:"profit",type:"interpretation",feedback:"If MR exceeds MC, producing more increases profit."},
-{ id:53, q:"A perfectly competitive firm faces a market price of $10 and has marginal cost of $8. What is the best action?",options:["Reduce output because marginal cost is below price","Increase output because marginal revenue exceeds marginal cost","Shut down because profit is not guaranteed","Exit market because price may change"],a:1,tag:"competition",type:"interpretation",feedback:"Profit increases when MR exceeds MC."},
-{ id:54, q:"If new firms enter a competitive market, what happens in the long run to price and profit?",options:["Price rises while profit increases across firms","Price falls while profit is driven toward zero","Price stays constant while profit increases over time","Price rises while profit declines below zero"],a:1,tag:"market",type:"interpretation",feedback:"Entry increases supply, lowering price and eliminating profit."},
-{ id:55, q:"A firm is producing where marginal cost is below average total cost. What happens to ATC as output increases?",options:["Average total cost rises as output expands","Average total cost falls as output expands","Average total cost remains constant as output changes","Average total cost becomes zero as output increases"],a:1,tag:"costs",type:"interpretation",feedback:"MC below ATC pulls average cost downward."},
-{ id:56, q:"If a firm’s marginal product of labor is falling, what happens to marginal cost?",options:["Marginal cost falls as productivity declines","Marginal cost rises as productivity declines","Marginal cost stays constant with fixed wages","Marginal cost becomes zero as output changes"],a:1,tag:"production",type:"interpretation",feedback:"Falling marginal product increases marginal cost."},
-{ id:57, q:"A firm earns positive economic profit. What must be true about price relative to ATC?",options:["Price is below average total cost at equilibrium","Price equals average total cost at equilibrium","Price exceeds average total cost at equilibrium","Price equals marginal cost at equilibrium"],a:2,tag:"profit",type:"interpretation",feedback:"Profit exists when price exceeds average total cost."},
-{ id:58, q:"If price equals marginal cost in a competitive market, what does this imply?",options:["Profit is maximized for all firms in the market","Resources are allocated efficiently across the market","The firm is at the shutdown point condition","Output must be reduced to restore balance"],a:1,tag:"efficiency",type:"interpretation",feedback:"P = MC ensures allocative efficiency."},
-{ id:59, q:"A firm continues operating while earning zero economic profit. Why does it remain in the market?",options:["The firm is losing money but cannot exit immediately","The firm covers all opportunity costs of production","The firm is forced to operate by market conditions","The firm expects demand to decline over time"],a:1,tag:"profit",type:"interpretation",feedback:"Zero economic profit means all costs are covered."},
-{ id:60, q:"If the price of output falls below average variable cost, what is the firm’s best short-run decision?",options:["Increase output to cover fixed costs","Reduce output to minimize total loss","Shut down production until price recovers","Enter the market at a lower cost level"],a:2,tag:"profit",type:"interpretation",feedback:"Firms shut down when price cannot cover variable costs."},
-{ id:61, q:"A technological improvement occurs in production. What is the most direct effect on costs?",options:["Costs rise due to increased complexity of production","Costs fall due to improved productivity of inputs","Costs stay constant because output is unchanged","Costs become fixed due to technological change"],a:1,tag:"production",type:"interpretation",feedback:"Improved technology lowers costs."},
-{ id:62, q:"A firm’s marginal cost curve is rising. What is the most likely explanation?",options:["The firm is experiencing increasing returns to scale","The firm is experiencing diminishing marginal product","The firm is facing falling wages in production","The firm is benefiting from improved technology"],a:1,tag:"production",type:"interpretation",feedback:"Diminishing marginal product raises marginal cost."},
-{ id:63, q:"If a firm’s average total cost is falling, what must be true about marginal cost?",options:["Marginal cost is above average total cost","Marginal cost is below average total cost","Marginal cost equals average total cost","Marginal cost equals zero at that output"],a:1,tag:"costs",type:"interpretation",feedback:"MC below ATC pulls it downward."},
-{ id:64, q:"A firm produces where MC equals MR but price is below ATC. What is true about its situation?",options:["The firm is maximizing profit while earning a loss","The firm should shut down immediately due to losses","The firm is operating inefficiently at that output","The firm is earning positive economic profit"],a:0,tag:"profit",type:"interpretation",feedback:"Profit is maximized even if negative."},
-{ id:65, q:"If a competitive firm increases output, what happens to the market price it receives?",options:["Price rises as output increases for the firm","Price falls as output increases for the firm","Price remains constant for the individual firm","Price becomes zero at higher output levels"],a:2,tag:"competition",type:"interpretation",feedback:"Price is given in perfect competition."},
-{ id:66, q:"A firm shuts down in the short run when which condition is met?",options:["Price is below average total cost at current output","Price is below average variable cost at current output","Price equals marginal cost at current output","Price exceeds average total cost at current output"],a:1,tag:"profit",type:"definition",feedback:"Shutdown occurs when price is below AVC."},
-{ id:67, q:"If marginal cost intersects average total cost from below, what happens to ATC after the intersection?",options:["Average total cost continues to fall with output","Average total cost begins to rise with output","Average total cost remains constant at that level","Average total cost becomes zero at equilibrium"],a:1,tag:"costs",type:"interpretation",feedback:"MC above ATC pushes it upward."},
-{ id:68, q:"If input prices fall, what happens to a firm’s supply curve?",options:["Supply shifts left as production becomes more costly","Supply shifts right as production becomes cheaper","Supply does not change because output is fixed","Supply becomes vertical due to cost changes"],a:1,tag:"competition",type:"interpretation",feedback:"Lower costs increase supply."},
-{ id:69, q:"A firm is operating where price equals marginal cost and exceeds ATC. What does this imply?",options:["The firm is earning losses at current output","The firm is breaking even at current output","The firm is earning positive economic profit","The firm is operating at the shutdown point"],a:2,tag:"profit",type:"interpretation",feedback:"Price above ATC implies profit."},
-{ id:70, q:"In long-run equilibrium for a competitive market, which condition must hold?",options:["Price exceeds average total cost for all firms","Price equals average total cost for all firms","Price is below marginal cost for all firms","Marginal cost exceeds average total cost"],a:1,tag:"market",type:"definition",feedback:"Entry and exit drive P = ATC."},
-{ id:71, q:"If firms are earning losses in a competitive market, what happens in the long run?",options:["New firms enter and increase total supply","Existing firms exit and reduce total supply","Prices fall further as output expands","Output rises due to competitive pressure"],a:1,tag:"market",type:"interpretation",feedback:"Losses drive exit."},
-{ id:72, q:"A firm’s marginal cost decreases while everything else remains constant. What happens to its optimal output?",options:["Optimal output decreases as cost falls","Optimal output increases as cost falls","Optimal output remains constant at equilibrium","Optimal output becomes zero in the short run"],a:1,tag:"profit",type:"interpretation",feedback:"Lower MC increases output."},
-{ id:73, q:"If marginal revenue is constant and marginal cost is rising, where does profit-maximizing output occur?",options:["Where marginal cost is below marginal revenue","Where marginal cost equals marginal revenue","Where marginal cost exceeds marginal revenue","Where average total cost is minimized"],a:1,tag:"profit",type:"definition",feedback:"Profit maximization requires MC = MR."},
-{ id:74, q:"A firm produces where marginal cost exceeds marginal revenue. What should it do to improve profit?",options:["Increase output to capture more revenue","Decrease output to reduce excess cost","Maintain output because profit is maximized","Shut down production immediately"],a:1,tag:"profit",type:"interpretation",feedback:"Producing too much reduces profit."},
-{ id:75, q:"If technological progress occurs in production, what happens to isoquants?",options:["Isoquants shift inward as more input is required","Isoquants shift outward as less input is required","Isoquants remain unchanged with new technology","Isoquants disappear due to efficiency gains"],a:1,tag:"production",type:"interpretation",feedback:"Less input is needed for the same output."},
-{ id:76, q:"If average total cost is minimized at a certain output level, what must be true?",options:["Marginal cost equals average total cost at that output","Marginal cost exceeds average total cost at that output","Marginal cost is below average total cost at that output","Profit must be zero at that output level"],a:0,tag:"costs",type:"definition",feedback:"MC intersects ATC at its minimum."},
-{ id:77, q:"A firm has rising ATC but falling MC at its current output. What does this indicate?",options:["The firm is operating at efficient scale already","The firm is approaching the minimum of ATC","The firm is experiencing increasing returns to scale","The firm is at the shutdown point"],a:1,tag:"costs",type:"interpretation",feedback:"MC is still pulling ATC downward."},
-{ id:78, q:"If price increases in a competitive market, what happens to firm output?",options:["Output falls as costs increase with price","Output rises as marginal revenue increases","Output remains constant because price is fixed","Output becomes zero due to higher prices"],a:1,tag:"competition",type:"interpretation",feedback:"Higher price raises MR and output."},
-{ id:79, q:"If a firm earns zero economic profit, what is true about its cost coverage?",options:["The firm should exit because profit is zero","The firm covers all costs including opportunity cost","The firm is inefficient at its current output","The firm is losing money at equilibrium"],a:1,tag:"profit",type:"interpretation",feedback:"All opportunity costs are covered."},
-{ id:80, q:"If input substitution occurs within a firm, what drives that decision?",options:["Changes in output level across production processes","Changes in relative input prices faced by the firm","Changes in the market demand curve for output","Changes in marginal cost across output levels"],a:1,tag:"production",type:"definition",feedback:"Firms substitute based on relative prices."},
-{ id:81, q:"If marginal cost rises sharply for a firm, what happens to its supply behavior?",options:["Supply increases as firms expand output","Supply decreases as production becomes more costly","Supply remains constant despite higher costs","Supply becomes vertical at higher output levels"],a:1,tag:"competition",type:"interpretation",feedback:"Higher costs reduce supply."},
-{ id:82, q:"A firm operates where price equals average variable cost but is below ATC. What is true?",options:["The firm is earning positive economic profit","The firm is earning a loss but continues operating","The firm should shut down immediately","The firm is at zero cost of production"],a:1,tag:"profit",type:"interpretation",feedback:"Firm covers variable costs but not total costs."},
-{ id:83, q:"If demand increases in a competitive market, what happens in the short run?",options:["Price falls as supply adjusts downward","Price rises as demand exceeds current supply","Supply falls as firms reduce output","Firms exit due to higher input costs"],a:1,tag:"market",type:"interpretation",feedback:"Higher demand raises price."},
-{ id:84, q:"If demand increases in a competitive market, what happens in the long run?",options:["Price remains permanently higher than before","Price returns toward equilibrium as entry occurs","Firms exit as demand stabilizes","Output falls as competition increases"],a:1,tag:"market",type:"interpretation",feedback:"Entry restores equilibrium."},
-{ id:85, q:"If marginal product increases for a firm, what happens to marginal cost?",options:["Marginal cost rises as productivity increases","Marginal cost falls as productivity increases","Marginal cost remains constant with output","Marginal cost becomes zero at higher output"],a:1,tag:"production",type:"interpretation",feedback:"Higher productivity lowers marginal cost."},
-{ id:86, q:"A firm faces rising wages for labor. What happens to marginal cost?",options:["Marginal cost falls due to substitution effects","Marginal cost rises due to higher input costs","Marginal cost remains constant with output","Marginal cost becomes fixed across output levels"],a:1,tag:"costs",type:"interpretation",feedback:"Higher wages increase MC."},
-{ id:87, q:"If marginal cost equals marginal revenue and MC is rising, what does this indicate?",options:["The firm is producing at profit-maximizing output","The firm is producing at minimum cost output","The firm is at the shutdown point condition","The firm is operating inefficiently"],a:0,tag:"profit",type:"interpretation",feedback:"Rising MC ensures profit is maximized."},
-{ id:88, q:"If firms enter a competitive market, what happens to existing firms’ profits?",options:["Profits increase as market expands","Profits decrease as competition increases","Profits remain constant across firms","Profits become negative immediately"],a:1,tag:"market",type:"interpretation",feedback:"Entry reduces profits."},
-{ id:89, q:"If marginal cost is constant across output, what shape is the supply curve?",options:["Supply curve is upward sloping with output","Supply curve is downward sloping with output","Supply curve is horizontal at marginal cost","Supply curve is vertical at equilibrium"],a:2,tag:"competition",type:"interpretation",feedback:"Constant MC implies flat supply."},
-{ id:90, q:"If average total cost is rising and marginal cost is above it, what happens next?",options:["Average total cost begins to fall with output","Average total cost continues to rise with output","Average total cost remains constant at that level","Average total cost becomes zero at equilibrium"],a:1,tag:"costs",type:"interpretation",feedback:"MC pulls ATC upward."},
-{ id:91, q:"If a firm exits a competitive market, what happens to total industry supply?",options:["Supply increases as remaining firms expand output","Supply decreases as firms leave the market","Supply remains constant across all firms","Supply becomes zero across the industry"],a:1,tag:"market",type:"definition",feedback:"Exit reduces supply."},
-{ id:92, q:"If productivity improves for all firms, what happens to cost curves?",options:["Cost curves shift upward due to higher output","Cost curves shift downward due to efficiency gains","Cost curves remain constant across production","Cost curves disappear due to optimization"],a:1,tag:"production",type:"interpretation",feedback:"Higher productivity lowers costs."},
-{ id:93, q:"If marginal revenue exceeds marginal cost and the firm does nothing, what happens to profit?",options:["Profit falls because output is too high","Profit rises because output remains constant","Profit stays constant at current level","Profit becomes zero at equilibrium"],a:0,tag:"profit",type:"trap",feedback:"Failure to expand output leaves profit unrealized."},
-{ id:94, q:"If firms earn economic profit in a market, what happens to supply over time?",options:["Supply decreases as firms restrict output","Supply increases as new firms enter","Supply remains constant at equilibrium","Supply becomes zero due to competition"],a:1,tag:"market",type:"interpretation",feedback:"Profit attracts entry."},
-{ id:95, q:"If marginal cost is below average variable cost, what must be true about AVC?",options:["Average variable cost is rising at that output","Average variable cost is falling at that output","Average variable cost is constant across output","Average variable cost is equal to zero"],a:1,tag:"costs",type:"interpretation",feedback:"MC below AVC pulls it downward."}
+{id:1,q:"If the price of steel rises, what happens to the supply of cars?",options:["Increases","Decreases","Stays the same","Becomes zero"],a:1,tag:"interaction",type:"interpretation",feedback:"Higher input costs reduce supply."},
+{id:2,q:"If wages increase, firms will typically...",options:["Increase supply","Decrease supply","Increase demand","Do nothing"],a:1,tag:"interaction",type:"interpretation",feedback:"Higher costs shift supply left."},
+{id:3,q:"When one market affects another, this is called...",options:["Isolation","Interaction","Equilibrium","Efficiency"],a:1,tag:"interaction",type:"definition",feedback:"Markets are linked."},
+{id:4,q:"If the price of coffee rises, demand for tea will likely...",options:["Fall","Rise","Stay the same","Disappear"],a:1,tag:"interaction",type:"interpretation",feedback:"Substitutes shift demand."},
+{id:5,q:"A decrease in input costs will...",options:["Decrease supply","Increase supply","Decrease demand","Do nothing"],a:1,tag:"interaction",type:"interpretation",feedback:"Lower cost = more supply."},
+{id:6,q:"If two goods are complements and one price rises, demand for the other...",options:["Rises","Falls","Stays constant","Becomes elastic"],a:1,tag:"interaction",type:"interpretation",feedback:"Complements move together."},
+{id:7,q:"If demand increases in a competitive market, price will...",options:["Fall","Rise","Stay constant","Disappear"],a:1,tag:"interaction",type:"interpretation",feedback:"Demand pushes price up."},
+{id:8,q:"If supply increases, price will...",options:["Rise","Fall","Stay constant","Double"],a:1,tag:"interaction",type:"interpretation",feedback:"More supply lowers price."},
+{id:9,q:"Allocative efficiency occurs when...",options:["MR = MC","P = MC","ATC is minimized","Profit is zero"],a:1,tag:"efficiency",type:"definition",feedback:"Value equals cost."},
+{id:10,q:"Competitive markets tend to be efficient because...",options:["Firms control prices","P = MC","Government sets output","Supply is fixed"],a:1,tag:"efficiency",type:"interpretation",feedback:"Competition forces efficiency."},
+{id:11,q:"Total surplus is maximized when...",options:["P = MC","MR = MC","ATC = MC","Demand is flat"],a:0,tag:"efficiency",type:"definition",feedback:"Efficiency maximizes total surplus."},
+{id:12,q:"Consumer surplus measures...",options:["Profit","Willingness to pay minus price","Cost minus price","Revenue"],a:1,tag:"efficiency",type:"definition",feedback:"Value to buyers."},
+{id:13,q:"Producer surplus measures...",options:["Price minus cost","Profit","Revenue","Demand"],a:0,tag:"efficiency",type:"definition",feedback:"Value to sellers."},
+{id:14,q:"If a market is in equilibrium, quantity demanded...",options:["Exceeds supply","Equals supply","Is zero","Is random"],a:1,tag:"efficiency",type:"definition",feedback:"Equilibrium balances."},
+{id:15,q:"A shortage occurs when...",options:["Supply exceeds demand","Demand exceeds supply","Price is high","Cost is low"],a:1,tag:"efficiency",type:"interpretation",feedback:"Too many buyers."},
+{id:16,q:"A surplus occurs when...",options:["Demand exceeds supply","Supply exceeds demand","Price is zero","Markets fail"],a:1,tag:"efficiency",type:"interpretation",feedback:"Too many sellers."},
+{id:17,q:"Prices rise when...",options:["Surplus exists","Shortage exists","Supply increases","Demand falls"],a:1,tag:"efficiency",type:"interpretation",feedback:"Shortage pushes price up."},
+{id:18,q:"Prices fall when...",options:["Shortage exists","Surplus exists","Demand rises","Costs rise"],a:1,tag:"efficiency",type:"interpretation",feedback:"Surplus pushes price down."},
+{id:19,q:"Markets move toward equilibrium because...",options:["Government forces it","Prices adjust to shortages and surpluses","Firms control everything","Demand disappears"],a:1,tag:"efficiency",type:"interpretation",feedback:"Price signals do the work."},
+{id:20,q:"Market failure occurs when...",options:["Prices rise","Markets are inefficient","Firms earn profit","Demand shifts"],a:1,tag:"failure",type:"definition",feedback:"Failure = inefficiency."},
+{id:21,q:"Externalities are...",options:["Internal costs","Costs or benefits affecting third parties","Prices","Demand shifts"],a:1,tag:"failure",type:"definition",feedback:"Spillovers outside the market."},
+{id:22,q:"A negative externality causes...",options:["Too little production","Too much production","Efficient output","Zero output"],a:1,tag:"failure",type:"interpretation",feedback:"Overproduction problem."},
+{id:23,q:"Deadweight loss represents...",options:["Lost surplus","Profit","Revenue","Cost"],a:0,tag:"failure",type:"definition",feedback:"Value lost from inefficiency."},
+{id:24,q:"A monopolist is a firm that...",options:["Takes price","Controls price","Earns zero profit","Faces many competitors"],a:1,tag:"power",type:"definition",feedback:"Price maker."},
+{id:25,q:"Monopolies restrict output to...",options:["Increase efficiency","Increase profits","Eliminate costs","Match competition"],a:1,tag:"power",type:"interpretation",feedback:"Less output, higher price."},
+{id:26,q:"Compared to competition, monopoly price is...",options:["Lower","Higher","Equal","Zero"],a:1,tag:"power",type:"interpretation",feedback:"Market power raises price."},
+{id:27,q:"Monopoly profit maximization occurs where...",options:["P = MC","MR = MC","ATC = MC","Demand is highest"],a:1,tag:"power",type:"definition",feedback:"Same rule, different outcome."},
+{id:28,q:"Monopoly creates deadweight loss because...",options:["Too much output","Too little output","Zero demand","Perfect efficiency"],a:1,tag:"power",type:"interpretation",feedback:"Missed trades."},
+{id:29,q:"A natural monopoly exists when...",options:["Many firms are efficient","One firm has lowest cost","Demand is low","Prices fall"],a:1,tag:"power",type:"definition",feedback:"Economies of scale dominate."},
+{id:30,q:"Governments regulate monopolies to...",options:["Increase profits","Reduce inefficiency","Eliminate supply","Raise prices"],a:1,tag:"power",type:"interpretation",feedback:"Control market power."},
+{id:31,q:"Cournot competition involves firms choosing...",options:["Prices","Output","Costs","Wages"],a:1,tag:"strategy",type:"definition",feedback:"Quantity game."},
+{id:32,q:"Bertrand competition involves firms choosing...",options:["Output","Prices","Capacity","Technology"],a:1,tag:"strategy",type:"definition",feedback:"Price game."},
+{id:33,q:"In Bertrand competition with identical goods, prices tend to...",options:["Rise","Fall to marginal cost","Stay high","Become random"],a:1,tag:"strategy",type:"interpretation",feedback:"Race to the bottom."},
+{id:34,q:"In Cournot competition, firms recognize...",options:["No rivals","Strategic interaction","Government control","Perfect efficiency"],a:1,tag:"strategy",type:"definition",feedback:"They react to each other."},
+{id:35,q:"A first mover advantage means...",options:["Moving later is better","First firm gains advantage","No firm benefits","Prices fall"],a:1,tag:"strategy",type:"definition",feedback:"Timing matters."},
+{id:36,q:"Product differentiation gives firms...",options:["No power","Some market power","Perfect competition","Zero demand"],a:1,tag:"strategy",type:"interpretation",feedback:"Less direct competition."},
+{id:37,q:"Equity refers to...",options:["Efficiency","Fairness","Profit","Output"],a:1,tag:"equity",type:"definition",feedback:"Fair distribution."},
+{id:38,q:"Efficiency refers to...",options:["Fairness","Maximizing total surplus","Equal income","Low prices"],a:1,tag:"equity",type:"definition",feedback:"Max total value."},
+{id:39,q:"An efficiency-equity tradeoff means...",options:["Both always increase","Improving fairness may reduce efficiency","Efficiency always rises","Markets ignore fairness"],a:1,tag:"equity",type:"interpretation",feedback:"Tradeoffs are real."},
+{id:40,q:"Redistribution policies aim to...",options:["Increase efficiency","Increase equity","Increase monopoly power","Reduce demand"],a:1,tag:"equity",type:"interpretation",feedback:"Shift toward fairness."},
+{id:41,q:"In an Edgeworth Box, gains from trade exist when...",options:["MRS is equal","MRS differs between individuals","Prices are equal","Utility is maximized"],a:1,tag:"efficiency",type:"definition",feedback:"Different MRS means mutually beneficial trades exist."},
+{id:42,q:"If two individuals have identical MRS, what does this imply?",options:["Gains from trade exist","Allocation is inefficient","No further gains from trade","Prices must change"],a:2,tag:"efficiency",type:"interpretation",feedback:"Equal MRS means Pareto efficiency in exchange."},
+{id:43,q:"A barrier to entry allows a firm to...",options:["Increase competition","Prevent new firms from entering","Reduce costs","Increase demand"],a:1,tag:"power",type:"definition",feedback:"Barriers protect market power."},
+{id:44,q:"Which is an example of a barrier to entry?",options:["Low prices","Patents","High demand","Perfect information"],a:1,tag:"power",type:"interpretation",feedback:"Patents legally block entry."},
+{id:45,q:"A firm charges an entry fee plus a per-unit price. This is called...",options:["Perfect competition","Two-part tariff","Price ceiling","Subsidy"],a:1,tag:"power",type:"definition",feedback:"Fixed fee + usage price."},
+{id:46,q:"A two-part tariff allows firms to...",options:["Reduce output","Capture consumer surplus","Increase costs","Eliminate demand"],a:1,tag:"power",type:"interpretation",feedback:"Firms extract surplus via entry fee."}
+],
+medium:[
+{id:50,q:"Demand for electric cars rises. Lithium batteries are an input. What happens to lithium prices?",options:["Fall","Rise","Stay constant","Become zero"],a:1,tag:"interaction",type:"interpretation",feedback:"Derived demand increases input prices."},
+{id:51,q:"If wages rise in one industry, what happens to wages in competing labor markets?",options:["Rise","Fall","Stay constant","Double"],a:1,tag:"interaction",type:"trap",feedback:"Labor reallocation increases supply elsewhere—lowering wages."},
+{id:52,q:"If P > MC in a competitive market, what should happen?",options:["Output decreases","Output increases","Nothing changes","Firms exit"],a:1,tag:"efficiency",type:"interpretation",feedback:"Value exceeds cost—expand production."},
+{id:53,q:"A market is in equilibrium where P = 10 and MC = 6. Is this efficient?",options:["Yes","No, too little output","No, too much output","Cannot determine"],a:1,tag:"efficiency",type:"trap",feedback:"P > MC means underproduction."},
+{id:54,q:"Two consumers have MRS of 2 and 6 for the same goods. What does this imply?",options:["Efficient allocation","No gains from trade","Gains from trade exist","Prices are equal"],a:2,tag:"efficiency",type:"interpretation",feedback:"Different valuations = trade opportunities."},
+{id:55,q:"A monopolist has MR = 20 and MC = 25. What should it do?",options:["Increase output","Decrease output","Keep output constant","Raise price"],a:1,tag:"power",type:"calculation",feedback:"MR < MC → reduce output."},
+{id:56,q:"A monopolist sets MR = MC. Why is price higher than MC?",options:["Costs increase","Must lower price to sell more units","Demand is flat","Government forces it"],a:1,tag:"power",type:"interpretation",feedback:"Price applies to all units sold."},
+{id:57,q:"A monopolist perfectly price discriminates. What happens to output?",options:["Falls","Stays same","Rises to efficient level","Becomes zero"],a:2,tag:"power",type:"trap",feedback:"No DWL—efficient output restored."},
+{id:58,q:"In Cournot competition, if one firm increases output, rivals will...",options:["Increase output","Decrease output","Exit","Do nothing"],a:0,tag:"strategy",type:"trap",feedback:"Strategic substitutes—reaction matters."},
+{id:59,q:"In Bertrand competition with identical goods and MC = 5, what is equilibrium price?",options:["10","5","0","15"],a:1,tag:"strategy",type:"calculation",feedback:"Price = marginal cost."},
+{id:60,q:"If firms become more differentiated, what happens to pricing?",options:["Falls to MC","Rises above MC","Becomes zero","Stays constant"],a:1,tag:"strategy",type:"interpretation",feedback:"Differentiation softens competition."},
+{id:61,q:"An allocation is Pareto efficient. Can it still be unequal?",options:["No","Yes","Only with government","Only with monopoly"],a:1,tag:"equity",type:"trap",feedback:"Efficiency says nothing about fairness."},
+{id:62,q:"Government redistributes income before trade. What happens?",options:["Inefficiency always","Efficient outcome still possible","Markets fail","Prices collapse"],a:1,tag:"equity",type:"interpretation",feedback:"Second Welfare Theorem."},
+{id:63,q:"A firm ignores pollution costs when producing. What happens to output relative to the efficient level?",options:["Too low","Too high","Efficient","Zero"],a:1,tag:"failure",type:"interpretation",feedback:"External costs ignored → overproduction."},
+{id:64,q:"A good is non-rival and non-excludable. What is the likely outcome?",options:["Overproduction","Efficient provision","Underproduction","Zero demand"],a:2,tag:"failure",type:"trap",feedback:"Free-riding leads to underprovision."},
+{id:65,q:"One party in a transaction has more information than the other. What is the result?",options:["Efficiency","Perfect competition","Market failure","Equilibrium"],a:2,tag:"failure",type:"definition",feedback:"Information asymmetry disrupts markets."},
+{id:66,q:"If social cost exceeds private cost, how does the market respond?",options:["Too little output","Too much output","Efficient output","No production"],a:1,tag:"failure",type:"interpretation",feedback:"Costs are understated → overproduction."},
+{id:67,q:"Which situation creates deadweight loss?",options:["All beneficial trades occur","Some beneficial trades are prevented","Prices equal marginal cost","Supply equals demand"],a:1,tag:"failure",type:"trap",feedback:"Missed gains define DWL."},
+{id:68,q:"A monopolist produces where MR = MC. Where is price determined?",options:["Supply curve","Demand curve","ATC curve","MC curve"],a:1,tag:"power",type:"interpretation",feedback:"Price comes from demand."},
+{id:69,q:"A monopolist lowers price to sell more units. What happens to MR relative to price?",options:["MR = P","MR > P","MR < P","MR = 0"],a:2,tag:"power",type:"trap",feedback:"Price drop applies to all units."},
+{id:70,q:"A monopolist produces Q where P = 20 and MC = 10. What does this imply?",options:["Efficient output","Underproduction","Overproduction","Zero profit"],a:1,tag:"power",type:"trap",feedback:"P > MC → too little output."},
+{id:71,q:"A firm has falling ATC over all output levels. What structure is this?",options:["Perfect competition","Monopolistic competition","Natural monopoly","Oligopoly"],a:2,tag:"power",type:"definition",feedback:"Economies of scale dominate."},
+{id:72,q:"A monopolist perfectly price discriminates. What is the outcome?",options:["Deadweight loss","Efficient output","Lower profits","Higher costs"],a:1,tag:"power",type:"interpretation",feedback:"All surplus captured, no DWL."},
+{id:73,q:"A monopolist separates customers by willingness to pay. What is this called?",options:["Bundling","Price discrimination","Collusion","Regulation"],a:1,tag:"power",type:"definition",feedback:"Different prices for different groups."},
+{id:74,q:"A monopolist charges a fixed fee plus per-unit price. What strategy is this?",options:["Market separation","Two-part pricing","Perfect competition","Limit pricing"],a:1,tag:"power",type:"definition",feedback:"Fee + usage pricing."},
+{id:75,q:"In Cournot competition, firms react to rivals’ output. This makes output decisions...",options:["Independent","Strategic","Random","Fixed"],a:1,tag:"strategy",type:"interpretation",feedback:"Interdependence defines oligopoly."},
+{id:76,q:"Cournot equilibrium output compared to monopoly is...",options:["Lower","Higher","Equal","Zero"],a:1,tag:"strategy",type:"trap",feedback:"More output than monopoly, less than competition."},
+{id:77,q:"In Bertrand competition with MC = 10, what is equilibrium price?",options:["20","15","10","0"],a:2,tag:"strategy",type:"calculation",feedback:"Price equals marginal cost."},
+{id:78,q:"Firms cannot expand output quickly in Bertrand competition. What happens to price?",options:["Falls to MC","Rises above MC","Becomes zero","Disappears"],a:1,tag:"strategy",type:"interpretation",feedback:"Capacity limits soften competition."},
+{id:79,q:"Firms sell differentiated products. What happens to price competition?",options:["Intensifies","Weakens","Disappears","Becomes perfect"],a:1,tag:"strategy",type:"interpretation",feedback:"Less substitutability reduces pressure."},
+{id:80,q:"A Nash equilibrium exists when...",options:["Firms cooperate","Each firm best responds","Prices are identical","Output is maximized"],a:1,tag:"strategy",type:"definition",feedback:"No incentive to deviate."},
+{id:81,q:"In Stackelberg competition, why does the leader earn more?",options:["Lower costs","First-mover commitment","Better demand","Government support"],a:1,tag:"strategy",type:"interpretation",feedback:"Commitment shapes rival response."},
+{id:82,q:"Collusion is harder to sustain when...",options:["Firms are patient","Few firms exist","Many firms exist","Repeated interaction occurs"],a:2,tag:"strategy",type:"trap",feedback:"More firms = harder coordination."},
+{id:83,q:"An allocation is Pareto efficient if...",options:["Income is equal","No gains from trade remain","Output is maximized","Prices are stable"],a:1,tag:"efficiency",type:"definition",feedback:"No one can improve without harm."},
+{id:84,q:"Moving to the contract curve implies...",options:["Inefficiency","All gains from trade realized","Lower output","Higher prices"],a:1,tag:"efficiency",type:"interpretation",feedback:"No wasted opportunities."},
+{id:85,q:"An efficient allocation may still be undesirable because...",options:["Too much output","Unequal distribution","High prices","Low cost"],a:1,tag:"equity",type:"trap",feedback:"Efficiency ignores fairness."},
+{id:86,q:"The Second Welfare Theorem suggests we can achieve equity by...",options:["Fixing prices","Redistributing endowments","Reducing output","Eliminating markets"],a:1,tag:"equity",type:"interpretation",feedback:"Adjust starting point, then trade."},
+{id:87,q:"Government redistribution typically causes...",options:["Higher efficiency","Lower efficiency","No change","Perfect competition"],a:1,tag:"equity",type:"interpretation",feedback:"Distorts incentives."},
+{id:88,q:"Markets prioritize...",options:["Fairness","Efficiency","Equality","Regulation"],a:1,tag:"equity",type:"definition",feedback:"They maximize surplus."},
+{id:89,q:"Improving equity through taxation often leads to...",options:["Higher efficiency","Lower efficiency","No tradeoffs","Perfect outcomes"],a:1,tag:"equity",type:"trap",feedback:"Tradeoffs are unavoidable."},
+{id:90,q:"Two individuals have MRS of 2 and 5 for the same goods. What does this imply?",options:["Efficient allocation","No gains from trade","Mutually beneficial trade exists","Prices are equal"],a:2,tag:"efficiency",type:"interpretation",feedback:"Different valuations → gains from trade."},
+{id:91,q:"An allocation lies inside the Edgeworth Box but not on the contract curve. What is true?",options:["It is efficient","No trades remain","Gains from trade exist","Utility is maximized"],a:2,tag:"efficiency",type:"trap",feedback:"Not on contract curve → still inefficient."},
+{id:92,q:"A firm maintains high profits because new firms cannot enter due to high startup costs. What explains this?",options:["Perfect competition","Barrier to entry","Externality","Efficiency"],a:1,tag:"power",type:"interpretation",feedback:"Barriers sustain market power."},
+{id:93,q:"If barriers to entry are removed in a monopolized market, what is most likely?",options:["Prices rise","Prices fall toward marginal cost","Output falls","Demand disappears"],a:1,tag:"power",type:"interpretation",feedback:"Entry increases competition."},
+{id:94,q:"A firm charges a low per-unit price but a high entry fee. What is the goal?",options:["Reduce demand","Capture consumer surplus","Increase marginal cost","Eliminate competition"],a:1,tag:"power",type:"interpretation",feedback:"Two-part tariff extracts surplus."},
+{id:95,q:"If a two-part tariff sets price equal to marginal cost, what happens to output?",options:["Falls","Stays constant","Becomes efficient","Becomes zero"],a:2,tag:"power",type:"trap",feedback:"Usage price at MC → efficient quantity."}
 ], 
 hard:[
-{ id:150, q:"A firm in a perfectly competitive market finds that at its current output, price is above marginal cost but below average total cost. Which conclusion is best?",options:["The firm should shut down because price is below average total cost","The firm should increase output because marginal revenue exceeds marginal cost","The firm should reduce output because profit is currently negative","The firm is maximizing profit because losses cannot be improved"],a:1,tag:"profit",type:"trap",feedback:"If P = MR > MC, the firm should expand output even if profit is still negative."},
-{ id:151, q:"A wheat farmer faces a drop in market price after many new farms enter the industry. In the short run the farmer continues operating, but in the long run some farms leave. Which explanation best fits this sequence?",options:["Entry lowers price and firms shut down when price falls below total cost","Entry lowers price and firms continue if price covers variable cost","Price changes do not affect output decisions for price-taking firms","Long-run exit occurs because marginal revenue becomes upward sloping"],a:1,tag:"market",type:"interpretation",feedback:"Short-run depends on AVC; long-run exit depends on total cost."},
-{ id:152, q:"A firm introduces a new machine that allows the same number of workers to produce more output per hour. Which chain of effects is most accurate?",options:["Marginal product rises and marginal cost falls as production becomes more efficient","Marginal product rises and marginal cost rises as output expands further","Marginal product falls and marginal cost falls as inputs become cheaper","Marginal product stays constant and marginal cost falls only in the long run"],a:0,tag:"production",type:"interpretation",feedback:"Higher productivity lowers marginal cost and shifts cost curves downward."},
-{ id:153, q:"A manager says, 'We are producing where marginal cost equals marginal revenue, so we must be earning positive profit.' What is wrong with that statement?",options:["Marginal revenue equals marginal cost guarantees positive profit at all times","Marginal revenue equals marginal cost identifies output but not profit level","Positive profit depends only on whether price exceeds marginal cost","Marginal revenue equals marginal cost implies allocative efficiency only"],a:1,tag:"profit",type:"trap",feedback:"MR = MC determines output, not whether profit is positive."},
-{ id:154, q:"A competitive firm is producing where marginal cost equals price. Then wages increase. What happens first to the firm's profit-maximizing output?",options:["Output rises because higher costs require more units to spread costs","Output falls because the marginal cost curve shifts upward","Output stays the same because price has not changed","Output falls only if average total cost also declines"],a:1,tag:"costs",type:"interpretation",feedback:"Higher wages shift MC up, reducing optimal output."},
-{ id:155, q:"Suppose a competitive market begins in long-run equilibrium. Demand then increases. Which outcome is most accurate?",options:["Price rises in the short run and remains permanently higher","Price rises in the short run and falls as entry increases supply","Output remains fixed because firms are price takers","Entry occurs immediately so price does not change"],a:1,tag:"market",type:"trap",feedback:"Demand increases raise price in the short run, but entry drives price back down."},
-{ id:156, q:"A firm observes that average total cost is falling while marginal cost is rising. Which conclusion is best?",options:["Marginal cost and average total cost must always move together","Average total cost can fall while marginal cost remains below it","Marginal cost must be above average total cost as it rises","Technological progress must be lowering total cost"],a:1,tag:"costs",type:"trap",feedback:"ATC falls as long as MC is below it, even if MC is rising."},
-{ id:157, q:"A perfectly competitive firm earns zero economic profit in long-run equilibrium. Which statement is best?",options:["The firm should exit because profit is zero","The firm covers explicit cost but not opportunity cost","The firm covers all costs and remains in equilibrium","The firm is operating at the shutdown point"],a:2,tag:"market",type:"trap",feedback:"Zero economic profit means all opportunity costs are covered."},
-{ id:158, q:"A factory can replace some labor with machinery when wages rise. Which concept is most directly involved in that adjustment?",options:["Shutdown decision based on short-run cost conditions","Input substitution based on relative input prices","Allocative efficiency based on price and marginal cost","Long-run exit based on persistent economic losses"],a:1,tag:"production",type:"definition",feedback:"Firms substitute toward relatively cheaper inputs when prices change."},
-{ id:159, q:"An advisor claims that because a firm’s demand curve is perfectly elastic, the market demand curve must also be perfectly elastic. What is the flaw?",options:["The firm faces market price but market demand is downward sloping","The market demand curve is vertical in competitive equilibrium","The firm's demand curve is upward sloping at higher output","Perfect elasticity applies only under monopoly conditions"],a:0,tag:"competition",type:"trap",feedback:"Firm demand is perfectly elastic, but market demand is not."},
-{ id:160, q:"A firm is producing at the output where average total cost is minimized. Which additional condition must hold there?",options:["Marginal cost equals average total cost at that output","Price equals average variable cost at that output","Marginal revenue equals average total cost at that output","Profit is maximized at that output level"],a:0,tag:"costs",type:"definition",feedback:"ATC is minimized where MC equals ATC."},
-{ id:161, q:"A corn producer says, 'Because I cannot influence market price, my output decision does not matter for profit.' Which response is best?",options:["Price-taking means firms cannot affect profit through output","Output decisions still depend on marginal revenue and marginal cost","Only the market determines output for all competitive firms","Profit depends only on fixed costs and not output decisions"],a:1,tag:"competition",type:"trap",feedback:"Even price-takers choose output where MR = MC."},
-{ id:162, q:"If a firm's marginal product of labor falls while the wage rate remains constant, what happens to marginal cost?",options:["Marginal cost falls because labor becomes cheaper per unit","Marginal cost rises because more input is needed per unit","Marginal cost stays constant because wages are unchanged","Marginal cost becomes fixed due to constant input prices"],a:1,tag:"production",type:"interpretation",feedback:"Lower marginal product increases marginal cost."},
-{ id:163, q:"A firm is earning losses, but price still exceeds average variable cost. Which statement is most accurate?",options:["The firm should shut down because losses are being incurred","The firm should continue because it covers variable costs","The firm should exit immediately because price is below ATC","The firm is operating in long-run equilibrium conditions"],a:1,tag:"profit",type:"trap",feedback:"As long as P > AVC, the firm continues in the short run."},
-{ id:164, q:"A competitive industry is allocatively efficient. Which condition describes that outcome?",options:["Price equals average total cost across all firms","Price equals marginal cost for the last unit produced","Marginal revenue equals average variable cost in equilibrium","Average fixed cost is minimized at the firm level"],a:1,tag:"efficiency",type:"definition",feedback:"Allocative efficiency occurs when P = MC."},
-{ id:165, q:"A bakery in perfect competition sees a temporary increase in demand for its product's market. In the short run, which outcome is most likely?",options:["The firm's demand curve shifts and becomes downward sloping","The firm produces more output at the new higher price","Marginal revenue falls as more firms enter the market","Average total cost falls immediately due to higher demand"],a:1,tag:"competition",type:"trap",feedback:"The firm moves along its perfectly elastic demand curve at the new price."},
-{ id:166, q:"Which scenario best illustrates the difference between shutdown and exit?",options:["Shutdown occurs at zero profit while exit occurs at positive profit","Shutdown occurs when price is below AVC while exit occurs in the long run","Exit occurs whenever marginal cost rises above marginal revenue","Shutdown occurs only when fixed costs are eliminated"],a:1,tag:"profit",type:"definition",feedback:"Shutdown is short run (AVC); exit is long run (total cost)."},
-{ id:167, q:"A firm can produce 100 units using different combinations of labor and capital. If wages rise while capital costs remain constant, what is the best prediction?",options:["The firm reduces output because labor becomes more expensive","The firm substitutes toward capital if production allows substitution","The firm ignores input prices because output is unchanged","The firm shuts down due to higher production costs"],a:1,tag:"production",type:"interpretation",feedback:"Firms substitute toward relatively cheaper inputs."},
-{ id:168, q:"A student says, 'If firms in a competitive market are making profits, consumers must be worse off because prices stay high.' Which response is best?",options:["Profits remain permanent in competitive equilibrium conditions","Entry increases supply and reduces price over time","Firms restrict output to maintain higher prices","Consumer welfare does not depend on market prices"],a:1,tag:"market",type:"trap",feedback:"Entry reduces price and eliminates profit in the long run."},
-{ id:169, q:"A firm’s average fixed cost is falling, but its average total cost is rising. Which explanation best fits?",options:["Marginal cost is rising enough to increase total cost overall","Average fixed cost and total cost must always move together","The firm is operating at productive efficiency conditions","Marginal revenue must be decreasing across all output levels"],a:0,tag:"costs",type:"interpretation",feedback:"Rising variable costs can outweigh falling fixed costs."},
-{ id:170, q:"A market is in long-run equilibrium. A technological improvement lowers costs for all firms. What is the best prediction?",options:["Market price rises as firms become more profitable","Market price falls as supply expands across firms","Output decreases because production becomes more efficient","Firms earn permanent profit due to lower costs"],a:1,tag:"market",type:"trap",feedback:"Lower costs increase supply and reduce price in equilibrium."},
-{ id:171, q:"Why can a firm be producing at the efficient scale yet still earn zero economic profit?",options:["Productive efficiency ensures output is at minimum cost only","Productive efficiency guarantees positive profit in equilibrium","Zero profit implies the firm is not minimizing costs","Efficient scale occurs only in short-run production"],a:0,tag:"efficiency",type:"trap",feedback:"Minimum ATC does not imply positive profit."},
-{ id:172, q:"A competitive firm notices that price is below average total cost but above marginal cost. Which conclusion is best?",options:["The firm should increase output because marginal revenue exceeds marginal cost","The firm should shut down because price is below total cost","The firm should reduce output because profit is negative","The firm must be operating below average variable cost"],a:0,tag:"profit",type:"trap",feedback:"Output decisions depend on MR vs MC, not profit level."},
-{ id:173, q:"Which statement best connects diminishing marginal product and marginal cost?",options:["Falling marginal product increases marginal cost of production","Falling marginal product decreases marginal cost of production","Marginal product affects only fixed cost components","No relationship exists between marginal product and cost"],a:0,tag:"production",type:"definition",feedback:"Lower productivity raises marginal cost."},
-{ id:174, q:"A firm in perfect competition produces where P = MC and P = ATC. Which statement is most accurate?",options:["The firm is in long-run equilibrium with zero economic profit","The firm is operating at the shutdown point condition","The firm is earning positive monopoly profit","The firm should reduce output below current level"],a:0,tag:"market",type:"interpretation",feedback:"P = MC and P = ATC defines long-run equilibrium."},
-{ id:175, q:"A consultant argues that a firm should produce as long as total revenue exceeds total variable cost, regardless of marginal conditions. What is the flaw?",options:["Shutdown decisions differ from profit-maximizing output decisions","Total revenue always determines optimal output levels","Marginal revenue is irrelevant for competitive firms","The shutdown rule applies only in monopoly markets"],a:0,tag:"profit",type:"trap",feedback:"Shutdown and output decisions are separate conditions."},
-{ id:176, q:"If a market's price exceeds firms' average total cost, which long-run adjustment is most likely?",options:["Firms reduce output and price rises further","New firms enter and supply increases in the market","Demand decreases because price is above cost","Firms shut down due to increased competition"],a:1,tag:"market",type:"interpretation",feedback:"Positive profit attracts entry and increases supply."},
-{ id:177, q:"A firm uses labor and capital. The rental rate of capital falls while wages remain constant. What is the best prediction?",options:["The firm substitutes toward capital in its input mix","The firm maintains the same input combination as before","The firm reduces capital because it becomes less productive","The firm increases output regardless of cost conditions"],a:0,tag:"production",type:"interpretation",feedback:"Lower relative cost increases use of capital."},
-{ id:178, q:"Why is the firm's supply curve only the marginal cost curve above AVC?",options:["Firms shut down when price falls below variable cost","Marginal revenue becomes negative below that level","Fixed costs disappear at lower output levels","Market demand becomes vertical below that level"],a:0,tag:"competition",type:"definition",feedback:"Supply exists only where production is better than shutdown."},
-{ id:179, q:"A firm produces where marginal cost is below marginal revenue, but the next unit would reverse that. What should it do?",options:["Increase output until marginal cost equals marginal revenue","Reduce output because marginal cost is rising","Shut down because costs are increasing","Keep output unchanged at the current level"],a:0,tag:"profit",type:"interpretation",feedback:"Expand output until MC = MR."},
-{ id:180, q:"A market is allocatively efficient, but a firm is not at minimum ATC. Which statement is best?",options:["Allocative and productive efficiency can occur separately","This situation cannot occur in competitive markets","The firm must be earning positive economic profit","The market demand curve must be perfectly elastic"],a:0,tag:"efficiency",type:"trap",feedback:"P = MC differs from minimum ATC."},
-{ id:181, q:"Firms face identical costs in long-run equilibrium. Input prices rise temporarily. What happens in the short run?",options:["Price rises and output falls as supply shifts left","Nothing changes because firms are price takers","All firms exit immediately due to higher costs","Demand increases because production is more expensive"],a:0,tag:"market",type:"interpretation",feedback:"Higher costs shift supply left, raising price."},
-{ id:182, q:"A student says zero economic profit means a firm is indifferent between producing and shutting down. What is wrong?",options:["Zero profit still means price covers total cost in equilibrium","Shutdown decisions depend only on total revenue conditions","Exit and shutdown are identical decisions","Firms earn positive losses in long-run equilibrium"],a:0,tag:"profit",type:"trap",feedback:"Shutdown depends on AVC, not total profit."},
-{ id:183, q:"A firm observes that output increases more from the second worker than the first. What is the best conclusion?",options:["Marginal product increased and marginal cost likely decreased","Marginal product decreased and marginal cost increased","Returns to scale must be decreasing at that level","Average fixed cost increased with additional labor"],a:0,tag:"production",type:"interpretation",feedback:"Higher marginal product lowers marginal cost."}
+{id:150,q:"A surge in demand for electric vehicles raises the price of lithium. Battery producers cut output, which then affects laptop production. What does this illustrate?",options:["A single-market adjustment only","General equilibrium spillovers across related markets","Monopoly pricing in batteries","A movement along the laptop demand curve"],a:1,tag:"interaction",type:"interpretation",feedback:"A shock in one market can cascade through related input and output markets."},
+{id:151,q:"A new health study raises demand for tomatoes. Tomatoes and cucumbers are complements, and tomato farms hire more workers away from cucumber farms. What is the most likely long-run result?",options:["Tomato prices rise forever while cucumber prices never change","Tomato and cucumber markets both adjust as prices and wages change across markets","Only the tomato market changes because consumer demand began there","Worker wages are irrelevant because labor markets are separate"],a:1,tag:"interaction",type:"trap",feedback:"General equilibrium means product and labor markets adjust together."},
+{id:152,q:"A tariff raises the domestic price of imported steel. Which downstream effect is most likely?",options:["Car supply shifts right because domestic firms gain certainty","Car supply shifts left because an input became more expensive","Car demand shifts right because steel is scarcer","Car prices must fall because steel producers earn more"],a:1,tag:"interaction",type:"interpretation",feedback:"Higher input costs reduce supply in industries using that input."},
+{id:153,q:"Suppose coffee and pastries are complements. A productivity improvement lowers the cost of producing coffee. Which sequence is most plausible?",options:["Coffee supply rises, coffee price falls, demand for pastries rises","Coffee demand falls, pastry demand falls, both prices rise","Coffee price rises, pastry supply falls, labor exits both industries","Nothing happens outside the coffee market"],a:0,tag:"interaction",type:"default",feedback:"Lower coffee cost spills over into the complementary pastry market."},
+{id:154,q:"An increase in demand for restaurant meals raises wages for cooks. Some workers leave retail jobs to become cooks. What happens first in retail labor markets?",options:["Retail labor supply falls, tending to raise retail wages","Retail labor supply rises, lowering retail wages","Retail output rises immediately because cooks consume more","Retail demand disappears because labor moved"],a:0,tag:"interaction",type:"trap",feedback:"Workers leaving retail reduce labor supply there, putting upward pressure on wages."},
+{id:155,q:"Two industries use the same specialized chip. Demand for gaming consoles spikes, raising chip prices. A student says only console prices will change because laptops are a different market. What is wrong with that reasoning?",options:["Chip prices affect only consumers, not firms","Shared inputs link markets, so laptop production conditions also change","Laptop demand determines chip prices, not console demand","Different final goods can never be connected"],a:1,tag:"interaction",type:"trap",feedback:"Shared inputs are one of the clearest channels linking separate markets."},
+{id:156,q:"If an economy moves from a point inside the PPF to a point on the PPF but not to the highest attainable indifference curve, what has improved?",options:["Allocative efficiency only","Technical efficiency only","Equity only","Nothing has improved"],a:1,tag:"efficiency",type:"interpretation",feedback:"Moving onto the PPF fixes waste in production, but not necessarily consumer satisfaction."},
+{id:157,q:"At a candidate allocation, the slope of the PPF does not equal the slope of the indifference curve. What does that imply?",options:["Consumers and producers are perfectly aligned","The allocation is not allocatively efficient","The economy is inside the PPF","The market must be monopolized"],a:1,tag:"efficiency",type:"trap",feedback:"Efficiency requires opportunity cost to match willingness to trade."},
+{id:158,q:"Two people trade goods until their MRS values are equal. What has been achieved?",options:["Equality of income","Pareto efficiency in exchange","Productive efficiency in production","A guarantee of fairness"],a:1,tag:"efficiency",type:"definition",feedback:"Equal MRS means no mutually beneficial trade remains."},
+{id:159,q:"A competitive market clears, but at the equilibrium output P exceeds MC. What should we conclude?",options:["The market is efficient because quantity demanded equals quantity supplied","The market is underproducing relative to the efficient level","The market is overproducing because firms earn profit","Nothing can be concluded without ATC"],a:1,tag:"efficiency",type:"trap",feedback:"Market clearing alone is not enough. Efficiency requires P = MC."},
+{id:160,q:"A good has price 18 and marginal cost 12 at the current output. What adjustment would move the market toward allocative efficiency?",options:["Reduce output because costs are positive","Increase output because willingness to pay exceeds marginal cost","Hold output constant because the market already clears","Raise fixed costs so ATC matches price"],a:1,tag:"efficiency",type:"calculation",feedback:"If P > MC, additional units are worth more than they cost to make."},
+{id:161,q:"A planner chooses a point on the PPF that yields less utility than another feasible point on the same PPF. This point is...",options:["Productively and allocatively efficient","Productively efficient but allocatively inefficient","Allocatively efficient but technically inefficient","Pareto superior to all other points"],a:1,tag:"efficiency",type:"trap",feedback:"Being on the PPF does not guarantee the best mix of goods."},
+{id:162,q:"Trade moves an economy from an initial endowment to a point on the contract curve. What is true at the final point?",options:["At least one more mutually beneficial trade still exists","No one can be made better off without harming someone else","The allocation must also be equitable","Each person has the same bundle"],a:1,tag:"efficiency",type:"interpretation",feedback:"The contract curve is the set of Pareto efficient allocations."},
+{id:163,q:"A factory dumps waste into a river, and downstream fishers bear the damage. If the factory ignores that damage, which comparison is correct?",options:["Private cost equals social cost","Private cost exceeds social cost","Social cost exceeds private cost","Marginal benefit exceeds all costs automatically"],a:2,tag:"failure",type:"definition",feedback:"Unpriced external harm means social cost is higher than private cost."},
+{id:164,q:"A city installs streetlights funded voluntarily. Many residents enjoy the lights whether or not they contribute, so contributions stay low. What market failure is this?",options:["Imperfect competition","Public goods underprovision due to free-riding","Natural monopoly","Efficient market separation"],a:1,tag:"failure",type:"interpretation",feedback:"Non-excludability and non-rivalry create free-rider problems."},
+{id:165,q:"A student says a market with many buyers and sellers must be efficient. Which case most clearly disproves that claim?",options:["A perfectly competitive wheat market","A polluted river caused by factory output","A market with falling ATC","A firm entering because profits exist"],a:1,tag:"failure",type:"trap",feedback:"Externalities can destroy efficiency even when competition exists."},
+{id:166,q:"If consumers cannot tell whether used cars are high or low quality, mutually beneficial trades may fail to occur. This is best classified as...",options:["A public good problem","Imperfect information causing market failure","A natural monopoly problem","A case of allocative efficiency"],a:1,tag:"failure",type:"interpretation",feedback:"Asymmetric information can block efficient exchange."},
+{id:167,q:"Suppose the private marginal cost of a product is 8, but the external damage per unit is 5. What is the social marginal cost?",options:["3","8","13","40"],a:2,tag:"failure",type:"calculation",feedback:"Social marginal cost adds the external harm to private cost."},
+{id:168,q:"A vaccine provides private benefit to the buyer and external benefit to others by reducing spread. If consumers ignore that external benefit, the market outcome will likely involve...",options:["Too much output","Too little output","Efficient output","A natural monopoly"],a:1,tag:"failure",type:"trap",feedback:"Positive externalities lead to underproduction relative to the social optimum."},
+{id:169,q:"A monopolist faces demand P = 100 - Q and marginal cost MC = 20. At the profit-maximizing output, which condition must hold?",options:["P = MC","MR = MC","ATC = MC","Demand = supply"],a:1,tag:"power",type:"definition",feedback:"The monopoly still maximizes profit where marginal revenue equals marginal cost."},
+{id:170,q:"A monopolist has demand P = 100 - Q and MC = 20. Marginal revenue is MR = 100 - 2Q. What is the profit-maximizing quantity?",options:["20","40","60","80"],a:1,tag:"power",type:"calculation",feedback:"Set MR = MC: 100 - 2Q = 20, so Q = 40."},
+{id:171,q:"Using the previous monopoly setup with Q = 40, what price does the monopolist charge?",options:["20","40","60","80"],a:2,tag:"power",type:"calculation",feedback:"Plug Q = 40 into demand: P = 100 - 40 = 60."},
+{id:172,q:"A student argues monopoly is inefficient only when the monopolist earns positive profit. What is wrong with that claim?",options:["Monopoly is inefficient whenever P > MC, even if profit is zero or negative","Any firm with zero profit is efficient","Profits determine whether MR equals MC","Monopoly is efficient if fixed costs are high"],a:0,tag:"power",type:"trap",feedback:"The inefficiency comes from output restriction, not from accounting profit alone."},
+{id:173,q:"A monopolist can perfectly price discriminate. Compared with single-price monopoly, output will...",options:["Fall because each unit gets a different price","Stay the same because market power is unchanged","Rise to the efficient level where willingness to pay equals MC","Become lower than competitive output"],a:2,tag:"power",type:"interpretation",feedback:"Perfect price discrimination removes deadweight loss by expanding output."},
+{id:174,q:"A movie theater charges students less than non-students for the same showing. For this to work as profit-maximizing price discrimination, the theater must be able to...",options:["Eliminate all fixed costs","Prevent resale and separate customer groups","Make demand perfectly elastic","Force both groups to buy the same quantity"],a:1,tag:"power",type:"interpretation",feedback:"Price discrimination requires segmentation and limited arbitrage."},
+{id:175,q:"A utility company is regulated under marginal-cost pricing even though marginal cost is below average cost. What is the likely result?",options:["The firm earns excess profit","The firm incurs losses unless subsidized","The firm produces too little","The firm becomes perfectly competitive"],a:1,tag:"power",type:"trap",feedback:"For a natural monopoly, P = MC can imply price below AC."},
+{id:176,q:"A monopolist charges an entry fee plus a per-unit price equal to marginal cost. Why can this raise profit?",options:["It creates deadweight loss on purpose","It captures consumer surplus through the fixed fee while keeping usage high","It forces resale","It makes demand more elastic"],a:1,tag:"power",type:"trap",feedback:"Two-part pricing can mimic some gains from price discrimination."},
+{id:177,q:"In a two-firm Cournot market, each firm chooses output knowing total output affects price. Why is the Cournot outcome not as restrictive as monopoly?",options:["Each firm ignores the effect of its output on the other firm’s profit","Each firm sets price equal to MC directly","Collusion is legally required","Demand becomes perfectly elastic"],a:0,tag:"strategy",type:"trap",feedback:"Each firm internalizes only part of the price effect, so total output exceeds monopoly output."},
+{id:178,q:"In Bertrand competition with identical goods and constant MC, why does price tend to fall to marginal cost?",options:["Each firm can gain the whole market by slightly undercutting a higher rival price","Firms coordinate on the monopoly price","Consumers prefer the highest price","Output is fixed by assumption"],a:0,tag:"strategy",type:"interpretation",feedback:"Undercutting pressure drives price down until no profitable cut remains."},
+{id:179,q:"Two Bertrand firms sell differentiated goods. One firm raises its price. What is the best-response logic for the rival?",options:["Also tends to raise price because some consumers shift toward it","Must cut price to zero immediately","Must exit because demand becomes negative","Faces no change in demand"],a:0,tag:"strategy",type:"interpretation",feedback:"Differentiation softens competition and makes upward-sloping best responses possible."},
+{id:180,q:"A cartel agreement in a repeated game is easier to sustain when...",options:["There are many firms and little chance of future interaction","Firms are patient and expect the game to continue","Products are homogeneous and one-shot","Detection of cheating takes longer and firms are impatient"],a:1,tag:"strategy",type:"trap",feedback:"Patience and future punishment make collusion more stable."},
+{id:181,q:"Suppose a grim-trigger collusive arrangement requires g ≥ 1/2 to deter cheating. If g = 0.4, what follows?",options:["Collusion is stable","Cheating is profitable, so collusion is not sustainable","Price must equal monopoly price forever","Cournot output becomes efficient"],a:1,tag:"strategy",type:"calculation",feedback:"If continuation is too unlikely, future punishment is too weak."},
+{id:182,q:"In a Stackelberg model, the leader commits to output first. Why does the leader often earn more than the follower?",options:["The follower must match output exactly","The leader chooses output anticipating the follower’s best response","The leader faces a flatter demand curve","The follower is forced to price at MC"],a:1,tag:"strategy",type:"interpretation",feedback:"Commitment gives the leader a strategic advantage."},
+{id:183,q:"An incumbent threatens a low price to deter entry, but the low price can be reversed immediately after entry decisions are made. Why may this threat fail?",options:["Price is not a sunk commitment","Demand becomes perfectly inelastic","Entry never depends on expected future prices","Incumbents cannot lower prices"],a:0,tag:"strategy",type:"trap",feedback:"Without commitment, limit pricing threats may not be credible."},
+{id:184,q:"Two firms play Bertrand with MC = 12 and identical goods. If both charge 18, what profitable deviation exists for one firm?",options:["Raise price to 20","Lower price slightly below 18 to capture the market","Keep price unchanged because 18 is Nash","Set price below 12 permanently"],a:1,tag:"strategy",type:"trap",feedback:"Any price above MC invites undercutting in the homogeneous Bertrand model."},
+{id:185,q:"An allocation on the contract curve gives one person much more than the other. Which statement is correct?",options:["It is inefficient because the bundles are unequal","It may be efficient even though it is inequitable","It must be both fair and efficient","It cannot result from voluntary trade"],a:1,tag:"equity",type:"trap",feedback:"Pareto efficiency does not guarantee fairness."},
+{id:186,q:"A social planner wants a fairer outcome without sacrificing the efficiency of competitive trade. According to the Second Welfare Theorem, the best general approach is to...",options:["Fix all market prices directly","Redistribute initial endowments, then allow competitive trade","Ban voluntary exchange","Require equal quantities of all goods"],a:1,tag:"equity",type:"interpretation",feedback:"Separate distribution from the trading process itself."},
+{id:187,q:"Suppose Smith would never voluntarily trade from his initial endowment to the planner’s preferred allocation, even though the planner views it as fair. What core problem does this illustrate?",options:["Efficiency automatically creates equity","Equity goals may require coercion or redistribution of endowments","Markets cannot reach the contract curve","All fair allocations are inefficient"],a:1,tag:"equity",type:"trap",feedback:"Fairness often cannot be imposed through voluntary trade alone."},
+{id:188,q:"A tax-transfer policy reduces inequality but also discourages work effort and shrinks total surplus. This is an example of...",options:["A Pareto improvement","An efficiency-equity tradeoff","A failure of monopoly regulation","A proof that fairness is impossible"],a:1,tag:"equity",type:"interpretation",feedback:"Improving distribution can come at the cost of efficiency."},
+{id:189,q:"An outcome is Pareto efficient, but one person holds nearly all resources. What can we conclude?",options:["The outcome must be socially desirable","The outcome is efficient, but society may still reject it on equity grounds","The outcome is inefficient because wealth is concentrated","The contract curve has been violated"],a:1,tag:"equity",type:"default",feedback:"Efficiency answers one question. Fairness answers another."},
+{id:190,q:"Two individuals trade until their MRS are equal. What does this guarantee?",options:["Equal income","Pareto efficiency","Maximum production","Perfect equality"],a:1,tag:"efficiency",type:"definition",feedback:"No further gains from trade remain."},
+{id:191,q:"An allocation is on the contract curve but highly unequal. What is true?",options:["It is inefficient","It is efficient but may be inequitable","It must be fair","Trade must stop"],a:1,tag:"equity",type:"trap",feedback:"Efficiency does not imply fairness."},
+{id:192,q:"A monopolist earns persistent profit because of patents and control of key resources. What is the source of power?",options:["Demand shifts","Barriers to entry","Efficiency","Elasticity"],a:1,tag:"power",type:"interpretation",feedback:"Barriers prevent competition."},
+{id:193,q:"If barriers to entry suddenly disappear in a monopoly market, what happens in the long run?",options:["Prices rise","Prices fall and output increases","Demand disappears","Costs rise"],a:1,tag:"power",type:"multi-step",feedback:"Entry erodes market power."},
+{id:194,q:"A monopolist charges P = MC and a fixed entry fee equal to consumer surplus. What is the result?",options:["Deadweight loss","Efficient output and full surplus extraction","Zero output","Perfect competition"],a:1,tag:"power",type:"trap",feedback:"Two-part tariff can achieve efficiency while capturing surplus."},
+{id:195,q:"Why is a two-part tariff often more profitable than a single price monopoly?",options:["It reduces costs","It increases demand","It captures more consumer surplus","It eliminates competition"],a:2,tag:"power",type:"interpretation",feedback:"Firms extract surplus beyond per-unit pricing."}   
 ]
 };
 
 easyConceptPools = {
-production:[
-{ id:1, q:"Marginal product refers to...",options:["Total output","Output per worker","Additional output from one more unit of input","Total cost"],a:2,tag:"production",type:"definition",feedback:"Marginal product is the additional output from one more unit of input."},
-{ id:2, q:"Diminishing marginal product means...",options:["Output decreases","Each additional input adds less output","Costs fall","Technology improves"],a:1,tag:"production",type:"interpretation",feedback:"Each added input contributes less than the previous one."},
-{ id:3, q:"An isoquant shows...",options:["Equal cost combinations","Equal output combinations","Equal revenue","Equal profit"],a:1,tag:"production",type:"definition",feedback:"Isoquants show combinations that produce the same output."},
-{ id:4, q:"If inputs double and output more than doubles, this is...",options:["Constant returns","Decreasing returns","Increasing returns","Diminishing product"],a:2,tag:"production",type:"definition",feedback:"Output increasing more than inputs means increasing returns to scale."},
-{ id:5, q:"Technological progress will...",options:["Reduce output","Increase output for same inputs","Raise costs","Eliminate labor"],a:1,tag:"production",type:"interpretation",feedback:"Technology improves productivity."},
-{ id:6, q:"Input substitution occurs because...",options:["Costs are fixed","Relative input prices change","Output falls","Demand increases"],a:1,tag:"production",type:"interpretation",feedback:"Firms substitute toward cheaper inputs."}
+interaction:[
+{id:1,q:"If input costs rise, supply will...",options:["Increase","Decrease","Stay the same","Become zero"],a:1,tag:"interaction",type:"interpretation",feedback:"Higher costs reduce supply."},
+{id:2,q:"If the price of a substitute rises, demand will...",options:["Fall","Rise","Stay constant","Disappear"],a:1,tag:"interaction",type:"interpretation",feedback:"Substitutes shift demand."},
+{id:3,q:"If goods are complements, a price increase in one causes demand for the other to...",options:["Rise","Fall","Stay constant","Double"],a:1,tag:"interaction",type:"interpretation",feedback:"Complements move together."},
+{id:4,q:"A decrease in production costs will...",options:["Reduce supply","Increase supply","Reduce demand","Do nothing"],a:1,tag:"interaction",type:"interpretation",feedback:"Lower costs increase supply."},
+{id:5,q:"When markets are linked, a shock in one market will...",options:["Have no effect","Affect related markets","Eliminate demand","Fix prices"],a:1,tag:"interaction",type:"definition",feedback:"Markets interact."},
+{id:6,q:"If wages rise across an industry, output will likely...",options:["Increase","Decrease","Stay constant","Double"],a:1,tag:"interaction",type:"interpretation",feedback:"Higher costs reduce output."}
 ],
-
-costs:[
-{ id:7, q:"Fixed costs are...",options:["Costs that change with output","Costs that do not change with output","Marginal costs","Average costs"],a:1,tag:"costs",type:"definition",feedback:"Fixed costs remain constant regardless of output."},
-{ id:8, q:"Variable costs...",options:["Never change","Increase with output","Are always zero","Are fixed"],a:1,tag:"costs",type:"definition",feedback:"Variable costs rise as output increases."},
-{ id:9, q:"Marginal cost is...",options:["Total cost","Average cost","Cost of one more unit","Fixed cost"],a:2,tag:"costs",type:"definition",feedback:"Marginal cost is the cost of producing one more unit."},
-{ id:10, q:"Average total cost equals...",options:["TC/Q","MC/Q","FC/Q","VC/Q"],a:0,tag:"costs",type:"definition",feedback:"ATC is total cost divided by output."},
-{ id:11, q:"If MC is below ATC, ATC will...",options:["Rise","Fall","Stay constant","Disappear"],a:1,tag:"costs",type:"interpretation",feedback:"MC pulls ATC downward."},
-{ id:12, q:"If MC is above ATC, ATC will...",options:["Fall","Rise","Stay constant","Become zero"],a:1,tag:"costs",type:"interpretation",feedback:"MC pulls ATC upward."}
-],
-
-profit:[
-{ id:13, q:"Profit equals...",options:["Revenue minus cost","Cost minus revenue","Price times cost","MC minus MR"],a:0,tag:"profit",type:"definition",feedback:"Profit is total revenue minus total cost."},
-{ id:14, q:"A firm maximizes profit when...",options:["TR is highest","MR = MC","Costs are lowest","Output is zero"],a:1,tag:"profit",type:"definition",feedback:"Profit maximization occurs where MR equals MC."},
-{ id:15, q:"If TR > TC, the firm has...",options:["Loss","Zero profit","Positive profit","Shutdown"],a:2,tag:"profit",type:"interpretation",feedback:"Revenue exceeding cost means profit."},
-{ id:16, q:"If TR = TC, the firm has...",options:["Loss","Positive profit","Zero economic profit","Shutdown"],a:2,tag:"profit",type:"definition",feedback:"All costs are covered."},
-{ id:17, q:"A firm should increase output when...",options:["MC > MR","MR > MC","ATC rises","Demand falls"],a:1,tag:"profit",type:"interpretation",feedback:"Firms expand when MR exceeds MC."},
-{ id:18, q:"A firm should reduce output when...",options:["MR > MC","MC > MR","ATC falls","Price rises"],a:1,tag:"profit",type:"interpretation",feedback:"Firms cut output when MC exceeds MR."}
-],
-
-competition:[
-{ id:19, q:"In perfect competition, firms are...",options:["Price makers","Price takers","Monopolists","Regulated"],a:1,tag:"competition",type:"definition",feedback:"Firms accept market price."},
-{ id:20, q:"Marginal revenue for a competitive firm equals...",options:["Cost","Price","Profit","Output"],a:1,tag:"competition",type:"definition",feedback:"MR = P in perfect competition."},
-{ id:21, q:"The firm's demand curve is...",options:["Downward sloping","Upward sloping","Perfectly elastic","Vertical"],a:2,tag:"competition",type:"definition",feedback:"Demand is perfectly elastic at market price."},
-{ id:22, q:"A firm's supply curve is...",options:["Demand curve","MC above AVC","ATC curve","Total cost"],a:1,tag:"competition",type:"definition",feedback:"MC above AVC defines supply."},
-{ id:23, q:"If price rises, MR will...",options:["Fall","Stay constant","Rise","Disappear"],a:2,tag:"competition",type:"interpretation",feedback:"MR moves with price."},
-{ id:24, q:"Price-taking firms cannot...",options:["Produce output","Change output","Influence market price","Earn profit"],a:2,tag:"competition",type:"definition",feedback:"They have no price control."}
-],
-
-market:[
-{ id:25, q:"Market price is determined by...",options:["Firms","Government","Supply and demand","Costs"],a:2,tag:"market",type:"definition",feedback:"Equilibrium sets price."},
-{ id:26, q:"Entry into a market will...",options:["Reduce supply","Increase supply","Raise price","Reduce demand"],a:1,tag:"market",type:"definition",feedback:"Entry increases supply."},
-{ id:27, q:"Exit from a market will...",options:["Increase supply","Decrease supply","Lower price","Eliminate demand"],a:1,tag:"market",type:"definition",feedback:"Exit reduces supply."},
-{ id:28, q:"In the long run, profits tend toward...",options:["Positive","Negative","Zero","Infinite"],a:2,tag:"market",type:"definition",feedback:"Entry and exit eliminate profits."},
-{ id:29, q:"If firms are earning profits, new firms will...",options:["Exit","Enter","Shut down","Ignore market"],a:1,tag:"market",type:"interpretation",feedback:"Profit attracts entry."},
-{ id:30, q:"If firms are losing money, firms will...",options:["Enter","Exit","Raise price","Increase output"],a:1,tag:"market",type:"interpretation",feedback:"Loss drives exit."}
-],
-
 efficiency:[
-{ id:31, q:"Allocative efficiency occurs when...",options:["MC = MR","MC = Price","ATC is minimized","Profit is zero"],a:1,tag:"efficiency",type:"definition",feedback:"P = MC ensures efficient allocation."},
-{ id:32, q:"Productive efficiency occurs when...",options:["MC = P","ATC is minimized","Profit is maximized","Demand equals supply"],a:1,tag:"efficiency",type:"definition",feedback:"Minimum ATC defines productive efficiency."},
-{ id:33, q:"If P > MC, output is...",options:["Too high","Too low","Efficient","Zero"],a:1,tag:"efficiency",type:"interpretation",feedback:"Society values more output than it costs to produce."},
-{ id:34, q:"If P < MC, output is...",options:["Too high","Too low","Efficient","Optimal"],a:0,tag:"efficiency",type:"interpretation",feedback:"Production exceeds efficient level."},
-{ id:35, q:"Efficiency ensures...",options:["Maximum profit","Fair prices","Resources are allocated optimally","Costs are zero"],a:2,tag:"efficiency",type:"definition",feedback:"Efficiency maximizes total surplus."},
-{ id:36, q:"Productive efficiency focuses on...",options:["Price","Cost minimization","Demand","Profit"],a:1,tag:"efficiency",type:"definition",feedback:"Producing at lowest possible cost."}
+{id:7,q:"Allocative efficiency occurs when...",options:["MR = MC","P = MC","ATC minimized","Profit zero"],a:1,tag:"efficiency",type:"definition",feedback:"Value equals cost."},
+{id:8,q:"If P > MC, output should...",options:["Decrease","Increase","Stay same","Stop"],a:1,tag:"efficiency",type:"interpretation",feedback:"More value than cost."},
+{id:9,q:"If P < MC, output is...",options:["Too high","Too low","Efficient","Optimal"],a:0,tag:"efficiency",type:"interpretation",feedback:"Overproduction."},
+{id:10,q:"Efficiency maximizes...",options:["Profit","Revenue","Total surplus","Costs"],a:2,tag:"efficiency",type:"definition",feedback:"Total surplus is the goal."},
+{id:11,q:"Competitive markets tend toward efficiency because...",options:["Firms control price","P = MC","Government sets output","Costs fall"],a:1,tag:"efficiency",type:"interpretation",feedback:"Competition forces it."},
+{id:12,q:"Productive efficiency occurs when...",options:["P = MC","ATC minimized","Profit maximized","Demand highest"],a:1,tag:"efficiency",type:"definition",feedback:"Lowest cost production."}
+],
+failure:[
+{id:13,q:"A market failure occurs when...",options:["Profit exists","Markets are inefficient","Demand rises","Supply falls"],a:1,tag:"failure",type:"definition",feedback:"Failure = inefficiency."},
+{id:14,q:"Externalities affect...",options:["Only buyers","Only sellers","Third parties","Government only"],a:2,tag:"failure",type:"definition",feedback:"Outside the market."},
+{id:15,q:"Negative externalities lead to...",options:["Too little output","Too much output","Efficient output","Zero output"],a:1,tag:"failure",type:"interpretation",feedback:"Overproduction."},
+{id:16,q:"Deadweight loss represents...",options:["Profit","Lost surplus","Revenue","Cost"],a:1,tag:"failure",type:"definition",feedback:"Lost value."},
+{id:17,q:"Market failure means resources are...",options:["Optimally allocated","Misallocated","Free","Unlimited"],a:1,tag:"failure",type:"interpretation",feedback:"Not efficient."},
+{id:18,q:"A positive externality leads to...",options:["Too much output","Too little output","Efficient output","Zero demand"],a:1,tag:"failure",type:"interpretation",feedback:"Underproduction."}
+],
+power:[
+{id:19,q:"A monopolist is a firm that...",options:["Takes price","Controls price","Earns zero profit","Faces many rivals"],a:1,tag:"power",type:"definition",feedback:"Price maker."},
+{id:20,q:"A monopolist produces where...",options:["P = MC","MR = MC","ATC minimized","Demand highest"],a:1,tag:"power",type:"definition",feedback:"Same rule."},
+{id:21,q:"Compared to competition, monopoly price is...",options:["Lower","Higher","Equal","Zero"],a:1,tag:"power",type:"interpretation",feedback:"Market power raises price."},
+{id:22,q:"Monopoly output is...",options:["Higher","Lower","Same","Unlimited"],a:1,tag:"power",type:"interpretation",feedback:"Restricted output."},
+{id:23,q:"Natural monopoly occurs when...",options:["Many firms efficient","One firm lowest cost","Demand low","Prices fixed"],a:1,tag:"power",type:"definition",feedback:"Economies of scale."},
+{id:24,q:"Government regulation of monopoly aims to...",options:["Raise prices","Reduce inefficiency","Eliminate supply","Increase profit"],a:1,tag:"power",type:"interpretation",feedback:"Control power."}
+],
+strategy:[
+{id:25,q:"In Cournot competition, firms choose...",options:["Price","Output","Wages","Costs"],a:1,tag:"strategy",type:"definition",feedback:"Quantity game."},
+{id:26,q:"In Bertrand competition, firms choose...",options:["Output","Price","Capacity","Labor"],a:1,tag:"strategy",type:"definition",feedback:"Price game."},
+{id:27,q:"Bertrand competition typically leads to prices...",options:["Above MC","Equal to MC","Below cost","Random"],a:1,tag:"strategy",type:"interpretation",feedback:"Price war."},
+{id:28,q:"Cournot firms consider...",options:["No rivals","Strategic interaction","Only cost","Only demand"],a:1,tag:"strategy",type:"definition",feedback:"They react to each other."},
+{id:29,q:"First mover advantage means...",options:["Last mover wins","First firm gains advantage","No advantage","Prices fall"],a:1,tag:"strategy",type:"definition",feedback:"Timing matters."},
+{id:30,q:"Product differentiation gives firms...",options:["No power","Some market power","Perfect competition","Zero demand"],a:1,tag:"strategy",type:"interpretation",feedback:"Less direct competition."}
+],
+equity:[
+{id:31,q:"Equity refers to...",options:["Efficiency","Fairness","Profit","Output"],a:1,tag:"equity",type:"definition",feedback:"Fair distribution."},
+{id:32,q:"Efficiency refers to...",options:["Fairness","Max surplus","Equal income","Low cost"],a:1,tag:"equity",type:"definition",feedback:"Max total value."},
+{id:33,q:"An efficiency-equity tradeoff means...",options:["Both increase","Improving fairness may reduce efficiency","Efficiency always rises","No tradeoff"],a:1,tag:"equity",type:"interpretation",feedback:"Tradeoffs are real."},
+{id:34,q:"Redistribution policies aim to...",options:["Increase efficiency","Increase equity","Increase monopoly","Reduce supply"],a:1,tag:"equity",type:"interpretation",feedback:"Fairness focus."},
+{id:35,q:"Policies that improve equity may...",options:["Increase efficiency","Reduce efficiency","Have no effect","Eliminate demand"],a:1,tag:"equity",type:"interpretation",feedback:"Tradeoff."},
+{id:36,q:"Markets focus primarily on...",options:["Fairness","Efficiency","Equality","Regulation"],a:1,tag:"equity",type:"interpretation",feedback:"Markets optimize efficiency."}
 ]
 };
-
+    
 const mediumConceptPools = {
-production:[
-{ id:100, q:"If marginal product is falling, what happens to marginal cost?",options:["Falls","Rises","Stays constant","Becomes zero"],a:1,tag:"production",type:"interpretation",feedback:"Falling marginal product increases marginal cost."},
-{ id:101, q:"A firm produces more output but each additional worker adds less than before. This is...",options:["Increasing returns","Diminishing marginal product","Technological progress","Input substitution"],a:1,tag:"production",type:"interpretation",feedback:"Each additional unit contributes less output."},
-{ id:102, q:"If productivity improves, what happens to marginal cost?",options:["Rises","Falls","Stays the same","Becomes fixed"],a:1,tag:"production",type:"interpretation",feedback:"Higher productivity lowers marginal cost."},
-{ id:103, q:"Isoquants that are bowed inward indicate...",options:["Constant output","Perfect substitutes","Diminishing MRTS","Rising costs"],a:2,tag:"production",type:"definition",feedback:"Convex isoquants reflect diminishing substitution between inputs."},
-{ id:104, q:"If a firm can produce the same output with fewer inputs, what has occurred?",options:["Higher costs","Technological progress","Diminishing returns","Shutdown"],a:1,tag:"production",type:"interpretation",feedback:"Technology allows more efficient production."},
-{ id:105, q:"If marginal product increases, what happens to marginal cost?",options:["Rises","Falls","Stays constant","Becomes zero"],a:1,tag:"production",type:"interpretation",feedback:"Higher productivity lowers cost per unit."}
+interaction:[
+{id:50,q:"Demand for SUVs increases. Steel is an input. What happens to steel prices?",options:["Fall","Rise","Stay constant","Become zero"],a:1,tag:"interaction",type:"diagnostic",feedback:"Output demand raises input demand."},
+{id:51,q:"If the price of a complement rises, demand for the related good will...",options:["Rise","Fall","Stay constant","Double"],a:1,tag:"interaction",type:"diagnostic",feedback:"Complements move together."},
+{id:52,q:"If wages rise in one sector, workers moving from other sectors will cause wages there to...",options:["Rise","Fall","Stay constant","Disappear"],a:1,tag:"interaction",type:"diagnostic",feedback:"Labor supply shifts."},
+{id:53,q:"A positive demand shock in one market leads to higher prices in related markets because...",options:["Markets are isolated","Input demand increases","Supply increases","Government intervenes"],a:1,tag:"interaction",type:"diagnostic",feedback:"Interconnected demand channels."},
+{id:54,q:"If two goods are substitutes and one price rises, demand for the other...",options:["Falls","Rises","Stays constant","Becomes elastic"],a:1,tag:"interaction",type:"diagnostic",feedback:"Substitution effect."},
+{id:55,q:"A cost increase in one industry will spill over into others when...",options:["Markets are independent","Inputs are shared","Demand is fixed","Prices are regulated"],a:1,tag:"interaction",type:"diagnostic",feedback:"Shared inputs link markets."}
 ],
-
-costs:[
-{ id:106, q:"If MC is below ATC, what happens to ATC?",options:["Rises","Falls","Stays constant","Becomes zero"],a:1,tag:"costs",type:"interpretation",feedback:"MC pulls ATC downward."},
-{ id:107, q:"If MC is above ATC, what happens to ATC?",options:["Falls","Rises","Stays constant","Becomes zero"],a:1,tag:"costs",type:"interpretation",feedback:"MC pulls ATC upward."},
-{ id:108, q:"If ATC is at its minimum, what must be true?",options:["MC = ATC","MC > ATC","MC < ATC","MC = 0"],a:0,tag:"costs",type:"definition",feedback:"MC intersects ATC at its minimum."},
-{ id:109, q:"Which cost exists even if output is zero?",options:["Marginal cost","Variable cost","Fixed cost","Average cost"],a:2,tag:"costs",type:"definition",feedback:"Fixed costs must always be paid."},
-{ id:110, q:"If input prices rise, what happens to cost curves?",options:["Shift down","Shift up","Stay the same","Disappear"],a:1,tag:"costs",type:"interpretation",feedback:"Higher input prices increase costs."},
-{ id:111, q:"If MC falls, what happens to profit-maximizing output?",options:["Falls","Rises","Stays the same","Becomes zero"],a:1,tag:"costs",type:"interpretation",feedback:"Lower MC increases optimal output."}
-],
-
-profit:[
-{ id:112, q:"If MR > MC, what should the firm do?",options:["Decrease output","Increase output","Shut down","Do nothing"],a:1,tag:"profit",type:"interpretation",feedback:"Producing more increases profit."},
-{ id:113, q:"If MR < MC, what should the firm do?",options:["Increase output","Decrease output","Shut down","Raise price"],a:1,tag:"profit",type:"interpretation",feedback:"Producing less increases profit."},
-{ id:114, q:"If P > ATC, the firm is earning...",options:["Loss","Zero profit","Positive profit","Shutdown"],a:2,tag:"profit",type:"interpretation",feedback:"Price above ATC means profit."},
-{ id:115, q:"If P < ATC but P > AVC, the firm should...",options:["Shut down","Continue operating","Exit immediately","Raise price"],a:1,tag:"profit",type:"interpretation",feedback:"Firm covers variable costs but not total costs."},
-{ id:116, q:"If P < AVC, the firm should...",options:["Increase output","Continue operating","Shut down","Raise price"],a:2,tag:"profit",type:"definition",feedback:"Firm cannot cover variable costs."},
-{ id:117, q:"If a firm earns zero economic profit, what is true?",options:["It should exit","It covers all costs","It is inefficient","It is losing money"],a:1,tag:"profit",type:"interpretation",feedback:"All opportunity costs are covered."}
-],
-
-competition:[
-{ id:118, q:"For a competitive firm, marginal revenue equals...",options:["Cost","Price","Profit","Output"],a:1,tag:"competition",type:"definition",feedback:"MR = P in perfect competition."},
-{ id:119, q:"If a firm increases output, what happens to price?",options:["Rises","Falls","Stays the same","Becomes zero"],a:2,tag:"competition",type:"interpretation",feedback:"Firms are price takers."},
-{ id:120, q:"A competitive firm's demand curve is...",options:["Downward sloping","Upward sloping","Perfectly elastic","Vertical"],a:2,tag:"competition",type:"definition",feedback:"Demand is perfectly elastic."},
-{ id:121, q:"A firm's supply curve is its...",options:["Demand curve","MC above AVC","ATC curve","Revenue curve"],a:1,tag:"competition",type:"definition",feedback:"MC above AVC defines supply."},
-{ id:122, q:"If price rises, what happens to firm output?",options:["Falls","Rises","Stays constant","Becomes zero"],a:1,tag:"competition",type:"interpretation",feedback:"Higher price increases output."},
-{ id:123, q:"Competitive firms cannot...",options:["Produce output","Change output","Influence price","Earn profit"],a:2,tag:"competition",type:"definition",feedback:"They take price as given."}
-],
-
-market:[
-{ id:124, q:"If firms are earning profit, what happens?",options:["Exit","Entry","Shutdown","No change"],a:1,tag:"market",type:"interpretation",feedback:"Profit attracts new firms."},
-{ id:125, q:"If firms are losing money, what happens?",options:["Entry","Exit","Price rises immediately","Demand falls"],a:1,tag:"market",type:"interpretation",feedback:"Losses drive firms out."},
-{ id:126, q:"Entry into a market causes price to...",options:["Rise","Fall","Stay constant","Become zero"],a:1,tag:"market",type:"interpretation",feedback:"Supply increases, lowering price."},
-{ id:127, q:"Exit from a market causes price to...",options:["Rise","Fall","Stay constant","Disappear"],a:0,tag:"market",type:"interpretation",feedback:"Supply decreases, raising price."},
-{ id:128, q:"In the long run, profits tend to...",options:["Increase","Decrease to zero","Stay constant","Become negative"],a:1,tag:"market",type:"definition",feedback:"Entry and exit eliminate profit."},
-{ id:129, q:"If demand rises, what happens in the short run?",options:["Price falls","Price rises","Firms exit","Supply falls"],a:1,tag:"market",type:"interpretation",feedback:"Higher demand increases price."}
-],
-
 efficiency:[
-{ id:130, q:"Allocative efficiency occurs when...",options:["MC = MR","MC = Price","ATC minimized","Profit maximized"],a:1,tag:"efficiency",type:"definition",feedback:"P = MC ensures efficient allocation."},
-{ id:131, q:"Productive efficiency occurs when...",options:["MC = P","ATC minimized","Profit maximized","Demand equals supply"],a:1,tag:"efficiency",type:"definition",feedback:"Lowest ATC defines productive efficiency."},
-{ id:132, q:"If P > MC, output is...",options:["Too high","Too low","Efficient","Zero"],a:1,tag:"efficiency",type:"interpretation",feedback:"More output would increase total surplus."},
-{ id:133, q:"If P < MC, output is...",options:["Too high","Too low","Efficient","Optimal"],a:0,tag:"efficiency",type:"interpretation",feedback:"Production exceeds efficient level."},
-{ id:134, q:"Efficiency ensures...",options:["Maximum profit","Optimal allocation of resources","Zero cost","Equal income"],a:1,tag:"efficiency",type:"definition",feedback:"Efficiency maximizes total surplus."},
-{ id:135, q:"If output is produced at minimum ATC, this is...",options:["Allocative efficiency","Productive efficiency","Profit maximization","Market equilibrium"],a:1,tag:"efficiency",type:"definition",feedback:"Minimum cost production defines productive efficiency."}
+{id:56,q:"If P > MC, what adjustment moves the market toward efficiency?",options:["Reduce output","Increase output","Raise costs","Lower demand"],a:1,tag:"efficiency",type:"diagnostic",feedback:"Expand production."},
+{id:57,q:"If two consumers have equal MRS, the allocation is...",options:["Inefficient","Efficient in exchange","Unstable","Unfair"],a:1,tag:"efficiency",type:"diagnostic",feedback:"No gains from trade remain."},
+{id:58,q:"If MRT ≠ MRS, what does this imply?",options:["Efficiency","Mismatch between production and preferences","Equilibrium","Profit maximization"],a:1,tag:"efficiency",type:"diagnostic",feedback:"Not allocatively efficient."},
+{id:59,q:"A point on the PPF but not tangent to an indifference curve is...",options:["Fully efficient","Technically efficient but not allocatively efficient","Impossible","Optimal"],a:1,tag:"efficiency",type:"diagnostic",feedback:"Production ≠ preference match."},
+{id:60,q:"Efficiency requires prices to reflect...",options:["Average cost","Marginal cost","Total revenue","Fixed cost"],a:1,tag:"efficiency",type:"diagnostic",feedback:"MC drives efficient allocation."},
+{id:61,q:"If markets clear but P ≠ MC, the outcome is...",options:["Efficient","Inefficient","Optimal","Stable"],a:1,tag:"efficiency",type:"diagnostic",feedback:"Equilibrium ≠ efficiency."}
+],
+failure:[
+{id:62,q:"If firms ignore external costs, the market outcome will be...",options:["Too low","Too high","Efficient","Zero"],a:1,tag:"failure",type:"diagnostic",feedback:"Negative externality."},
+{id:63,q:"If a good is non-rival and non-excludable, the likely outcome is...",options:["Overproduction","Underproduction","Efficiency","Zero demand"],a:1,tag:"failure",type:"diagnostic",feedback:"Public goods problem."},
+{id:64,q:"If buyers lack information about quality, this leads to...",options:["Perfect competition","Market failure","Efficiency","Equilibrium"],a:1,tag:"failure",type:"diagnostic",feedback:"Information asymmetry."},
+{id:65,q:"If social benefit exceeds private benefit, output is...",options:["Too high","Too low","Efficient","Optimal"],a:1,tag:"failure",type:"diagnostic",feedback:"Positive externality."},
+{id:66,q:"Deadweight loss indicates...",options:["All gains realized","Lost mutually beneficial trades","Profit maximization","Cost reduction"],a:1,tag:"failure",type:"diagnostic",feedback:"Missed value."},
+{id:67,q:"Market failure implies...",options:["Optimal allocation","Misallocation of resources","Zero profit","Perfect competition"],a:1,tag:"failure",type:"diagnostic",feedback:"Inefficient outcome."}
+],
+power:[
+{id:68,q:"A monopolist produces where MR = MC. If MC rises, output will...",options:["Increase","Decrease","Stay constant","Double"],a:1,tag:"power",type:"diagnostic",feedback:"Higher cost reduces output."},
+{id:69,q:"If demand becomes more elastic, a monopolist will likely...",options:["Raise price","Lower price","Keep price constant","Exit"],a:1,tag:"power",type:"diagnostic",feedback:"Less pricing power."},
+{id:70,q:"If MR < MC, the monopolist should...",options:["Increase output","Decrease output","Raise price","Exit"],a:0,tag:"power",type:"diagnostic",feedback:"Expand production."},
+{id:71,q:"Monopoly inefficiency arises because...",options:["P = MC","P > MC","MC > ATC","Demand is flat"],a:1,tag:"power",type:"diagnostic",feedback:"Underproduction."},
+{id:72,q:"If a monopolist can separate markets, it will charge higher prices to...",options:["More elastic groups","Less elastic groups","All groups equally","Low-income consumers"],a:1,tag:"power",type:"diagnostic",feedback:"Exploit inelastic demand."},
+{id:73,q:"Two-part pricing allows a monopolist to...",options:["Reduce output","Capture consumer surplus","Lower costs","Increase competition"],a:1,tag:"power",type:"diagnostic",feedback:"Extract surplus."}
+],
+strategy:[
+{id:74,q:"If a Cournot firm increases output, rivals will typically...",options:["Increase output","Decrease output","Exit","Do nothing"],a:0,tag:"strategy",type:"diagnostic",feedback:"Strategic response."},
+{id:75,q:"If a Bertrand firm lowers price below rivals, it will...",options:["Lose market share","Capture entire market","Exit","Break even"],a:1,tag:"strategy",type:"diagnostic",feedback:"Lowest price wins."},
+{id:76,q:"If firms repeatedly interact, collusion becomes...",options:["Impossible","More sustainable","Less profitable","Irrelevant"],a:1,tag:"strategy",type:"diagnostic",feedback:"Repeated games matter."},
+{id:77,q:"If firms are impatient, collusion is...",options:["Easier","Harder","Guaranteed","Irrelevant"],a:1,tag:"strategy",type:"diagnostic",feedback:"Short-term incentives dominate."},
+{id:78,q:"If products become more differentiated, firms will...",options:["Lower prices","Raise prices","Exit market","Collude"],a:1,tag:"strategy",type:"diagnostic",feedback:"Less direct competition."},
+{id:79,q:"A Nash equilibrium requires...",options:["Cooperation","Best responses","Equal prices","Maximum output"],a:1,tag:"strategy",type:"diagnostic",feedback:"No incentive to deviate."}
+],
+equity:[
+{id:80,q:"If an allocation is efficient but unequal, improving equity will likely...",options:["Increase efficiency","Reduce efficiency","Have no effect","Eliminate trade"],a:1,tag:"equity",type:"diagnostic",feedback:"Tradeoff exists."},
+{id:81,q:"Redistributing income changes...",options:["Preferences","Initial endowments","Technology","Costs"],a:1,tag:"equity",type:"diagnostic",feedback:"Second Welfare Theorem."},
+{id:82,q:"If a policy increases fairness but reduces total surplus, this reflects...",options:["Efficiency gain","Equity-efficiency tradeoff","Market failure","Competition"],a:1,tag:"equity",type:"diagnostic",feedback:"Classic tradeoff."},
+{id:83,q:"Markets alone tend to produce outcomes that are...",options:["Fair","Efficient","Equal","Regulated"],a:1,tag:"equity",type:"diagnostic",feedback:"Efficiency focus."},
+{id:84,q:"If government redistributes resources before trade, the result can be...",options:["Only inefficient","Efficient and more equitable","Less trade","Zero output"],a:1,tag:"equity",type:"diagnostic",feedback:"Second Welfare Theorem logic."},
+{id:85,q:"Equity focuses on...",options:["Output","Fairness","Cost","Profit"],a:1,tag:"equity",type:"diagnostic",feedback:"Distribution matters."}
 ]
 };
 
@@ -1893,96 +1899,151 @@ function shuffleOptions(question){
        
 function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
-function getProfitShutdownCombo(){
-    let price = [6,8,10][Math.floor(Math.random()*3)];
-    let mc = price - [2,1,-1][Math.floor(Math.random()*3)];
-    let avc = price + [-2,1][Math.floor(Math.random()*2)];
-    let atc = avc + 2;
-
+function getMonopolyCalc(){
+    let a = rand(80,140);
+    let b = rand(1,3);
+    let mc = rand(10,40);
+    let q = Math.floor((a - mc) / (2*b));
+    let price = a - b*q;
     return {
-        q:`A firm has P = $${price}, MC = $${mc}, AVC = $${avc}, and ATC = $${atc}.
-What is the BEST decision?`,
+        q:`A monopolist faces demand P = ${a} - ${b}Q and MC = ${mc}.
+What price will the firm charge?`,
         options:[
-            "Shut down because it is making a loss",
-            "Continue operating and increase output",
-            "Continue operating but decrease output",
-            "Exit immediately because ATC exceeds price"
-        ],
-        a: (price < avc) ? 0 : (mc < price ? 1 : 2),
-        tag:"profit",
-        type:"multi-step",
-        feedback:"Step 1: Shutdown depends on AVC. Step 2: Output depends on MR vs MC. Most people miss one of these."
-    };
-}
-
-function getCostOutputCombo(){
-    let direction = Math.random() < 0.5 ? "increase" : "decrease";
-
-    return {
-        q:`A firm experiences a ${direction} in marginal product of labor.
-What happens to cost and output?`,
-        options:[
-            "MC rises and output rises",
-            "MC falls and output falls",
-            direction === "increase"
-                ? "MC falls and output increases"
-                : "MC rises and output decreases",
-            "ATC determines output directly"
-        ],
-        a:2,
-        tag:"production",
-        type:"multi-step",
-        feedback:"Productivity affects MC → MC determines output via MR = MC."
-    };
-}
-    
-function getMarketChainCombo(){
-    let scenario = Math.random() < 0.5 ? "profit" : "loss";
-
-    return {
-        q:`Firms are earning economic ${scenario} in a competitive market.
-What happens next AND in the long run?`,
-        options:[
-            "Short run: nothing → Long run: nothing",
-            scenario === "profit"
-                ? "Short run: profit continues → Long run: entry drives price down"
-                : "Short run: losses continue → Long run: exit drives price up",
-            "Demand shifts permanently",
-            "Firms shut down immediately"
+            `$${mc}`,
+            `$${price}`,
+            `$${a}`,
+            `$${a - b*(q+5)}`
         ],
         a:1,
-        tag:"market",
-        type:"multi-step",
-        feedback:"You must separate short run vs long run. Most students collapse them."
+        tag:"power",
+        type:"calculation",
+        feedback:"MR = MC → solve Q → plug into demand. Most stop too early."
     };
 }
-  
-function getEfficiencyProfitCombo(){
-    let price = [8,10,12][Math.floor(Math.random()*3)];
-    let mc = price;
-    let atc = price + [1,2][Math.floor(Math.random()*2)];
 
+function getEfficiencyTrap(){
+    let p = rand(12,30);
+    let mc = p + rand(-10,10);
     return {
-        q:`A firm produces where P = $${price} and MC = $${mc}, but ATC = $${atc}.
+        q:`A competitive market has P = ${p} and MC = ${mc}.
 Which statement is TRUE?`,
         options:[
-            "The firm is inefficient because it is earning a loss",
-            "The firm is allocatively efficient but earning a loss",
-            "The firm should shut down immediately",
-            "The firm is earning profit because P = MC"
+            "The outcome is efficient because the market clears",
+            mc === p
+                ? "The outcome is efficient because P = MC"
+                : (p > mc
+                    ? "The market underproduces relative to the efficient level"
+                    : "The market overproduces relative to the efficient level"),
+            "Efficiency depends on ATC",
+            "Profit determines efficiency"
         ],
         a:1,
         tag:"efficiency",
         type:"trap",
-        feedback:"P = MC → allocative efficiency. Profit depends on P vs ATC. These are NOT the same."
+        feedback:"Only one rule: P = MC. Everything else is noise."
+    };
+}
+
+function getBertrandTrap(){
+    let mc = rand(5,20);
+    let high = mc + rand(6,15);
+
+    return {
+        q:`Two firms compete in prices with identical products and MC = ${mc}.
+Both currently charge $${high}.
+What is the BEST response for one firm?`,
+        options:[
+            "Raise price to increase profit",
+            `Lower price slightly below $${high}`,
+            `Set price equal to $${mc}`,
+            "Do nothing because this is equilibrium"
+        ],
+        a:1,
+        tag:"strategy",
+        type:"trap",
+        feedback:"If price > MC, undercutting wins the whole market."
+    };
+}
+
+function getSpilloverChain(){
+    const goods = [
+        {base:"housing", input:"lumber", downstream:"furniture"},
+        {base:"cars", input:"steel", downstream:"appliances"},
+        {base:"smartphones", input:"chips", downstream:"laptops"},
+        {base:"bread", input:"wheat", downstream:"cereal"}
+    ];
+
+    let pick = goods[Math.floor(Math.random()*goods.length)];
+
+    return {
+        q:`Demand for ${pick.base} increases sharply. Production expands, raising the price of ${pick.input}.
+What is the MOST likely effect in the ${pick.downstream} market?`,
+        options:[
+            `${pick.downstream} production costs rise, shifting supply left`,
+            `${pick.downstream} demand rises directly`,
+            `No effect because these are separate markets`,
+            `${pick.downstream} prices fall due to higher input prices`
+        ],
+        a:0,
+        tag:"interaction",
+        type:"trap",
+        feedback:"Input cost increases ripple outward, reducing supply in downstream markets."
+    };
+}
+
+function getCournotTrap(){
+    let qA = rand(20,50);
+    let change = rand(5,15);
+    return {
+        q:`Two firms compete in quantities (Cournot).
+Firm A increases output from ${qA} to ${qA + change}.
+What is the MOST likely response from Firm B and the market price?`,
+        options:[
+            "Firm B increases output, price rises",
+            "Firm B decreases output, price falls",
+            "Firm B increases output, price falls",
+            "Firm B decreases output, price rises"
+        ],
+        a:2,
+        tag:"strategy",
+        type:"trap",
+        feedback:"More total output lowers price. Rival reacts strategically but total Q still rises."
+    };
+}
+
+function getPriceDisc(){
+    let groupA = rand(1,3);
+    let groupB = rand(4,8);
+
+    let higher = groupA < groupB ? "Group A" : "Group B";
+    let lower = groupA < groupB ? "Group B" : "Group A";
+
+    return {
+        q:`A monopolist sells to two groups.
+Group A has elasticity of demand = ${groupA}.
+Group B has elasticity of demand = ${groupB}.
+
+Which group will be charged the higher price?`,
+        options:[
+            "Group A",
+            "Group B",
+            "Both groups pay the same price",
+            "Not enough information"
+        ],
+        a: higher === "Group A" ? 0 : 1,
+        tag:"power",
+        type:"trap",
+        feedback:"Lower elasticity → less sensitivity → higher markup."
     };
 }
     
 const calculationGenerators = [
-   getProfitShutdownCombo,
-   getCostOutputCombo,
-   getMarketChainCombo,
-   getEfficiencyProfitCombo
+    getMonopolyCalc,
+    getEfficiencyTrap,
+    getBertrandTrap,
+    getSpilloverChain,
+    getCournotTrap,
+    getPriceDisc
 ];
     
 // =============================================
@@ -1998,10 +2059,19 @@ const calculationGenerators = [
 function randomQuestion(poolName) {
     // --- SPECIAL CALCULATED ROOMS (26-29) ---
     // These ensure the student practices specific math skills before the boss
-if (room === 26) return getProfitShutdownCombo();
-if (room === 27) return getCostOutputCombo();
-if (room === 28) return getMarketChainCombo();
-if (room === 29) return getEfficiencyProfitCombo();
+if (room >= 26 && room <= 29){
+    let generators = [
+        getMonopolyCalc,
+        getEfficiencyTrap,
+        getBertrandTrap,
+        getSpilloverChain,
+        getCournotTrap,
+        getPriceDisc
+    ];
+
+    let pick = generators[Math.floor(Math.random() * generators.length)];
+    return pick();
+}
 
     let pool = questionBanks[poolName]
 
