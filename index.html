@@ -563,9 +563,6 @@ Subtle > excessive.
 /* Idle boss movement (subtle hovering effect) */    
 @keyframes bossFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 
-/* Artifact glow animation (reward emphasis) */    
-@keyframes relicPulse { 0%, 100% { filter: drop-shadow(0 0 8px #38bdf8); } 50% { filter: drop-shadow(0 0 18px #60a5fa); } }
-
 /* Temporary feedback text fade-out */   
 @keyframes fadeOut { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
 
@@ -576,7 +573,7 @@ Subtle > excessive.
 @keyframes fadeIn {from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
 /* General a pulse animation for relics */   
-@keyframes relicPulse {0%,100% {transform: scale(1.05);filter:drop-shadow(0 0 10px rgba(167,139,250,0.8))drop-shadow(0 0 20px rgba(109,40,217,0.6));}
+@keyframes relicPulse {0%,100% {transform: scale(1.05);filter:drop-shadow(0 0 8px rgba(167,139,250,0.7))drop-shadow(0 0 18px rgba(109,40,217,0.5));}
 50% {transform: scale(1.1);filter:drop-shadow(0 0 16px rgba(167,139,250,1))drop-shadow(0 0 30px rgba(109,40,217,0.9));}}
    
 /* =========================================
