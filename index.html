@@ -53,9 +53,9 @@ body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
     color: white;
     background: url('question_background_image.png');
     background-size: cover;
@@ -69,6 +69,7 @@ body {
     max-width:900px;
     width:100%;
     margin:0 auto;
+    min-height: 100vh;
 }
    
 .dungeon-container {
@@ -82,6 +83,52 @@ body {
     max-width: 1100px;
     margin-top: 20px;
 }
+
+.start-content{
+  width: 100%;
+  max-width: 420px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;   
+  text-align:center;    
+}
+
+.title{
+  font-size:64px;
+  letter-spacing:4px;
+  margin-bottom:10px;
+  color:#e9d5ff;
+  text-align:center;
+  text-shadow: 0 0 20px rgba(167,139,250,0.8),
+               0 0 40px rgba(109,40,217,0.6);
+}
+
+.subtitle{
+  font-size:34px;
+  margin-bottom:35px;
+  letter-spacing:2px;
+  text-align:center;
+  color:#a78bfa;
+}
+
+.tagline{
+  margin-bottom:30px;
+  font-style:italic;
+  opacity:0.85;
+  text-align:center;
+}
+
+.name-input{
+  width:100%;
+  max-width:320px;
+  text-align:center;
+}
+
+.start-btn{
+  width:100%;
+  max-width:320px;
+}
+
    
 /* =========================================
    2. CORE GAME CONTAINER (#gameBox) — SAFE TO STYLE
@@ -499,7 +546,25 @@ Good transitions = smoother experience.
 ========================================= */
 
 /* Fullscreen start screen — shown before game begins */    
-#startScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url('start screen image.png'); background-size: cover; background-position: center; background-repeat: no-repeat; z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+#startScreen{
+  position: fixed;
+  inset: 0;
+  background-image: url('start screen image.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 100;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 40px 20px 80px;
+  box-sizing: border-box;
+}
 
 /* Transition overlay — appears between rooms (controlled by JS) */
 #hallwayTransition { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7)), url('hallway1.png'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; text-align: center; color: white; font-size: 26px; z-index: 200; opacity: 0; pointer-events: none; transition: opacity 1.2s ease; animation: hallwayZoom 3.2s ease-out forwards; }
@@ -834,29 +899,28 @@ Test changes on both:
 
 This controls responsiveness, not game logic.
 ========================================= */
-/* Base mobile rules */
-@media (max-width: 900px){
-#gameShell {padding: 8px;gap: 10px;}
-#question {font-size: 1.2rem; line-height: 1.3;}
-.artifactSlot img {width: 35px;}
-}
-   
-/* Portrait (stacked, bigger wizard) */
-@media (max-width: 600px) and (orientation: portrait){
-.main-panel {flex-direction: column; align-items: center;}
-#wizardBox{width: 100%; max-width: 280px;margin-bottom: 12px;}
-#wizardImage {width: 100px; max-width: 100%;}
-}
-   
-/* Landscape (side-by-side, compact wizard) */   
+@media (max-width: 768px){
+  #gameShell{padding:10px;gap:10px;}
+  .main-panel{flex-direction: column;align-items: center;  }
+  #question{font-size:1.2rem;line-height:1.4;text-align:center;}
+  button{width:100%;padding:14px;font-size:16px;}
+  #wizardBox{width:100%;max-width:260px;margin-bottom:12px;}
+  #wizardImage{width:100%;max-width:120px;}}
+
 @media (max-width: 900px) and (orientation: landscape){
-.main-panel{flex-direction: row;}
-#wizardBox{max-width: 180px;}
-#wizardImage{width: 120px; height: 120px}
-}
-  /* Fullscreen button positioning */
-  .fullscreenBtn {top: 5px;left: 5px;padding: 4px 8px;font-size: 10px;}
-   
+  .title{font-size: clamp(36px, 5vw, 56px);margin-bottom:6px;}
+  .subtitle{font-size:18px;margin-bottom:12px;}
+  .tagline{font-size:14px;margin-bottom:12px;}
+  .name-input{width:100%;max-width:280px;font-size:16px;padding:12px;margin-bottom:10px;}
+  #startScreen{justify-content: center;overflow: hidden;}
+  .start-content{transform: scale(0.92);}
+  .start-btn{width:100%;max-width:280px;font-size:16px;padding:12px;}}
+
+@media (max-width: 768px) and (orientation: portrait){
+  .main-panel{flex-direction:column;align-items:center;}}
+
+   .fullscreenBtn{top:5px;left:5px;padding:4px 8px;font-size:10px;}
+ 
 </style>
 </head>
 
@@ -925,19 +989,12 @@ Respect structure strictly.
 </div>
 <!-- Start screen / player entry (safe to redesign completely) -->
 <div id="startScreen">
-    <h1 style=" color:#e9d5ff;
-        text-shadow: 0 0 20px rgba(167,139,250,0.8), 0 0 40px rgba(109,40,217,0.6);
-        font-size:64px; letter-spacing:4px; margin-bottom:10px;">THE DOMINION OF POWER </h1>
-    <h2 style=" color:#a78bfa; text-shadow:0 0 20px rgba(109,40,217,0.6);font-size:34px;  margin-bottom:35px;letter-spacing:2px;">Systems. Power. Strategy.</h2>
-    <p style=" color:#c4b5fd;letter-spacing:3px; margin-bottom:30px; font-style:italic; opacity:0.85;">Declare your designation </p>
-    <input type="text" id="usernameInput"
-        placeholder="Enter Name..." style="padding:15px; border-radius:8px;
-        border:1px solid rgba(167,139,250,0.3); background:rgba(20,0,30,0.85);
-        color:#ede9fe; font-size:20px; margin-bottom:25px;text-align:center; outline:none; width:300px; box-shadow:
-            0 0 20px rgba(0,0,0,0.8), inset 0 0 15px rgba(109,40,217,0.2);">
-    <button onclick="startGame()"
-        style=" background:linear-gradient(180deg,#6d28d9,#4c1d95); color:#ede9fe;font-weight:bold;padding:15px 50px; font-size:20px;cursor:pointer; border-radius:8px;border:1px solid rgba(167,139,250,0.4);box-shadow:0 0 20px rgba(109,40,217,0.5),0 0 40px rgba(127,29,29,0.3);
-        transition:all 0.2s ease;">ENTER THE DOMINION </button>
+  <div class="start-content">
+<h1 class="title">THE DOMINION OF POWER</h1>
+<h2 class="subtitle">Systems. Power. Strategy.</h2>
+<p class="tagline">Declare your designation</p>
+<input id="usernameInput" class="name-input" ...>
+<button class="start-btn" onclick="startGame()">ENTER THE DOMINION</button></div>
 </div>
 <div class="dungeon-container">
     <button class="fullscreenBtn" onclick="goFullscreen()">FULLSCREEN</button>
@@ -1580,20 +1637,104 @@ function wizardSpeak(text){
   
 const questionBanks = {
 easyBoss:[
-{ id:2000, q:"The Architect speaks: 'No market stands alone. Balance them all.' What condition defines allocative efficiency across markets?",options:["P = ATC in all markets","P = MC in all markets","MR = MC for monopolists","Demand equals supply"],a:1,tag:"efficiency",type:"definition",feedback:"Allocative efficiency requires P = MC—value equals cost."},
-{ id:2001, q:"The Architect adjusts the system: 'Trace the connection.' Demand for steel rises, increasing its price. Steel is an input for cars. What happens in the car market?",options:["Car demand rises directly","Car supply shifts left","Car supply shifts right","No effect"],a:1,tag:"interaction",type:"interpretation",feedback:"Higher input prices reduce supply."},
-{ id:2002, q:"The Architect destabilizes the grid: 'Now restore balance.' In a market, P = 18 while MC = 12. What must occur to reach efficiency?",options:["Reduce output","Increase output","Do nothing","Raise fixed costs"],a:1,tag:"efficiency",type:"trap",feedback:"P > MC → underproduction. Increase output."}
+
+// --- EFFICIENCY ---
+{ id:2000,q:"The Architect speaks: 'No market stands alone. Balance them all.' What condition defines allocative efficiency across markets?",options:["P = ATC in all markets","P = MC in all markets","MR = MC for monopolists","Demand equals supply"],a:1,tag:"efficiency",type:"definition",feedback:"Allocative efficiency requires P = MC—value equals cost."},
+{ id:20012,q:"The Architect presses: 'Check the alignment.' If P = MC in a market, what does this imply?",options:["Maximum profit","Allocative efficiency","Zero cost","Demand collapse"],a:1,tag:"efficiency",type:"interpretation",feedback:"When P = MC, value equals cost—efficient allocation."},
+{ id:2002,q:"The Architect destabilizes the grid: 'Restore balance.' In a market, P = 18 while MC = 12. What must occur to reach efficiency?",options:["Reduce output","Increase output","Do nothing","Raise fixed costs"],a:1,tag:"efficiency",type:"trap",feedback:"P > MC → underproduction. Increase output."},
+
+// --- INTERACTION ---
+{ id:20010,q:"The Architect declares: 'No market stands alone.' What does interaction between markets mean?",options:["Markets operate independently","Changes in one market affect others","Only prices matter","Only quantity matters"],a:1,tag:"interaction",type:"definition",feedback:"Markets are interconnected—shocks spill across them."},
+{ id:2001,q:"The Architect adjusts the system: 'Trace the connection.' Demand for steel rises, increasing its price. Steel is an input for cars. What happens in the car market?",options:["Car demand rises directly","Car supply shifts left","Car supply shifts right","No effect"],a:1,tag:"interaction",type:"interpretation",feedback:"Higher input prices raise costs → supply shifts left."},
+{ id:2003,q:"The Architect observes: 'Markets echo each other.' A tax is placed on electricity production. What is the most immediate effect?",options:["Demand for electricity increases","Supply of electricity decreases","Supply of electricity increases","No change occurs"],a:1,tag:"interaction",type:"trap",feedback:"Taxes increase costs → supply shifts left."},
+
+// --- FAILURE ---
+{ id:2004,q:"The Architect warns: 'The system is breaking.' Pollution from production imposes costs on others not involved in the market. What is this called?",options:["Market power","Externality","Public good","Efficiency"],a:1,tag:"failure",type:"definition",feedback:"Externalities are costs or benefits imposed on third parties."},
+{ id:20013,q:"The Architect continues: 'What is the consequence?' Negative externalities cause markets to...",options:["Produce efficiently","Overproduce","Underproduce","Reach equilibrium"],a:1,tag:"failure",type:"interpretation",feedback:"External costs are ignored → overproduction."},
+{ id:2005,q:"The Architect challenges: 'Correct the failure.' If a market produces too much due to negative externalities, what is the efficient response?",options:["Increase production","Tax the activity","Subsidize consumers","Do nothing"],a:1,tag:"failure",type:"trap",feedback:"Taxes reduce overproduction and move toward efficiency."},
+
+// --- POWER ---
+{ id:20014,q:"The Architect states: 'Power shifts outcomes.' What is market power?",options:["Ability to control costs","Ability to influence price","Ability to eliminate demand","Ability to reduce supply"],a:1,tag:"power",type:"definition",feedback:"Market power means influencing price."},
+{ id:2006,q:"The Architect tightens control: 'One firm dominates.' A monopolist produces where MR = MC. Compared to a competitive market, what is true?",options:["Price is lower","Output is higher","Price is higher","Efficiency is achieved"],a:2,tag:"power",type:"interpretation",feedback:"Monopolies restrict output → higher prices."},
+{ id:2007,q:"The Architect presses: 'Power has consequences.' Why does monopoly create deadweight loss?",options:["It produces too much output","It produces too little output","It sets price equal to MC","It increases consumer surplus"],a:1,tag:"power",type:"trap",feedback:"Underproduction means lost gains from trade."},
+
+// --- STRATEGY ---
+{ id:2008,q:"The Architect whispers: 'Anticipate others.' In oligopoly, firms must consider what when making decisions?",options:["Only their own costs","Government policy only","Reactions of other firms","Random outcomes"],a:2,tag:"strategy",type:"definition",feedback:"Strategic interdependence defines oligopoly."},
+{ id:20015,q:"The Architect presses: 'Think carefully.' Why must firms anticipate rivals in oligopoly?",options:["To reduce costs","Because outcomes depend on reactions","To eliminate demand","Because prices are fixed"],a:1,tag:"strategy",type:"interpretation",feedback:"Decisions depend on how others respond."},
+{ id:2009,q:"The Architect tests you: 'Think ahead.' If two firms compete and each ignores the other's response, what is likely?",options:["Efficient outcome","Cooperative equilibrium","Strategic mistake","Perfect competition"],a:2,tag:"strategy",type:"trap",feedback:"Ignoring reactions leads to poor strategic decisions."},
+
+// --- EQUITY ---
+{ id:2010,q:"The Architect reflects: 'Efficiency is not fairness.' What does equity concern?",options:["Total surplus","Fair distribution of outcomes","Marginal cost pricing","Market equilibrium"],a:1,tag:"equity",type:"definition",feedback:"Equity focuses on fairness, not efficiency."},
+{ id:20016,q:"The Architect challenges: 'Balance the system.' Why might a policy reduce efficiency but improve equity?",options:["It lowers costs","It redistributes outcomes","It increases supply","It eliminates demand"],a:1,tag:"equity",type:"interpretation",feedback:"Redistribution can trade off efficiency."},
+{ id:2011,q:"The Architect challenges: 'Choose your priority.' A policy increases total surplus but worsens inequality. What is the trade-off?",options:["Efficiency vs. cost","Equity vs. efficiency","Supply vs. demand","Short run vs. long run"],a:1,tag:"equity",type:"trap",feedback:"Policies often trade off fairness and efficiency."}
 ],
+   
 mediumBoss:[
-{ id:3000, q:"The Price Maker smirks: 'I do not take prices—I set them.' What rule determines a monopolist’s output?",options:["P = MC","MR = MC","ATC minimized","Demand maximized"],a:1,tag:"power",type:"definition",feedback:"Same rule, different outcome—MR = MC."},
-{ id:3001, q:"The Price Maker tests you: 'Follow the consequence.' A monopolist produces where MR = MC and finds P > MC. What does this imply?",options:["Efficient outcome","Overproduction","Underproduction and deadweight loss","Zero profit"],a:2,tag:"power",type:"interpretation",feedback:"P > MC means too little output—lost surplus."},
-{ id:3002, q:"The Price Maker tightens control: 'Exploit the weak.' A firm identifies two groups with different elasticities. What is the optimal strategy?",options:["Charge the same price to both","Charge higher prices to more elastic demand","Charge higher prices to less elastic demand","Reduce output equally"],a:2,tag:"power",type:"trap",feedback:"Inelastic demand → higher markup. This is where students flip it."}
+
+// --- POWER ---
+{ id:3000,q:"The Price Maker smirks: 'I do not take prices—I set them.' What rule determines a monopolist’s output?",options:["P = MC","MR = MC","ATC minimized","Demand maximized"],a:1,tag:"power",type:"definition",feedback:"Same rule, different outcome—MR = MC."},
+{ id:30012,q:"The Price Maker presses: 'Follow the logic.' If a monopolist sets output where MR = MC, why is price above MC?",options:["Costs are higher","Demand curve lies above MR","Firms want efficiency","Supply is fixed"],a:1,tag:"power",type:"interpretation",feedback:"Downward-sloping demand means MR < P."},
+{ id:3002,q:"The Price Maker tightens control: 'Exploit the weak.' A firm identifies two groups with different elasticities. What is the optimal strategy?",options:["Charge the same price to both","Charge higher prices to more elastic demand","Charge higher prices to less elastic demand","Reduce output equally"],a:2,tag:"power",type:"trap",feedback:"Inelastic demand → higher markup."},
+
+// --- EFFICIENCY ---
+{ id:30013,q:"The Price Maker scoffs: 'Efficiency is not my concern.' What defines allocative efficiency?",options:["P = ATC","P = MC","MR = MC","Profit maximized"],a:1,tag:"efficiency",type:"definition",feedback:"Efficiency occurs when value equals cost."},
+{ id:30014,q:"The Price Maker explains: 'Observe the distortion.' When monopoly sets P > MC, what happens to output?",options:["Output increases","Output decreases below efficient level","Output stays the same","Output becomes efficient"],a:1,tag:"efficiency",type:"interpretation",feedback:"Higher price → restricted output."},
+{ id:30015,q:"The Price Maker challenges: 'Where is the loss?' Deadweight loss from monopoly represents...",options:["Transfers to firms","Lost gains from trade","Higher costs","Increased efficiency"],a:1,tag:"efficiency",type:"trap",feedback:"It’s not profit—it’s lost surplus."},
+
+// --- INTERACTION ---
+{ id:30016,q:"The Price Maker observes: 'Markets do not stand alone.' What happens when a monopolist raises price significantly?",options:["No effect elsewhere","Demand for substitutes rises","Supply increases","Costs fall"],a:1,tag:"interaction",type:"definition",feedback:"Markets interact through substitutes."},
+{ id:30017,q:"The Price Maker presses: 'Trace the ripple.' A monopolist raises price on a key input good. What happens to firms using that input?",options:["Costs fall","Supply shifts left","Demand rises","No change"],a:1,tag:"interaction",type:"interpretation",feedback:"Higher input price raises costs."},
+{ id:30018,q:"The Price Maker warns: 'Follow it through.' If substitute goods become more attractive due to monopoly pricing, what happens to the monopolist’s demand?",options:["Becomes perfectly elastic","Shifts left","Becomes vertical","Does not change"],a:1,tag:"interaction",type:"trap",feedback:"Substitutes pull demand away."},
+
+// --- FAILURE ---
+{ id:30019,q:"The Price Maker admits: 'Even I break the system.' What type of issue does monopoly create?",options:["External benefit","Market failure","Public good","Efficient allocation"],a:1,tag:"failure",type:"definition",feedback:"Market power leads to inefficiency."},
+{ id:30020,q:"The Price Maker challenges: 'Correct me if you can.' Why is monopoly considered inefficient?",options:["Too much output","Too little output relative to efficient level","Prices equal cost","No profit exists"],a:1,tag:"failure",type:"interpretation",feedback:"Underproduction creates inefficiency."},
+{ id:30021,q:"The Price Maker scoffs: 'Fix it then.' Which policy directly targets monopoly power?",options:["Subsidies","Antitrust enforcement","Tax cuts","Price increases"],a:1,tag:"failure",type:"trap",feedback:"Antitrust breaks dominance."},
+
+// --- STRATEGY ---
+{ id:30022,q:"The Price Maker whispers: 'Others are watching.' What defines oligopoly behavior?",options:["Independent decisions","Strategic interdependence","Perfect competition","No rivals"],a:1,tag:"strategy",type:"definition",feedback:"Firms must anticipate rivals."},
+{ id:30023,q:"The Price Maker presses: 'Think ahead.' Why must firms consider competitors’ reactions?",options:["To reduce costs","Outcomes depend on rival responses","Demand disappears","Prices are fixed"],a:1,tag:"strategy",type:"interpretation",feedback:"Strategy depends on reactions."},
+{ id:30024,q:"The Price Maker tests: 'Fail to think ahead.' If firms ignore competitor reactions, what is the likely outcome?",options:["Higher efficiency","Strategic mistakes","Perfect equilibrium","Guaranteed profit"],a:1,tag:"strategy",type:"trap",feedback:"Ignoring strategy leads to bad outcomes."},
+
+// --- EQUITY ---
+{ id:30025,q:"The Price Maker grins: 'Not everyone pays the same.' What concern arises with price discrimination?",options:["Efficiency only","Fairness and distribution","Cost reduction","Supply increase"],a:1,tag:"equity",type:"definition",feedback:"Different prices raise equity concerns."},
+{ id:30026,q:"The Price Maker challenges: 'Who bears the burden?' Charging higher prices to captive consumers raises what issue?",options:["Efficiency gain","Equity concern","Lower cost","Higher output"],a:1,tag:"equity",type:"interpretation",feedback:"It targets those with fewer options."},
+{ id:30027,q:"The Price Maker presses: 'Is it justified?' If price discrimination increases output but treats consumers differently, what trade-off arises?",options:["Cost vs revenue","Equity vs efficiency","Supply vs demand","Short run vs long run"],a:1,tag:"equity",type:"trap",feedback:"More output, but fairness concerns."}
 ],
+   
 finalBoss:[
-{ id:4000, q:"The Grand Strategist speaks: 'Efficiency is not given—it is achieved.' In an Edgeworth Box, two individuals have different marginal rates of substitution (MRS). What MUST be true?",options:["The allocation is Pareto efficient","No further gains from trade exist","Mutually beneficial trades are possible","Both individuals have equal utility"],a:2,tag:"efficiency",type:"trap",feedback:"Different MRS means unexploited gains from trade still exist."},
-{ id:4001, q:"The Strategist narrows his gaze: 'Power lies in division.' A monopolist sells to two groups. Group A has elasticity of demand of 2, and Group B has elasticity of 6. What is the optimal pricing strategy?",options:["Charge the same price to both groups","Charge a higher price to Group B","Charge a higher price to Group A","Set price equal to marginal cost"],a:2,tag:"power",type:"trap",feedback:"Lower elasticity → less sensitivity → higher markup. Students often reverse this."},
-{ id:4002, q:"The Strategist delivers the final test: 'Competition is never absolute.' Two firms compete in prices but now offer differentiated products. What is the resulting equilibrium?",options:["Price equals marginal cost","Firms earn zero profit always","Prices exceed marginal cost but remain below monopoly levels","One firm captures the entire market"],a:2,tag:"strategy",type:"trap",feedback:"Differentiation softens price competition—firms gain some pricing power."}
+
+// --- EFFICIENCY (GENERAL EQUILIBRIUM) ---
+{ id:40010,q:"The Grand Strategist declares: 'Efficiency is achieved, not assumed.' In an Edgeworth Box, what condition defines Pareto efficiency?",options:["Equal utility levels","Equal income levels","Equal marginal rates of substitution","Equal prices across markets"],a:2,tag:"efficiency",type:"definition",feedback:"Efficiency occurs when MRS is equal across individuals."},
+{ id:40011,q:"The Strategist presses: 'Find the failure.' If two individuals have different MRS in an allocation, what does this imply?",options:["The allocation is efficient","No further trade is possible","Gains from trade still exist","Utility is maximized"],a:2,tag:"efficiency",type:"interpretation",feedback:"Different MRS means mutually beneficial trades remain."},
+{ id:4000,q:"The Grand Strategist speaks: 'Efficiency is not given—it is achieved.' In an Edgeworth Box, two individuals have different marginal rates of substitution (MRS). What MUST be true?",options:["The allocation is Pareto efficient","No further gains from trade exist","Mutually beneficial trades are possible","Both individuals have equal utility"],a:2,tag:"efficiency",type:"trap",feedback:"Different MRS means unexploited gains from trade still exist."},
+
+// --- POWER (PRICE DISCRIMINATION) ---
+{ id:40012,q:"The Strategist observes: 'Power lies in segmentation.' What condition is required for price discrimination to occur?",options:["Perfect competition","Identical consumers","Ability to separate markets","Constant marginal cost"],a:2,tag:"power",type:"definition",feedback:"Firms must segment consumers to charge different prices."},
+{ id:40013,q:"The Strategist presses: 'Apply the rule.' If a firm charges different prices across markets, how does elasticity affect pricing?",options:["Higher elasticity → higher price","Lower elasticity → higher price","Elasticity does not matter","Prices must be equal"],a:1,tag:"power",type:"interpretation",feedback:"Less elastic demand allows higher markup."},
+{ id:4001,q:"The Strategist narrows his gaze: 'Power lies in division.' A monopolist sells to two groups. Group A has elasticity of demand of 2, and Group B has elasticity of 6. What is the optimal pricing strategy?",options:["Charge the same price to both groups","Charge a higher price to Group B","Charge a higher price to Group A","Set price equal to marginal cost"],a:2,tag:"power",type:"trap",feedback:"Lower elasticity → less sensitivity → higher markup."},
+
+// --- STRATEGY (IMPERFECT COMPETITION) ---
+{ id:40014,q:"The Strategist states: 'Competition is never pure.' What defines monopolistic competition?",options:["Single firm","Identical products","Differentiated products with many firms","Perfect price control"],a:2,tag:"strategy",type:"definition",feedback:"Many firms, differentiated products."},
+{ id:40015,q:"The Strategist presses: 'Understand the outcome.' In monopolistic competition, why do firms have some pricing power?",options:["No competition exists","Products are identical","Product differentiation","Costs are zero"],a:2,tag:"strategy",type:"interpretation",feedback:"Differentiation softens competition."},
+{ id:4002,q:"The Strategist delivers the final test: 'Competition is never absolute.' Two firms compete in prices but now offer differentiated products. What is the resulting equilibrium?",options:["Price equals marginal cost","Firms earn zero profit always","Prices exceed marginal cost but remain below monopoly levels","One firm captures the entire market"],a:2,tag:"strategy",type:"trap",feedback:"Differentiation softens price competition—firms gain some pricing power."},
+
+// --- FAILURE (SYSTEM BREAKDOWN) ---
+{ id:40016,q:"The Strategist warns: 'Markets fail when signals break.' What defines a market failure?",options:["Perfect competition","Efficient allocation","Resources not allocated efficiently","High profits"],a:2,tag:"failure",type:"definition",feedback:"Failure means inefficiency."},
+{ id:40017,q:"The Strategist presses: 'Trace the cause.' Why does monopoly lead to market failure?",options:["Too much output","Too little output relative to efficient level","Prices equal cost","No profits exist"],a:1,tag:"failure",type:"interpretation",feedback:"Underproduction creates inefficiency."},
+{ id:40018,q:"The Strategist challenges: 'Identify the loss.' Deadweight loss represents...",options:["Firm profit","Consumer spending","Lost gains from trade","Government revenue"],a:2,tag:"failure",type:"trap",feedback:"It’s lost surplus, not transfer."},
+
+// --- INTERACTION (GENERAL EQUILIBRIUM LINKAGES) ---
+{ id:40019,q:"The Strategist observes: 'All markets are connected.' What is general equilibrium?",options:["One market in isolation","All markets simultaneously interacting","Only government intervention","Only price setting"],a:1,tag:"interaction",type:"definition",feedback:"General equilibrium links all markets."},
+{ id:40020,q:"The Strategist presses: 'Follow the ripple.' A shock in one market affects others because...",options:["Markets are isolated","Prices are fixed","Markets are interconnected","Demand disappears"],a:2,tag:"interaction",type:"interpretation",feedback:"Changes transmit across markets."},
+{ id:40021,q:"The Strategist warns: 'Ignore connections and fail.' If one market is out of equilibrium, what is likely elsewhere?",options:["No impact","All markets remain stable","Other markets are affected","Efficiency increases"],a:2,tag:"interaction",type:"trap",feedback:"Imbalances spill across markets."},
+
+// --- EQUITY (FINAL TRADEOFF) ---
+{ id:40022,q:"The Strategist concludes: 'Efficiency is not fairness.' What does equity evaluate?",options:["Total output","Fairness of distribution","Marginal cost pricing","Market equilibrium"],a:1,tag:"equity",type:"definition",feedback:"Equity is about fairness."},
+{ id:40023,q:"The Strategist presses: 'Make the choice.' Why might a policy improve equity but reduce efficiency?",options:["It increases costs","It redistributes resources","It eliminates demand","It raises prices"],a:1,tag:"equity",type:"interpretation",feedback:"Redistribution can distort incentives."},
+{ id:40024,q:"The Strategist delivers judgment: 'Choose your world.' A policy increases total surplus but worsens inequality. What is the core trade-off?",options:["Cost vs revenue","Equity vs efficiency","Supply vs demand","Short run vs long run"],a:1,tag:"equity",type:"trap",feedback:"This is the fundamental tradeoff."}
 ],
+   
 easy:[
 {id:1,q:"If the price of steel rises, what happens to the supply of cars?",options:["Increases","Decreases","Stays the same","Becomes zero"],a:1,tag:"interaction",type:"interpretation",feedback:"Higher input costs reduce supply."},
 {id:2,q:"If wages increase, firms will typically...",options:["Increase supply","Decrease supply","Increase demand","Do nothing"],a:1,tag:"interaction",type:"interpretation",feedback:"Higher costs shift supply left."},
@@ -2338,18 +2479,24 @@ function loadQuestion() {
     document.getElementById("artifactDrop").style.display = "none";
 
     // 1. Determine Difficulty and Boss Status
-    let diff = (room <= 9) ? "easy" : (room === 10) ? "easyBoss" : (room <= 19) ? "medium" : (room === 20) ? "mediumBoss" : (room <= 25) ? "hard" : (room <= 29) ? "calculation" : "finalBoss";
-    
+    let diff = (room <= 9) ? "easy"
+             : (room === 10) ? "easyBoss"
+             : (room <= 19) ? "medium"
+             : (room === 20) ? "mediumBoss"
+             : (room <= 25) ? "hard"
+             : (room <= 29) ? "calculation"
+             : "finalBoss";
+
     // --- MUSIC CONTROL ---
     if(diff === "finalBoss"){
         playFinalBossMusic();
-        }
+    }
     else if(diff.includes("Boss")){
         playBossMusic();
-        }
+    }
     else{
         playExplorationMusic();
-        }
+    }
 
     const isBoss = diff.includes("Boss");
     const shell = document.getElementById("gameShell");
@@ -2357,53 +2504,75 @@ function loadQuestion() {
     // SINGLE SOURCE OF TRUTH
     shell.classList.toggle("boss-mode", isBoss);
     gameBox.classList.toggle("boss-mode", isBoss);
-   
+
     // 2. UI & Progress Updates
-    gameBox.classList.toggle("boss-mode", isBoss);
     document.getElementById("progressFill").style.width = (room / 30 * 100) + "%";
     document.getElementById("areaDisplay").innerText = `${getAreaName(room)} (${room}/30)`;
     document.getElementById("srAnnouncements").innerText = `Entering ${getAreaName(room)}. Room ${room} of 30.`;
 
-       // 3. Select the Question (CHANGE BOSS NAMES AND PNG)
-    if (isBoss) {
-        if (bossHealth === 3) {
-        bossPool = [...questionBanks[diff]]; // ← NO SHUFFLE
+   // 3. Select the Question
+if (isBoss) {
+
+    if (bossHealth === 3) {
+
+        let pool = [...questionBanks[diff]];
+
+        let entries = Object.entries(conceptMemory || {});
+        let chosenTag = null;
+
+        if (entries.length > 0) {
+
+            let maxWeakness = Math.max(...entries.map(e => e[1]));
+
+            if (maxWeakness < 1) {
+                // no weakness → target strongest
+                chosenTag = entries.sort((a,b)=> a[1]-b[1])[0][0];
+            } else {
+                // normal → target weakest
+                chosenTag = entries.sort((a,b)=> b[1]-a[1])[0][0];
+            }
         }
 
-        currentQuestion = shuffleOptions(bossPool[3 - bossHealth]);
-        
-        let bTitle = room === 10 ? "THE ARCHITECT OF EQUILIBRIUM" : room === 20 ? "THE PRICE MAKER" : "THE GRAND STRATEGIST";
-        let bColor = room === 10 ? "#a78bfa"   // violet (system / balance)
-            : room === 20 ? "#7c3aed"   // deep purple (authority / control)
-            : "#991b1b";                // crimson (dominion / consequence)
-        document.getElementById("srAnnouncements").innerText =`Boss encounter. ${bTitle}. Prepare yourself`;
-        bossMsg.innerText = "⚠ BOSS ENCOUNTER ⚠";
-        bossMsg.style.color = bColor;
-        gameBox.style.setProperty('--bossColor', bColor);
-        let bossImage = "";
-        let bossClass = "";
+        // --- BUILD BOSS SEQUENCE ---
+        bossPool = chosenTag
+            ? pool.filter(q => q.tag === chosenTag)
+            : [];
 
-// =============================================
-// BOSS VISUAL CONFIGURATION — SAFE TO EDIT
-// =============================================
-// Change:
-// - boss images
-// - boss class
-//
-// Keep room numbers (10, 20, 30) intact.
-// =============================================
-        
+        // --- SAFETY FALLBACK ---
+        if (bossPool.length !== 3) {
+            bossPool = pool.slice(0,3);
+        }
+    }
+
+    currentQuestion = shuffleOptions(bossPool[3 - bossHealth]);
+
+    let bTitle = room === 10 ? "THE ARCHITECT OF EQUILIBRIUM"
+               : room === 20 ? "THE PRICE MAKER"
+               : "THE GRAND STRATEGIST";
+
+    let bColor = room === 10 ? "#a78bfa"
+               : room === 20 ? "#7c3aed"
+               : "#991b1b";
+
+    document.getElementById("srAnnouncements").innerText = `Boss encounter. ${bTitle}. Prepare yourself`;
+    bossMsg.innerText = "⚠ BOSS ENCOUNTER ⚠";
+    bossMsg.style.color = bColor;
+    gameBox.style.setProperty('--bossColor', bColor);
+
+    let bossImage = "";
+    let bossClass = "";
+
     if(room === 10){
-    bossImage = "architect.png";
-    bossClass = "architectGlow";
+        bossImage = "architect.png";
+        bossClass = "architectGlow";
     }
     else if(room === 20){
-    bossImage = "price_maker.png";
-    bossClass = "pricemakerGlow";
+        bossImage = "price_maker.png";
+        bossClass = "pricemakerGlow";
     }
     else{
-    bossImage = "strategist.png";
-    bossClass = "finalBossGlow";
+        bossImage = "strategist.png";
+        bossClass = "finalBossGlow";
     }
 
     questionElement.innerHTML =
@@ -2412,81 +2581,74 @@ function loadQuestion() {
     <div class="boss-q" style="--bossColor:${bColor}">
     ${currentQuestion.q}
     </div>`;
-   } else {
 
-    // --- STREAK ADAPTIVE LOGIC ---
-    let adjustedDiff = diff;
+} else {
 
-    // --- FIND STRONGEST AREA (lowest weakness) ---
-    let strongestTag = null;
-    let lowestValue = Infinity;
+        // --- STREAK ADAPTIVE LOGIC ---
+        let adjustedDiff = diff;
 
-    for(let tag in conceptMemory){
-        if(conceptMemory[tag] < lowestValue){
-            lowestValue = conceptMemory[tag];
-            strongestTag = tag;
+        // --- FIND STRONGEST AREA (lowest weakness) ---
+        let strongestTag = null;
+        let lowestValue = Infinity;
+
+        for(let tag in conceptMemory){
+            if(conceptMemory[tag] < lowestValue){
+                lowestValue = conceptMemory[tag];
+                strongestTag = tag;
             }
         }
 
-    // --- ADAPTIVE ESCALATION ---
-    if(streak >= 8 && lowestValue < 1.5 && room < 25){
-        adjustedDiff = "hard";
+        // --- ADAPTIVE ESCALATION ---
+        if(streak >= 8 && lowestValue < 1.5 && room < 25){
+            adjustedDiff = "hard";
         }
-    else if(streak >= 5 && lowestValue < 2.5 && room < 20){
-        adjustedDiff = "medium";
+        else if(streak >= 5 && lowestValue < 2.5 && room < 20){
+            adjustedDiff = "medium";
         }
 
-// =============================
-// QUESTION SELECTION
-// =============================
+        // --- QUESTION SELECTION ---
+        if(adjustedDiff === "calculation"){
+            const generator = pickCalcGenerator();
+            currentQuestion = shuffleOptions(generator());
+        }
+        else if(adjustedDiff === "hard" && strongestTag){
+            currentQuestion = shuffleOptions(
+                getAdaptiveQuestion(adjustedDiff, strongestTag)
+            );
+        }
+        else{
+            currentQuestion = shuffleOptions(
+                getAdaptiveQuestion(adjustedDiff)
+            );
+        }
 
-if(adjustedDiff === "calculation"){
-    const generator = pickCalcGenerator();
-    currentQuestion = shuffleOptions(generator());
-}
-else if(adjustedDiff === "hard" && strongestTag){
-    // 🔥 TARGET STRONGEST AREA FOR HARD QUESTIONS
-    currentQuestion = shuffleOptions(
-        getAdaptiveQuestion(adjustedDiff, strongestTag)
-    );
-}
-else{
-    // normal behavior
-    currentQuestion = shuffleOptions(
-        getAdaptiveQuestion(adjustedDiff)
-    );
-}
+        // --- WIZARD LOGIC ---
+        if(!currentQuestion.type){
+            currentQuestion.type = "interpretation";
+        }
 
-// =============================
-// --- WIZARD LOGIC ---
-// =============================
-    if(!currentQuestion.type){
-        currentQuestion.type = "interpretation";
+        const wizardText = getWizardLine(currentQuestion.type);
+        wizardSpeak(wizardText);
+
+        bossMsg.innerText = (room === 9 || room === 19 || room === 29)
+            ? "⚠️ DANGER: BOSS DETECTED IN NEXT ROOM ⚠️"
+            : "";
+        bossMsg.style.color = "#ef4444";
+
+        questionElement.innerHTML = `
+            <div>${currentQuestion.q}</div>
+        `;
     }
 
-    const wizardText = getWizardLine(currentQuestion.type);
-    wizardSpeak(wizardText);
-
-    // --- UI ---
-    bossMsg.innerText = (room === 9 || room === 19 || room === 29)
-        ? "⚠️ DANGER: BOSS DETECTED IN NEXT ROOM ⚠️"
-        : "";
-    bossMsg.style.color = "#ef4444";
-
-    questionElement.innerHTML = `
-        <div>${currentQuestion.q}</div>
-    `;
-}
-    
     // 4. Update Hints and Draw Buttons
     document.getElementById("formulaHint").innerText = currentQuestion.hint ? "💡 Hint: " + currentQuestion.hint : "";
     displayQuestion();
-    
-  // --- Final Boss Entrance Shake ---
+
+    // --- Final Boss Entrance Shake ---
     if(diff === "finalBoss"){
         setTimeout(()=>{
-        triggerBossShake();
-        setTimeout(triggerBossShake,450);
+            triggerBossShake();
+            setTimeout(triggerBossShake,450);
         },200);
     }
 }
