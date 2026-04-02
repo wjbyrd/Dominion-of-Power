@@ -2507,6 +2507,10 @@ function loadQuestion() {
              : (room <= 29) ? "calculation"
              : "finalBoss";
 
+      if (room === 10 || room === 20 || room === 30) {
+       bossHealth = 3; 
+      }
+
     // --- MUSIC CONTROL ---
     if(diff === "finalBoss"){
         playFinalBossMusic();
@@ -2531,7 +2535,7 @@ function loadQuestion() {
     document.getElementById("srAnnouncements").innerText = `Entering ${getAreaName(room)}. Room ${room} of 30.`;
 
    // 3. Select the Question
-if (isBoss) {
+   if (isBoss) {
 
     if (bossHealth === 3) {
 
@@ -2906,6 +2910,14 @@ console.log("DETOUR CHECK VALUE:", conceptMemory[currentQuestion.tag]);
     // =============================================
     // SAFE FALLBACK LOGIC (NO BOSS REGRESSION)
     // =============================================
+    // 1. Reset health and CLEAR the pool 
+    // Doing this BEFORE loadQuestion() is the secret sauce.
+    bossHealth = 3;
+    bossPool = []; 
+
+    // 2. Normal failure handling
+    document.getElementById("streakDisplay").innerText = "";
+
     const bossRooms = [10, 20, 30];
 
     // Original fallback amount
@@ -2914,13 +2926,17 @@ console.log("DETOUR CHECK VALUE:", conceptMemory[currentQuestion.tag]);
 
     // Prevent falling into boss rooms
     while (bossRooms.includes(newRoom)) {
-    newRoom++;
+        newRoom++;
     }
 
-    // Clamp to minimum
+    // 3. Update the room and save
     room = Math.max(1, newRoom);
     localStorage.setItem("gauntletRoom", room);
+
+    // 4. Alert the player
     alert(`Incorrect! You trip in the darkness and tumble back to Room ${room}.`);
+
+    // 5. Final Step: Load the new room state
     loadQuestion();
     }
 }
