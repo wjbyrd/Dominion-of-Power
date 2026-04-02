@@ -116,6 +116,17 @@ body {
   width:100%;
   max-width:320px;
   text-align:center;
+  padding:15px;
+  border-radius:10px;
+  border:1px solid rgba(180,120,255,0.35);   
+  background: rgba(20,10,30,0.85);          
+  color:#e9d5ff;                             
+  font-size:20px;
+  margin-bottom:20px;
+  outline:none;
+  box-shadow:
+    0 0 12px rgba(140,80,255,0.4),           
+    inset 0 0 10px rgba(255,255,255,0.05);  
 }
 
 .start-btn{
@@ -123,6 +134,11 @@ body {
   max-width:320px;
 }
 
+#username::placeholder{
+    color: rgba(200,160,255,0.45);
+    font-style: italic;
+    letter-spacing: 0.5px;
+}
    
 /* =========================================
    2. CORE GAME CONTAINER (#gameBox) — SAFE TO STYLE
@@ -388,6 +404,12 @@ border-radius: 12px;margin-bottom: 20px;overflow: hidden;box-shadow:inset 0 0 10
 .maze-box:nth-child(10) {text-shadow: 0 0 8px #a78bfa,0 0 18px #6d28d9;}
 .maze-box:nth-child(20) {text-shadow:0 0 8px #7c3aed, 0 0 18px #4c1d95;}
 .maze-box:nth-child(30) {text-shadow:0 0 10px #991b1b,0 0 25px #7f1d1d;}
+
+/* Streak styling — Dominion */
+.streak{display:inline-flex;align-items:center;gap:10px;font-weight:600;letter-spacing:0.5px;color: rgba(220,200,255,0.9);}
+
+.streak-icon{width:22px;height:22px;object-fit:contain;border-radius:50%;filter: drop-shadow(0 0 8px rgba(160,120,255,0.8)) drop-shadow(0 0 16px rgba(120,60,255,0.6));
+background: radial-gradient(circle,rgba(220,200,255,0.6) 0%,rgba(120,60,255,0.4) 45%,transparent 70%); animation: pulseControl 2.2s ease-in-out infinite;}
    
 /* =========================================
    6. ARTIFACT SYSTEM (REWARDS) — SAFE TO CUSTOMIZE
@@ -635,6 +657,9 @@ Subtle > excessive.
 /* General a pulse animation for relics */   
 @keyframes relicPulse {0%,100% {transform: scale(1.05);filter:drop-shadow(0 0 8px rgba(167,139,250,0.7))drop-shadow(0 0 18px rgba(109,40,217,0.5));}
 50% {transform: scale(1.1);filter:drop-shadow(0 0 16px rgba(167,139,250,1))drop-shadow(0 0 30px rgba(109,40,217,0.9));}}
+
+/* Streak Icon Glow */
+@keyframes pulseControl{0%,100%{ transform: scale(1); opacity: 0.9; }50%{ transform: scale(1.08); opacity: 1; }}
    
 /* =========================================
    10. PANEL LAYOUT SYSTEM — SAFE TO CUSTOMIZE (WITH LIMITS)
@@ -2304,9 +2329,9 @@ function updateMazeTrack() {
             box.innerText = "🟥";
         } else {
             // Boss icons for future rooms
-            if (i === 10){box.innerText = "⚖️";box.classList.add("boss10");}
-            else if (i === 20){box.innerText = "👑";box.classList.add("boss20");}
-            else if (i === 30){box.innerText = "♟️";box.classList.add("boss30");}
+            if (i === 10){box.innerHTML = '<img src="architect.png" class="boss-icon">';box.classList.add("boss10");}
+            else if (i === 20){box.innerHTML = '<img src="price_maker.png" class="boss-icon">';box.classList.add("boss20");}
+            else if (i === 30){box.innerHTML = '<img src="strategist.png" class="boss-icon">';box.classList.add("boss30");}
             else box.innerText = "⬛";
         }
         
@@ -2934,24 +2959,33 @@ function unlockArtifact(key) {
 //
 // Keep variable "streak" intact.
 // =============================================
-function handleStreakVisuals() {
+ function handleStreakVisuals() {
     let streakMsg = "";
     let streakColor = "#fbbf24";
 
-if (streak === 5) {streakMsg = "⚓ STREAK: Stability Established";  streakColor = "#a78bfa";}
-else if (streak === 10) {streakMsg = "🎛️ STREAK: Control Emerging"; streakColor = "#6d28d9";}
-else if (streak === 20) {streakMsg = "🔱 STREAK: Dominion Achieved"; streakColor = "#991b1b"; 
+if (streak === 5) {
+    streakMsg = `<span class="streak"><img src="streakstability.png" class="streak-icon">STABILITY ESTABLISHED</span>`;
+    streakColor = "#fbbf24";
 }
+else if (streak === 10) {
+    streakMsg = `<span class="streak"><img src="streakcontrol.png" class="streak-icon">CONTROL ASSERTED</span>`;
+    streakColor = "#f97316";
+}
+else if (streak === 20) {
+    streakMsg = `<span class="streak"><img src="streakcrown.png" class="streak-icon">DOMINION ACHIEVED</span>`;
+    streakColor = "#eab308";
+}
+
     if (streakMsg) {
         sfxMilestone.currentTime = 0;
         sfxMilestone.play();
-        document.getElementById("streakDisplay").innerText = streakMsg;
+        document.getElementById("streakDisplay").innerHTML = streakMsg;
         document.getElementById("streakDisplay").style.color = streakColor;
     } else if (streak > 0) {
         document.getElementById("streakDisplay").innerText = `Streak: ${streak}`;
-        document.getElementById("streakDisplay").style.color = "#a78bfa";
+        document.getElementById("streakDisplay").style.color = "#fbbf24";
     }
-}
+}  
 
 // =============================================
 // TRANSITION SCREEN — SAFE TO CUSTOMIZE
