@@ -2845,7 +2845,7 @@ function answer(choice) {
         }
          // Boss defeated
          sendGameData({
-            game: "The Strategic Vault",
+            game: "The Dominion of Power",
             event: "boss_defeated",
             user: username,
             room: room
@@ -3340,7 +3340,7 @@ function handleVictory() {
     const verificationCode = generateCode(username, accuracy, maxStreak, totalTimeMS);
 
 sendGameData({
-    game: "The Strategic Vault",
+    game: "The Dominion of Power",
     event: "complete",
     user: username,
     totalTime: totalTimeMs,
