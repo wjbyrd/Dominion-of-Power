@@ -158,10 +158,15 @@ body {
   max-width:320px;
 }
 
+.name-input{
+  text-align: center;
+}
+	
 #username::placeholder{
     color: rgba(200,160,255,0.45);
     font-style: italic;
     letter-spacing: 0.5px;
+	text-align: center;
 }
    
 /* =========================================
@@ -1352,8 +1357,7 @@ Respect structure strictly.
   <div class="start-content">
 <h1 class="title">THE DOMINION OF POWER</h1>
 <h2 class="subtitle">Systems. Power. Strategy.</h2>
-<p class="tagline">Declare your designation</p>
-<input id="usernameInput" class="name-input" ...>
+<input id="usernameInput" type="text" placeholder="Declare your designation" class="name-input">
 <button class="start-btn" onclick="startGame()">ENTER THE DOMINION</button></div>
 </div>
 <div class="dungeon-container">
