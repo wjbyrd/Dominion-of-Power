@@ -1773,7 +1773,7 @@ function recordAdaptiveAttempt(question, isCorrect, responseTime){
         responseTime,
         tag: question.tag,
         type: question.type || "default",
-        objective: inferObjective(question)
+        objective: currentQuestion.objective || inferObjective(currentQuestion)
     });
 
     if(masteryState.recent.length > 20){
@@ -1905,7 +1905,7 @@ function planRemediation(question, responseTime){
         active: true,
         stage: carelessMiss ? "bridge" : "repair",
         tag: question.tag,
-        objective: inferObjective(question),
+        objective: currentQuestion.objective || inferObjective(currentQuestion)
         sourceType: question.type || "default",
         returnRoom: room,
         originQuestionId: question.id || null,
@@ -3687,7 +3687,7 @@ function answer(choice) {
         correct: isCorrect ? 1 : 0,
         tag: currentQuestion.tag || "none",
         type: currentQuestion.type || "none",
-        objective: inferObjective(currentQuestion),
+        objective: currentQuestion.objective || inferObjective(currentQuestion)
         responseTime: responseTime,
 	     attempt: totalAttempts ?? 0,
 		  streak: streak ?? 0,
