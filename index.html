@@ -1353,7 +1353,7 @@ Respect structure strictly.
   <div class="start-content">
 <h1 class="title">THE DOMINION OF POWER</h1>
 <h2 class="subtitle">Systems. Power. Strategy.</h2>
-<input id="usernameInput" type="text" placeholder="Declare your designation" class="name-input">
+<input id="emailInput" type="email" placeholder="Enter your school email" class="name-input">
 <button class="start-btn" onclick="startGame()">ENTER THE DOMINION</button></div>
 </div>
 <div class="dungeon-container">
@@ -1530,6 +1530,8 @@ let bossCheckpoint = 1;
 let correctAnswers = 0; 
 let maxStreak = 0; 
 let username = "";
+let studentEmail = "";
+let runID = "";
 let questionStartTime = 0;
 let streak = 0; 
 let startTime; // Will be set in startGame()
@@ -1574,6 +1576,62 @@ let questionHistory = {
     finalBoss: [],
 };
 
+function generatePseudonymFromEmail(email) {
+    const adjectives = [
+        "Iron", "Crimson", "Silent", "Golden", "Shadow", "Blazing",
+        "Stone", "Storm", "Obsidian", "Frost", "Ember", "Steel"
+    ];
+
+    const nouns = [
+        "Anvil", "Hammer", "Falcon", "Forge", "Sentinel", "Warden",
+        "Cipher", "Titan", "Raven", "Vanguard", "Crown", "Engine"
+    ];
+
+    let hash = 0;
+    const cleanEmail = email.trim().toLowerCase();
+
+    for (let i = 0; i < cleanEmail.length; i++) {
+        hash = ((hash << 5) - hash) + cleanEmail.charCodeAt(i);
+        hash |= 0;
+    }
+
+    const positiveHash = Math.abs(hash);
+
+    const adj = adjectives[positiveHash % adjectives.length];
+    const noun = nouns[Math.floor(positiveHash / adjectives.length) % nouns.length];
+    const number = 1000 + (positiveHash % 9000);
+
+    return `${adj}${noun}${number}`;
+}
+
+function generatePseudonymFromEmail(email) {
+    const adjectives = [
+        "Iron", "Crimson", "Silent", "Golden", "Shadow", "Blazing",
+        "Stone", "Storm", "Obsidian", "Frost", "Ember", "Steel"
+    ];
+
+    const nouns = [
+        "Anvil", "Hammer", "Falcon", "Forge", "Sentinel", "Warden",
+        "Cipher", "Titan", "Raven", "Vanguard", "Crown", "Engine"
+    ];
+
+    let hash = 0;
+    const cleanEmail = email.trim().toLowerCase();
+
+    for (let i = 0; i < cleanEmail.length; i++) {
+        hash = ((hash << 5) - hash) + cleanEmail.charCodeAt(i);
+        hash |= 0;
+    }
+
+    const positiveHash = Math.abs(hash);
+
+    const adj = adjectives[positiveHash % adjectives.length];
+    const noun = nouns[Math.floor(positiveHash / adjectives.length) % nouns.length];
+    const number = 1000 + (positiveHash % 9000);
+
+    return `${adj}${noun}${number}`;
+}
+	 
 // =============================================
 // ADAPTIVE ENGINE — DO NOT TOUCH
 // =============================================
@@ -2247,21 +2305,38 @@ if(savedUser){
 // - progression bugs
 // =============================================
 function startGame() {
-    let inputName = document.getElementById("usernameInput").value.trim();
-    if (!inputName) {
-        alert("A name is required to bind your soul to the Dominion.");
+    let inputEmail = document.getElementById("emailInput").value.trim().toLowerCase();
+
+    if (!inputEmail) {
+        alert("An email is required to enter the Dominion.");
         return;
     }
 
-	bossCheckpoint = 1;
-    username = inputName;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(inputEmail)) {
+        alert("Enter a valid email address.");
+        return;
+    }
+
+    bossCheckpoint = 1;
+
+    studentEmail = inputEmail;
+    username = generatePseudonymFromEmail(studentEmail);
+
+    runID = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+    localStorage.setItem("gauntletEmail", studentEmail);
     localStorage.setItem("gauntletUser", username);
+    localStorage.setItem("gauntletRunID", runID);
 
     sendGameData({
-    game: "The Dominion of Power",
-    event: "start",
-    user: username
-});
+        runID: runID,
+        game: "The Dominion of Power",
+        event: "start",
+        user: username,
+        email: studentEmail
+    });
 
 // =============================================
 // RESET CORE GAME STATE — DO NOT MODIFY STRUCTURE
@@ -2281,18 +2356,22 @@ function startGame() {
     lastTypes = [];
     adaptiveMode = "support";
     resetRemediationState();
+
     localStorage.removeItem("gauntletRoom");
-    localStorage.removeItem("vaultOrb");
+
+    // Dominion artifact keys — keep these matched to your actual Dominion IDs.
+    localStorage.removeItem("vaultHeart");
+    localStorage.removeItem("vaultCore");
     localStorage.removeItem("vaultCrown");
-    localStorage.removeItem("vaultEdge");
 
     questionHistory = {
-    easy: [], medium: [], hard: [], elite: [], calculation: [],
-    easyBoss: [], mediumBoss: [], finalBoss: []
+        easy: [], medium: [], hard: [], elite: [], calculation: [],
+        easyBoss: [], mediumBoss: [], finalBoss: []
     };
+
     usedQuestions = {
-    easy: [], medium: [], hard: [], elite: [],
-    easyBoss: [], mediumBoss: [], finalBoss: []
+        easy: [], medium: [], hard: [], elite: [],
+        easyBoss: [], mediumBoss: [], finalBoss: []
     };
     
 // =============================================
@@ -2307,40 +2386,34 @@ function startGame() {
    // =============================================
    // VAULT RESTORE SYSTEM — SAFE WITH MATCHING IDS
    // =============================================
-   // Restores previously unlocked artifacts from storage.
-   //
    // IMPORTANT:
-   // IDs must match exactly:
-   // - localStorage key ("vaultCrown")
-   // - HTML element id ("vaultCrown")
-   //
-   // Mismatches = artifacts won't display
+   // localStorage keys must match the HTML element ids.
    // =============================================    
-        if(localStorage.getItem("vaultOrb")){
-        document.getElementById("vaultOrb").classList.add("unlocked");
-        }
+    if(localStorage.getItem("vaultHeart")){
+        document.getElementById("vaultHeart").classList.add("unlocked");
+    }
 
-        if(localStorage.getItem("vaultCrown")){
+    if(localStorage.getItem("vaultCore")){
+        document.getElementById("vaultCore").classList.add("unlocked");
+    }    
+
+    if(localStorage.getItem("vaultCrown")){
         document.getElementById("vaultCrown").classList.add("unlocked");
-        }    
-
-        if(localStorage.getItem("vaultEdge")){
-        document.getElementById("vaultEdge").classList.add("unlocked");
-        }
+    }
   
 // Start game loop: music + timer + first question
     bgMusic.play().catch(e => console.log("Audio started"));
     startTime = Date.now(); 
     loadQuestion();
 }
-
+	 
 // =============================================
 // INPUT SHORTCUT — SAFE TO KEEP OR REMOVE
 // =============================================
 // Allows pressing Enter to start the game
 // Improves usability, does not affect logic
 // =============================================
-document.getElementById("usernameInput").addEventListener("keypress", function(event) {
+document.getElementById("emailInput").addEventListener("keypress", function(event) {
     if (event.key === "Enter") {
         event.preventDefault();
         startGame();
@@ -3683,9 +3756,11 @@ function answer(choice) {
     // 🔥 TRACK EVERYTHING (ONE LOCATION ONLY)
     // =============================================
     sendGameData({
-        game: "The Dominion of Power",
+        runID: runID,
+		game: "The Dominion of Power",
         event: "question",
         user: username || "anonymous",
+		email: studentEmail || "",
         room: room,
         questionId: currentQuestion.id || 0,
         correct: isCorrect ? 1 : 0,
@@ -3815,9 +3890,11 @@ if(remediationState.active){
         }
          // Boss defeated
          sendGameData({
-            game: "The Dominion of Power",
+            runId: runId,
+			game: "The Dominion of Power",
             event: "boss_defeated",
             user: username,
+			email: studentEmail,
             room: room
          });
            
@@ -4337,9 +4414,11 @@ function handleVictory() {
     const verificationCode = generateCode(username, accuracy, maxStreak, totalTimeMs);
 
 sendGameData({
-    game: "The Dominion of Power",
+    runID: runID,
+	game: "The Dominion of Power",
     event: "complete",
     user: username,
+	email: studentEmail,
     room: room,
     questionId: 0,
     correct: 1,
@@ -4570,9 +4649,10 @@ function sendGameData(data) {
     token: data.token || "",
     version: "LOC-foundry-engine-ms-telemetry-v1",
     userAgent: navigator.userAgent || "",
-    game: data.game || "The Labyrinth of Choice",
+    game: data.game || "The Dominion of Power",
     event: data.event || "",
     user: data.user || username || "anonymous",
+	email: studentEmail || "",  
     room: Number(data.room ?? 0),
     questionId: Number(data.questionId ?? data.question ?? 0),
     correct: Number(data.correct ?? 0),
